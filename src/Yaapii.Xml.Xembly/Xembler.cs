@@ -11,15 +11,57 @@ using System.Text;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// Processor of Xembly directives, main entry point to the module.
+    /// 
+    /// <para>For example, to modify a DOM document:
+    /// 
+    /// <example>
+    /// XMLDocument dom = ....
+    /// new Xembler(
+    /// new Directives()
+    ///     .xpath("/root")
+    ///     .addIfAbsent("employees")
+    ///     .add("employee")
+    ///     .attr("id", 6564)
+    /// ).apply(dom);
+    /// </example>
+    /// </para>
+    /// 
+    /// <para>You can also convert your Xembly directives directly to XML document:
+    /// 
+    /// <example>
+    /// String xml = new Xembler(
+    /// new Directives()
+    ///     .xpath("/root")
+    ///     .addIfAbsent("employees")
+    ///     .add("employee")
+    ///     .attr("id", 6564)
+    /// ).xml("root");
+    /// </example>
+    /// </para>
+    /// </summary>
     public sealed class Xembler
     {
+        /// <summary>
+        /// The directives to apply.
+        /// </summary>
         private readonly IEnumerable<IDirective> _directives;
 
+        /// <summary>
+        /// ctor.
+        /// </summary>
+        /// <param name="directives">Directives</param>
         public Xembler(IEnumerable<IDirective> directives)
         {
             this._directives = directives;
         }
 
+        /// <summary>
+        /// Apply all changes to the document/node, redirect all exceptions to a IllegalStateException.
+        /// </summary>
+        /// <returns>The quietly.</returns>
+        /// <param name="dom">DOM.</param>
         public XmlNode ApplyQuietly(XmlNode dom)
         {
             try
@@ -35,7 +77,7 @@ namespace Yaapii.Xml.Xembly
         }
 
         /// <summary>
-        /// Apply all changes to the document/node
+        /// Apply all changes to the document/node.
         /// </summary>
         /// <returns>Same document/node.</returns>
         /// <param name="dom">DOM document/node</param>
@@ -67,6 +109,10 @@ namespace Yaapii.Xml.Xembly
             return dom;
         }
 
+        /// <summary>
+        /// Apply all changes to an empty DOM, redirect all exceptions to a IllegalStateException.
+        /// </summary>
+        /// <returns>The quietly.</returns>
         public XmlDocument DomQuietly()
         {
             try
@@ -81,6 +127,10 @@ namespace Yaapii.Xml.Xembly
             }
         }
 
+        /// <summary>
+        /// Apply all changes to an empty DOM.
+        /// </summary>
+        /// <returns>The DOM</returns>
         public XmlDocument Dom()
         {
             var dom = new XmlDocument();
@@ -88,6 +138,10 @@ namespace Yaapii.Xml.Xembly
             return dom;
         }
 
+        /// <summary>
+        /// COnvert to XML Document, redirect all Exceptions to IllegalStateException.
+        /// </summary>
+        /// <returns>The quietly.</returns>
         public String XmlQuietly()
         {
             try
@@ -97,11 +151,15 @@ namespace Yaapii.Xml.Xembly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new FormattedText("quielty failed to build XML: {0}", this._directives).AsString(),
+                    new FormattedText("quietly failed to build XML: {0}", this._directives).AsString(),
                     ex);
             }
         }
 
+        /// <summary>
+        /// Convert to XML Document.
+        /// </summary>
+        /// <returns>The xml.</returns>
         public string Xml()
         {
             using (var stringWriter = new StringWriter())
@@ -113,6 +171,11 @@ namespace Yaapii.Xml.Xembly
             }
         }
 
+        /// <summary>
+        /// Escape text before using it as a text value
+        /// </summary>
+        /// <returns>The escaped.</returns>
+        /// <param name="text">Text.</param>
         public String Escaped(string text)
         {
             var output = new StringBuilder(text.Length);
@@ -128,7 +191,7 @@ namespace Yaapii.Xml.Xembly
 
                 if (illegal)
                 {
-                    output.Append(new FormattedText("\\u{0:000}x", (int)chr).AsString()); //todo: is this the correct illegal char replacement? original is java String.format("\\u%04x"...) 
+                    output.Append(new FormattedText("\\u{0:000}", (int)chr).AsString());
                 }
                 else
                 {
