@@ -26,16 +26,8 @@ namespace Yaapii.Xml.Xembly
         {
             var targets = new List<XmlNode>();
             string label = this._name.Raw();
-            XmlDocument doc;
-            if(dom.OwnerDocument == null)
-            {
-                doc = new XmlDocument();
-                doc.AppendChild(dom);
-            }
-            else
-            {
-                doc = dom.OwnerDocument;
-            }
+
+            XmlDocument doc = new XmlDocumentOf(dom).Value();
 
             foreach(var node in cursor)
             {
