@@ -27,12 +27,16 @@ namespace Yaapii.Xml.Xembly
             var targets = new List<XmlNode>();
             string label = this._name.Raw();
             XmlDocument doc;
-            if(dom.OwnerDocument == null)
+
+            if(dom is XmlDocument)
+            {
+                doc = dom as XmlDocument;
+
+            } else if(dom.OwnerDocument == null)
             {
                 doc = new XmlDocument();
                 doc.AppendChild(dom);
-            }
-            else
+            } else
             {
                 doc = dom.OwnerDocument;
             }
