@@ -20,9 +20,11 @@
 #pragma warning disable 419
 
 
-    
-    import java.util.Collection;
-    import java.util.LinkedList;
+using System.Xml;
+using Yaapii.Atoms;
+using Yaapii.Xml.Xembly;
+using Yaapii.Xml.Xembly.Error;
+using Yaapii.Xml.Xembly.Directive;
 
 using System;
 using System.IO;
@@ -56,7 +58,6 @@ public partial class XemblyLexer : Lexer {
 	};
 
 
-	    @Override
 	    public void emitErrorMessage(String msg) {
 	        throw new ParsingException(msg);
 	    }
@@ -117,15 +118,15 @@ public partial class XemblyLexer : Lexer {
 		switch (actionIndex) {
 		case 0: 
 		        try {
-		            this.setText(Arg.unescape(this.getText()));
-		        } catch (final XmlContentException ex) {
+		            this.setText(new Unescaped(this.getText()).Value());
+		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }
 		     break;
 		case 1: 
 		        try {
-		            this.setText(Arg.unescape(this.getText()));
-		        } catch (final XmlContentException ex) {
+		            this.setText(new Unescaped(this.getText()).Value());
+		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }
 		     break;

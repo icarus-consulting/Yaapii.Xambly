@@ -20,9 +20,11 @@
 #pragma warning disable 419
 
 
-    
-    import java.util.Collection;
-    import java.util.LinkedList;
+using System.Xml;
+using Yaapii.Atoms;
+using Yaapii.Xml.Xembly;
+using Yaapii.Xml.Xembly.Error;
+using Yaapii.Xml.Xembly.Directive;
 
 using System;
 using System.IO;
@@ -84,7 +86,6 @@ public partial class XemblyParser : Parser {
 	}
 
 
-	    @Override
 	    public void emitErrorMessage(String msg) {
 	        throw new ParsingException(msg);
 	    }
@@ -97,7 +98,7 @@ public partial class XemblyParser : Parser {
 		Interpreter = new ParserATNSimulator(this, _ATN, decisionToDFA, sharedContextCache);
 	}
 	public partial class DirectivesContext : ParserRuleContext {
-		public Collection<Directive> ret;
+		public ICollection<IDirective> ret;
 		public DirectiveContext _directive;
 		public ITerminalNode Eof() { return GetToken(XemblyParser.Eof, 0); }
 		public DirectiveContext[] directive() {
@@ -139,7 +140,7 @@ public partial class XemblyParser : Parser {
 	public DirectivesContext directives() {
 		DirectivesContext _localctx = new DirectivesContext(Context, State);
 		EnterRule(_localctx, 0, RULE_directives);
-		 _localctx.ret =  new LinkedList<Directive>(); 
+		 _localctx.ret =  new LinkedList<IDirective>(); 
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
@@ -162,7 +163,7 @@ public partial class XemblyParser : Parser {
 
 				State = 13; _localctx._directive = directive();
 				State = 14; Match(SEMICOLON);
-				 _localctx.ret.add(_localctx._directive.ret); 
+				 _localctx.ret.Add(_localctx._directive.ret); 
 				}
 				}
 				State = 21;
@@ -227,8 +228,8 @@ public partial class XemblyParser : Parser {
 				State = 25; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new XpathDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new XpathDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -241,8 +242,8 @@ public partial class XemblyParser : Parser {
 				State = 29; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new SetDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new SetDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -255,8 +256,8 @@ public partial class XemblyParser : Parser {
 				State = 33; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new XsetDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new XsetDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -271,8 +272,8 @@ public partial class XemblyParser : Parser {
 				State = 39; _localctx.value = argument();
 
 				        try {
-				            _localctx.ret =  new AttrDirective(_localctx.name.ret.toString(), _localctx.value.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new AttrDirective(_localctx.name.ret.ToString(), _localctx.value.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -285,8 +286,8 @@ public partial class XemblyParser : Parser {
 				State = 43; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new AddDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new AddDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -299,8 +300,8 @@ public partial class XemblyParser : Parser {
 				State = 47; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new AddIfDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new AddIfDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -321,7 +322,7 @@ public partial class XemblyParser : Parser {
 				State = 52; Match(T__7);
 				State = 53; _localctx._argument = argument();
 
-				        _localctx.ret =  new StrictDirective(Integer.parseInt(_localctx._argument.ret.toString()));
+				        _localctx.ret =  new StrictDirective(new IntOf(_localctx._argument.ret.ToString()).Value());
 				    
 				}
 				break;
@@ -342,8 +343,8 @@ public partial class XemblyParser : Parser {
 				State = 60; _localctx.data = argument();
 
 				        try {
-				            _localctx.ret =  new PiDirective(_localctx.target.ret.toString(), _localctx.data.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new PiDirective(_localctx.target.ret.ToString(), _localctx.data.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
@@ -374,8 +375,8 @@ public partial class XemblyParser : Parser {
 				State = 68; _localctx._argument = argument();
 
 				        try {
-				            _localctx.ret =  new CdataDirective(_localctx._argument.ret.toString());
-				        } catch (final XmlContentException ex) {
+				            _localctx.ret =  new CdataDirective(_localctx._argument.ret.ToString());
+				        } catch (XmlException ex) {
 				            throw new ParsingException(ex);
 				        }
 				    
