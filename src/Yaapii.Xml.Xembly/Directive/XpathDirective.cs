@@ -60,7 +60,7 @@ namespace Yaapii.Xml.Xembly.Directive
                 catch(Exception ex)
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText("invalid XPath expr '{0}'", query).AsString());
+                        new FormattedText("invalid XPath expr '{0}'", query).AsString(), ex);
                 }
                 int len = list.Count;
                 for (int idx = 0; idx < len;++idx)
