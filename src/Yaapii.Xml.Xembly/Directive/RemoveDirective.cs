@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Error;
@@ -30,6 +29,11 @@ namespace Yaapii.Xml.Xembly
 {
     public sealed  class RemoveDirective : IDirective
     {
+        void HandleFunc()
+        {
+
+        }
+
         public RemoveDirective()
         {
         }
@@ -41,7 +45,7 @@ namespace Yaapii.Xml.Xembly
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var parnets = new HashSet<XmlNode>();
+            var parents = new HashSet<XmlNode>();
             foreach (var node in cursor)
             {
                 XmlNode parent;
@@ -58,8 +62,17 @@ namespace Yaapii.Xml.Xembly
                         new IllegalArgumentException("you can't delete root document element from XML")
                     ).Go();
 
+                    new FailPrecise(
+                        new FailWhen(
+                            parent.NodeType == XmlNodeType.Document
+                        ),
+                        new IllegalArgumentException("you can't delete root document element from XML")
+                    ).Go();
+
                     parent.RemoveChild(node);
                 }
+
+                parents.Add(parent);
             }
 
             return cursor;

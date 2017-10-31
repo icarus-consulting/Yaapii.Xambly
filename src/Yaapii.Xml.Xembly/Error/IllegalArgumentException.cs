@@ -24,7 +24,7 @@ using System;
 
 namespace Yaapii.Xml.Xembly.Error
 {
-    internal class IllegalArgumentException : Exception
+    public class IllegalArgumentException : Exception
     {
         public IllegalArgumentException()
         {
