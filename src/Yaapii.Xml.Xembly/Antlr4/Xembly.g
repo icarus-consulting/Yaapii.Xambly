@@ -83,7 +83,7 @@ directive returns [IDirective ret]
         }
     }
     |
-/*    'XSET' argument
+    'XSET' argument
     {
         try {
             $ret = new XsetDirective($argument.ret.ToString());
@@ -91,7 +91,7 @@ directive returns [IDirective ret]
             throw new ParsingException(ex);
         }
     }
-    |*/
+    |
     'ATTR' name=argument COMMA value=argument
     {
         try {
@@ -124,11 +124,11 @@ directive returns [IDirective ret]
         $ret = new RemoveDirective();
     }
     |
-/*    'STRICT' argument
+    'STRICT' argument
     {
         $ret = new StrictDirective(new IntOf($argument.ret.ToString()).Value());
     }
-    |*/
+    |
     'UP'
     {
         $ret = new UpDirective();
