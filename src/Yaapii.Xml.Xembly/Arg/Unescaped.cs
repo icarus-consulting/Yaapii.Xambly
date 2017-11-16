@@ -30,7 +30,7 @@ using Yaapii.Atoms.Text;
 namespace Yaapii.Xml.Xembly.Arg
 {
     /// <summary>
-    /// XML contentnt with unescaped representation of all XML symbols.
+    /// XML content with unescaped representation of all XML symbols.
     /// </summary>
     public class Unescaped : IText
     {
@@ -107,7 +107,7 @@ namespace Yaapii.Xml.Xembly.Arg
         /// <summary>
         /// Compare this with other text.
         /// </summary>
-        /// <param name="other">Content for comparision</param>
+        /// <param name="other">Content for comparison</param>
         /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {

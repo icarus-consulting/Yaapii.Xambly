@@ -27,7 +27,7 @@ using Yaapii.Atoms.Text;
 namespace Yaapii.Xml.Xembly.Arg
 {
     /// <summary>
-    /// XML contentnt with escaped representation of all unprintable XML symbols.
+    /// XML content with escaped representation of all unprintable XML symbols.
     /// </summary>
     public class Escaped : IText
     {
@@ -36,14 +36,14 @@ namespace Yaapii.Xml.Xembly.Arg
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
-        /// <param name="src"></param>
+        /// <param name="src">Raw text</param>
         public Escaped(string src) : this(new TextOf(src))
         { }
 
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
-        /// <param name="src"></param>
+        /// <param name="src">Raw text</param>
         public Escaped(IText src)
         {
             _src = src;
