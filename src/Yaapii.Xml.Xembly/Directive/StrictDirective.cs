@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Yaapii.Atoms.List;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xml.Xembly
 {
@@ -49,13 +51,13 @@ namespace Yaapii.Xml.Xembly
             {
                 if (cursor.Count() == 0)
                 {
-                    throw new ImpossibleModificationException($"no current nodes while {_number} expected");
+                    throw new ImpossibleModificationException(new FormattedText("no current nodes while {0} expected", _number).AsString());
                 }
                 if (cursor.Count() == 1)
                 {
-                    throw new ImpossibleModificationException($"one current node '{cursor.First().Name}' while strictly {_number} expected");
+                    throw new ImpossibleModificationException(new FormattedText("one current node '{0}' while strictly {1} expected", cursor.First().Name, _number).AsString());
                 }
-                throw new ImpossibleModificationException($"{cursor.Count()} current nodes [{Names(cursor)}] while strictly {_number} expected");
+                throw new ImpossibleModificationException(new FormattedText("{0} current nodes [{1}] while strictly {2} expected", cursor.Count(), Names(cursor), _number).AsString());
             }
 
             return cursor;
@@ -68,7 +70,7 @@ namespace Yaapii.Xml.Xembly
 
         public override string ToString()
         {
-            return $"STRICT \"{_number}\"";
+            return new FormattedText("STRICT \"{0}\"", _number).AsString();
         }
 
         /// <summary> Node names as a string. </summary>
@@ -76,9 +78,9 @@ namespace Yaapii.Xml.Xembly
         /// <returns> Text presentation of them </returns>
         private string Names(IEnumerable<XmlNode> nodes)
         {
-            var nodeNames = nodes.Select(tNode => $"{tNode.ParentNode?.Name + String.Empty}/{tNode.Name}");
+            var nodeNames = new Mapped<XmlNode, string>(nodes, tNode => $"{tNode.ParentNode?.Name + String.Empty}/{tNode.Name}");
 
-            return String.Join(", ", nodeNames);
+            return new JoinedText(", ", nodeNames).AsString();
         }
     }
 }
