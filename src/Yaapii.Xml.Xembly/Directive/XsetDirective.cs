@@ -11,11 +11,18 @@ using System.Collections.Concurrent;
 
 namespace Yaapii.Xml.Xembly.Directive
 {
+
     public sealed class XsetDirective : IDirective
     {
-        
+        /// <summary>
+        /// Sets the Textvalue in specified Nodes
+        /// </summary>
         private readonly IArg _expr;
-
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="val">Text value to set</param>
+        
         public XsetDirective(string val)
         {
             _expr = new ArgOf(val);
@@ -25,7 +32,13 @@ namespace Yaapii.Xml.Xembly.Directive
         {
             return new FormattedText("XSET {0}", this._expr).AsString();
         }
-
+        /// <summary>
+        /// Sets the Text in the 
+        /// </summary>
+        /// <param name="dom">Node for the changes</param>
+        /// <param name="cursor">Elements to change the text for</param>
+        /// <param name="stack"></param>
+        /// <returns></returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         { 
 
@@ -36,14 +49,7 @@ namespace Yaapii.Xml.Xembly.Directive
 
             foreach (XmlNode node in cursor)
             {
-                try
-                {
-                    values.Add(node, nav.Evaluate(_expr.Raw()).ToString());
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                    values.Add(node, nav.Evaluate(_expr.Raw()).ToString());   
             }
 
             foreach (KeyValuePair<XmlNode, string> pair in values)
@@ -55,35 +61,3 @@ namespace Yaapii.Xml.Xembly.Directive
 
     }
 }
-
-
-//public Directive.Cursor exec(final Node dom,
-//        final Directive.Cursor cursor, final Directive.Stack stack)
-//        throws ImpossibleModificationException
-//{
-//    final XPath xpath = XsetDirective.FACTORY.newXPath();
-
-//    final ConcurrentMap<Node, String> values =
-//            new ConcurrentHashMap<Node, String>(0);
-//        for (final Node node : cursor) 
-//        {
-//            try 
-//            {
-//                values.put(
-//                  node,
-                  //xpath.evaluate(this.expr.raw(), node, XPathConstants.STRING
-                  //              ).toString());
-//            } 
-
-//           catch (final XPathExpressionException ex) 
-//           {
-//                throw new ImpossibleModificationException(String.format("invalid XPath expr '%s'", this.expr), ex);
-//           }
-//        }
-//       
-//        for (final Map.Entry<Node, String> entry : values.entrySet()) 
-//        {
-//            entry.getKey().setTextContent(entry.getValue());
-//        }
-//        return cursor;
-//}
