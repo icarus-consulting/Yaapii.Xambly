@@ -21,15 +21,28 @@
 // SOFTWARE.
 
 using System;
-namespace Yaapii.Xml.Xembly.Error
+
+namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// When impossible to understand XML content.
+    /// </summary>
     public sealed class XmlContentException : Exception
     {
-        public XmlContentException(string message, Exception innerException) : base(message, innerException)
+        /// <summary>
+        /// When impossible to understand XML content.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        /// <param name="innerException">Original exception</param>
+        public XmlContentException(string cause, Exception innerException) : base(cause, innerException)
         {
         }
 
-        public XmlContentException(string message) : base(message)
+        /// <summary>
+        /// When impossible to understand XML content.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        public XmlContentException(string cause) : base(cause)
         {
         }
     }
