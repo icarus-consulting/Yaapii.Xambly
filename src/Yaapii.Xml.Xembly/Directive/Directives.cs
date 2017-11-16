@@ -556,11 +556,11 @@ public sealed class Directives : IEnumerable<IDirective>
         }
         catch (RecognitionException ex)
         {
-            throw new Exception(script, ex);
+            throw new SyntaxException(script, ex);
         }
         catch (ParsingException ex)
         {
-            throw new Exception(script, ex);
+            throw new SyntaxException(script, ex);
         }
     }
 }
