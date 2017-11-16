@@ -25,16 +25,34 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// PUSH directive.
+    /// Saves cursor in stack.
+    /// </summary>
     public class PushDirective : IDirective
     {
+        /// <summary>
+        /// PUSH directive.
+        /// Saves cursor in stack.
+        /// </summary>
         public PushDirective()
-        {
-        }
+        { }
 
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
         public override string ToString() {
             return "PUSH";
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             stack.Push(cursor);

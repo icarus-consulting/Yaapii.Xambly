@@ -27,33 +27,48 @@ using Yaapii.Xml.Xembly.Error;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// REMOVE directive.
+    /// Removes all current nodes.
+    /// </summary>
     public sealed  class RemoveDirective : IDirective
     {
-        void HandleFunc()
-        {
-
-        }
-
+        /// <summary>
+        /// REMOVE directive.
+        /// Removes all current nodes.
+        /// </summary>
         public RemoveDirective()
+        { }
+
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
+        public override string ToString()
         {
-        }
-
-        public override string ToString() {
-
             return "REMOVE";
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var parents = new HashSet<XmlNode>();
             foreach (var node in cursor)
             {
                 XmlNode parent;
-                if(node.NodeType == XmlNodeType.Attribute) {
+                if(node.NodeType == XmlNodeType.Attribute)
+                {
                     var attr = node as XmlAttribute;
                     parent = attr.ParentNode;
                     parent.Attributes.Remove(attr);
-                } else {
+                } else
+                {
                     parent = node.ParentNode;
                     new FailPrecise(
                         new FailNull(

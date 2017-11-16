@@ -428,21 +428,21 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Xset(Object text)
     {
-        throw new NotImplementedException("GO GO OBU");
-        try
-        {
-            //this._all.Add(new XsetDirective(text.ToString()));
-        }
-        catch (XmlContentException ex)
-        {
-            throw new IllegalArgumentException(
-                new FormattedText(
-                    "failed to understand XML content, XSET({0})",
-                    text).AsString(),
-                ex
-            );
-        }
-        return this;
+        throw new NotImplementedException("GO GO Rewatchers");
+        //try
+        //{
+        //    this._all.Add(new XsetDirective(text.ToString()));
+        //}
+        //catch (XmlContentException ex)
+        //{
+        //    throw new IllegalArgumentException(
+        //        new FormattedText(
+        //            "failed to understand XML content, XSET({0})",
+        //            text).AsString(),
+        //        ex
+        //    );
+        //}
+        //return this;
     }
 
     /// <summary>
@@ -488,7 +488,7 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         throw new NotImplementedException("GO GO CLE");
         //this._all.Add(new StrictDirective(number));
-        return this;
+        //return this;
     }
 
     /// <summary>
