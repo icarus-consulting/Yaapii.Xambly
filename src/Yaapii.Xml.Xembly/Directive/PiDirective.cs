@@ -27,17 +27,31 @@ using Yaapii.Xml.Xembly.Arg;
 
 namespace Yaapii.Xml.Xembly.Directive
 {
+    /// <summary>
+    /// PI directive.
+    /// Adds processing instruction.
+    /// </summary>
     public class PiDirective : IDirective
     {
         private readonly IArg _target;
         private readonly IArg _data;
 
+        /// <summary>
+        /// PI directive.
+        /// Adds processing instruction.
+        /// </summary>
+        /// <param name="target">Target</param>
+        /// <param name="data">Data</param>
         public PiDirective(string target, string data)
         {
             _target = new ArgOf(target);
             _data = new ArgOf(data);
         }
 
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
             return new FormattedText(
@@ -47,6 +61,13 @@ namespace Yaapii.Xml.Xembly.Directive
             ).AsString();
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             XmlDocument doc;
