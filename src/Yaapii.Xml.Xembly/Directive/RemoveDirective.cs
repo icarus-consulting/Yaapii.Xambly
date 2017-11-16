@@ -22,41 +22,60 @@
 
 using System.Collections.Generic;
 using System.Xml;
-using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
+using Yaapii.Atoms.Error;
+using Yaapii.Xml.Xembly.Error;
 
 namespace Yaapii.Xml.Xembly
 {
-    public sealed class AddDirective : IDirective
+    public sealed  class RemoveDirective : IDirective
     {
-        private readonly IArg _name;
-
-        public AddDirective(string node)
+        void HandleFunc()
         {
-            this._name = new ArgOf(node);
+
         }
 
-        public new string ToString()
+        public RemoveDirective()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+        }
+
+        public new string ToString() {
+
+            return "REMOVE";
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            var parents = new HashSet<XmlNode>();
+            foreach (var node in cursor)
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                XmlNode parent;
+                if(node.NodeType == XmlNodeType.Attribute) {
+                    var attr = node as XmlAttribute;
+                    parent = attr.ParentNode;
+                    parent.Attributes.Remove(attr);
+                } else {
+                    parent = node.ParentNode;
+                    new FailPrecise(
+                        new FailNull(
+                            parent
+                        ),
+                        new IllegalArgumentException("you can't delete root document element from XML")
+                    ).Go();
+
+                    new FailPrecise(
+                        new FailWhen(
+                            parent.NodeType == XmlNodeType.Document
+                        ),
+                        new IllegalArgumentException("you can't delete root document element from XML")
+                    ).Go();
+
+                    parent.RemoveChild(node);
+                }
+
+                parents.Add(parent);
             }
 
-            return new DomCursor(targets);
+            return cursor;
         }
     }
 }

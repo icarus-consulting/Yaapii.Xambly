@@ -28,32 +28,50 @@ using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
-    public sealed class AddDirective : IDirective
+    public class AddIfDirective : IDirective
     {
+
         private readonly IArg _name;
 
-        public AddDirective(string node)
+        public AddIfDirective(string node)
         {
-            this._name = new ArgOf(node);
+            _name = new ArgOf(node);
         }
 
-        public new string ToString()
-        {
-            return new FormattedText("ADD {0}", this._name).AsString();
+        public new string ToString() {
+            return new FormattedText("ADDIF {0}", _name.Raw()).AsString();
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            var label = _name.Raw().ToLower();
+            foreach (var node in cursor)
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                var kids = node.ChildNodes;
+                XmlNode target = null;
+                var len = kids.Count;
+                for (int i = 0; i < len; i++)
+                {
+                    if(kids[i].Name.ToLower() == label){
+                        target = kids[i];
+                        break;
+                    }
+                }
+
+                if(target == null){
+                    XmlDocument doc = null;
+                    if(dom.OwnerDocument == null) {
+                        doc = (XmlDocument)dom;
+                    } else {
+                        doc = dom.OwnerDocument;
+                    }
+
+                    target = doc.CreateElement(this._name.Raw());
+                    node.AppendChild(target);
+                }
+
+                targets.Add(target);
             }
 
             return new DomCursor(targets);

@@ -20,43 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
+using System;
 using System.Xml;
-using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
-    public sealed class AddDirective : IDirective
+    public class PushDirective : IDirective
     {
-        private readonly IArg _name;
-
-        public AddDirective(string node)
+        public PushDirective()
         {
-            this._name = new ArgOf(node);
         }
 
-        public new string ToString()
-        {
-            return new FormattedText("ADD {0}", this._name).AsString();
+        public new string ToString() {
+            return "PUSH";
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
-            {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
-            }
-
-            return new DomCursor(targets);
+            stack.Push(cursor);
+            return cursor;
         }
     }
 }

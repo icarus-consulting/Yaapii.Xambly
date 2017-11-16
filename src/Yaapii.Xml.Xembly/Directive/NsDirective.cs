@@ -20,43 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
+using Yaapii.Xml.Xembly.Error;
 
-namespace Yaapii.Xml.Xembly
+namespace Yaapii.Xml.Xembly.Directive
 {
-    public sealed class AddDirective : IDirective
+    public class NsDirective : IDirective
     {
-        private readonly IArg _name;
+        private readonly IArg _namespace;
 
-        public AddDirective(string node)
+        public NsDirective(IArg nsp)
         {
-            this._name = new ArgOf(node);
+            _namespace = nsp;
         }
 
-        public new string ToString()
+        public override string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return new FormattedText(
+                            "NS {0}",
+                            this._namespace
+                        ).AsString();
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            try
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                var attr = new AttrDirective(
+                                    "xmlns",
+                                    this._namespace.Raw()
+                                );
+                return attr.Exec(dom, cursor, stack);
             }
-
-            return new DomCursor(targets);
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException("can't set xmlns",ex);
+            }
         }
     }
 }

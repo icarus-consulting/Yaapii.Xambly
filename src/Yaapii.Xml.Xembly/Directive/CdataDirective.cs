@@ -20,43 +20,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
 
-namespace Yaapii.Xml.Xembly
+namespace Yaapii.Xml.Xembly.Directive
 {
-    public sealed class AddDirective : IDirective
+    public class CdataDirective : IDirective
     {
-        private readonly IArg _name;
-
-        public AddDirective(string node)
+        private readonly IArg _value;
+        public CdataDirective(string val)
         {
-            this._name = new ArgOf(node);
+            _value = new ArgOf(val);
         }
 
-        public new string ToString()
+        public override string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return new FormattedText(
+                            $"CDATA {0}",
+                            this._value.Raw()
+                        ).AsString();
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
-            {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+            XmlDocument doc;
+            if(dom.OwnerDocument == null){
+                doc = (XmlDocument)dom;
+            } else {
+                doc = dom.OwnerDocument;
             }
 
-            return new DomCursor(targets);
+            var val = this._value.Raw();
+            foreach (var node in cursor)
+            {
+                var cdata = doc.CreateCDataSection(val);
+                node.AppendChild(cdata);
+            }
+
+            return cursor;
         }
     }
 }

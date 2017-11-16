@@ -20,43 +20,57 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
-    public sealed class AddDirective : IDirective
+    public sealed class AttrDirective : IDirective
     {
-        private readonly IArg _name;
+        private readonly IScalar<IArg> _name;
+        private readonly IScalar<IArg> _value;
 
-        public AddDirective(string node)
+        public AttrDirective(string name, string value) 
+            : this(
+                  new ScalarOf<IArg>(() => new ArgOf(name)),
+                  new ScalarOf<IArg>(() => new ArgOf(value))
+                  )
         {
-            this._name = new ArgOf(node);
+
+        }
+
+        public AttrDirective(IScalar<IArg> name, IScalar<IArg> value)
+        {
+            _name = name;
+            _value = value;
         }
 
         public new string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return new FormattedText(
+                            "ATTR {0}, {1}",
+                            this._name.Value().Raw(),
+                            this._value.Value().Raw()
+                        ).AsString();
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
+            var key = _name.Value().Raw();
+            var value = _value.Value().Raw();
 
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            foreach (var node in cursor)
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                ((XmlElement)node).SetAttribute(key, value);
             }
 
-            return new DomCursor(targets);
+            return cursor;
         }
     }
 }

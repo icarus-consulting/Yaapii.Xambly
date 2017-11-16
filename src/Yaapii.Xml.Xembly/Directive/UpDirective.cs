@@ -22,41 +22,40 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
-    public sealed class AddDirective : IDirective
+    public sealed class UpDirective : IDirective
     {
-        private readonly IArg _name;
-
-        public AddDirective(string node)
+        public UpDirective()
         {
-            this._name = new ArgOf(node);
+
         }
 
         public new string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return "UP";
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            var parents = new HashSet<XmlNode>();
+            foreach (var node in cursor)
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                var parent = node.ParentNode;
+                new FailPrecise(
+                    new FailNull(parent),
+                    new ImpossibleModificationException(
+                            new FormattedText("there is no parent node of '{0}' ({1}), can't go UP",node.Name,node.NodeType).AsString()
+                        )).Go();
+
+                parents.Add(parent);
             }
 
-            return new DomCursor(targets);
+            return new DomCursor(parents);
         }
     }
 }

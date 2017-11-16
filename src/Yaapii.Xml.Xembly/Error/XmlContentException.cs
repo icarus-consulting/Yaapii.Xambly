@@ -20,43 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
-using System.Xml;
-using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
-
-namespace Yaapii.Xml.Xembly
+using System;
+namespace Yaapii.Xml.Xembly.Error
 {
-    public sealed class AddDirective : IDirective
+    public sealed class XmlContentException : Exception
     {
-        private readonly IArg _name;
-
-        public AddDirective(string node)
+        public XmlContentException(string message, Exception innerException) : base(message, innerException)
         {
-            this._name = new ArgOf(node);
         }
 
-        public new string ToString()
+        public XmlContentException(string message) : base(message)
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
-        }
-
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
-        {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
-            {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
-            }
-
-            return new DomCursor(targets);
         }
     }
 }

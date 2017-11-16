@@ -20,43 +20,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.Xml;
+using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Arg;
-using Yaapii.Xml.Xembly.Cursor;
 
-namespace Yaapii.Xml.Xembly
+namespace Yaapii.Xml.Xembly.Directive
 {
-    public sealed class AddDirective : IDirective
+    public class PiDirective : IDirective
     {
-        private readonly IArg _name;
+        private readonly IArg _target;
+        private readonly IArg _data;
 
-        public AddDirective(string node)
+        public PiDirective(string target, string data)
         {
-            this._name = new ArgOf(node);
+            _target = new ArgOf(target);
+            _data = new ArgOf(data);
         }
 
-        public new string ToString()
+        public override string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return new FormattedText(
+                "PI {0} {1}",
+                this._target.Raw(),
+                this._data.Raw()
+            ).AsString();
         }
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            string label = this._name.Raw();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
-
-            foreach(var node in cursor)
+            XmlDocument doc;
+            if (dom.OwnerDocument == null)
             {
-                var element = doc.CreateElement(label);
-                node.AppendChild(element);
-                targets.Add(element);
+                doc = (XmlDocument)dom;
+            }
+            else
+            {
+                doc = dom.OwnerDocument;
             }
 
-            return new DomCursor(targets);
+            var instr = doc.CreateProcessingInstruction(this._target.Raw(), this._data.Raw());
+
+            // if cursor list is empty
+            if(new LengthOf<XmlNode>(cursor).Value() == 0){
+                dom.InsertBefore(instr,doc.DocumentElement);
+            } else {
+                foreach (var node in cursor)
+                {
+                    node.AppendChild(instr);
+                }
+            }
+
+            return cursor;
         }
     }
 }
