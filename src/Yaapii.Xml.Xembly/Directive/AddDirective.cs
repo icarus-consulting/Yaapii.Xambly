@@ -30,6 +30,7 @@ namespace Yaapii.Xml.Xembly
 {
     /// <summary>
     /// ADD directive.
+    /// Adds new node to all current nodes.
     /// </summary>
     public sealed class AddDirective : IDirective
     {
@@ -37,6 +38,7 @@ namespace Yaapii.Xml.Xembly
 
         /// <summary>
         /// ADD directive.
+        /// Adds new node to all current nodes.
         /// </summary>
         /// <param name="node">Name of node to add</param>
         /// <exception cref="XmlContentException">If invalid input</exception>

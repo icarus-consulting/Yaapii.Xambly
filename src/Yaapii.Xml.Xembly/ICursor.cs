@@ -25,5 +25,8 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// Cursor.
+    /// </summary>
     public interface ICursor : IEnumerable<XmlNode> { }
 }

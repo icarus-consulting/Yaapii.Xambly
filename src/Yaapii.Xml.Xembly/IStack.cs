@@ -22,9 +22,23 @@
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// Stack.
+    /// </summary>
     public interface IStack
     {
+        /// <summary>
+        /// Push cursor.
+        /// </summary>
+        /// <param name="cursor">Cursor to push</param>
+        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         void Push(ICursor cursor);
+
+        /// <summary>
+        /// Pop cursor.
+        /// </summary>
+        /// <returns>Cursor recently added</returns>
+        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         ICursor Pop();
     }
 }

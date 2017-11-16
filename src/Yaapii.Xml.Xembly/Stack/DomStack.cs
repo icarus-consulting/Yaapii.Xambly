@@ -25,10 +25,18 @@ using System.Collections.Generic;
 
 namespace Yaapii.Xml.Xembly.Stack
 {
+    /// <summary>
+    /// Stack of DOM cursors.
+    /// </summary>
     public class DomStack : IStack
     {
         private readonly Stack<ICursor> _cursors = new Stack<ICursor>();
 
+        /// <summary>
+        /// Pop cursor.
+        /// </summary>
+        /// <returns>Cursor recently added</returns>
+        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         public ICursor Pop()
         {
             try
@@ -42,6 +50,11 @@ namespace Yaapii.Xml.Xembly.Stack
             }
         }
 
+        /// <summary>
+        /// Push cursor.
+        /// </summary>
+        /// <param name="cursor">Cursor to push</param>
+        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         public void Push(ICursor cursor)
         {
             lock (_cursors)

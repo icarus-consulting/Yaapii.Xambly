@@ -24,12 +24,23 @@ using System;
 
 namespace Yaapii.Xml.Xembly.Error
 {
+    /// <summary>
+    /// When state is illegal.
+    /// </summary>
     public sealed class IllegalStateException : Exception
     {
+        /// <summary>
+        /// When state is illegal.
+        /// </summary>
         public IllegalStateException() : base()
         { }
 
-        public IllegalStateException(string msg, Exception ex) : base(msg, ex)
+        /// <summary>
+        /// When state is illegal.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        /// <param name="innerException">Original exception</param>
+        public IllegalStateException(string cause, Exception innerException) : base(cause, innerException)
         { }
     }
 }

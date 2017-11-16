@@ -24,6 +24,12 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// Directive.
+    /// Use <see cref="Directives"/> to create a collection of them. You don't
+    /// need to use this interface directly and make instances of it. Everything
+    /// is done through <see cref="Directives"/> and <see cref="Xembler"/>.
+    /// </summary>
     public interface IDirective
     {
         /// <summary>

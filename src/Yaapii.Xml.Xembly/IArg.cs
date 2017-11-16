@@ -22,9 +22,21 @@
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// Argument.
+    /// </summary>
     public interface IArg
     {
+        /// <summary>
+        /// The string representation.
+        /// </summary>
+        /// <returns>String</returns>
         string AsString();
+        
+        /// <summary>
+        /// Get it's raw value.
+        /// </summary>
+        /// <returns>Value</returns>
         string Raw();
     }
 }

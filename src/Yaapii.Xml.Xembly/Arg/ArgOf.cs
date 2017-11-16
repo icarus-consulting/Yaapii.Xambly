@@ -32,7 +32,7 @@ namespace Yaapii.Xml.Xembly.Arg
         private readonly string _value;
 
         /// <summary>
-        /// Ctor.
+        /// Argument properly escaped.
         /// </summary>
         /// <param name="val">Value of it</param>
         /// <exception cref="XmlContentException">If fails</exception>
