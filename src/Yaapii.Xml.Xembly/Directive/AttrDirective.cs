@@ -54,7 +54,7 @@ namespace Yaapii.Xml.Xembly
         public override string ToString()
         {
             return new FormattedText(
-                            "ATTR {0}, {1}",
+                            "ATTR '{0}', '{1}'",
                             this._name.Value().Raw(),
                             this._value.Value().Raw()
                         ).AsString();
