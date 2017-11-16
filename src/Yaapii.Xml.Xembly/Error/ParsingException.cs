@@ -2,18 +2,36 @@
 using Yaapii.Atoms.Text;
 namespace Yaapii.Xml.Xembly.Error
 {
+    /// <summary>
+    /// When parsing of directives is impossible.
+    /// </summary>
     public class ParsingException : Exception
     {
-        public ParsingException(Exception ex) : this(
-            new FormattedText("Error parsing script: {0}", ex.Message).AsString(),
-            ex)
+        /// <summary>
+        /// When parsing of directives is impossible.
+        /// </summary>
+        /// <param name="innerException">Original exception</param>
+        public ParsingException(Exception innerException) 
+            : this(
+                new FormattedText("Error parsing script: {0}", innerException.Message).AsString(),
+                innerException)
         { }
 
-        public ParsingException(string msg) : this(msg, null)
+        /// <summary>
+        /// When parsing of directives is impossible.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        public ParsingException(string cause) 
+            : this(cause, null)
         { }
 
-        public ParsingException(string msg, Exception ex) : base(
-            msg, ex)
+        /// <summary>
+        /// When parsing of directives is impossible.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        /// <param name="innerException">Original exception</param>
+        public ParsingException(string cause, Exception innerException) 
+            : base(cause, innerException)
         { }
     }
 }

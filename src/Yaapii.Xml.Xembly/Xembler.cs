@@ -70,12 +70,16 @@ namespace Yaapii.Xml.Xembly
         /// </summary>
         private readonly IEnumerable<IDirective> _directives;
 
+        /// <summary>
+        /// Processor of Xembly directives, main entry point to the module.
+        /// </summary>
+        /// <param name="directives">Directives</param>
         public Xembler(params IDirective[] directives) : this(
             new EnumerableOf<IDirective>(directives))
         { }
 
         /// <summary>
-        /// ctor.
+        /// Processor of Xembly directives, main entry point to the module.
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xembler(IEnumerable<IDirective> directives)
