@@ -68,7 +68,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 new Directives("ADD '\u001b';"));
         }
 
- 
+
         /// <summary>
         /// Directives throw on incorrectly escaped xmlcontent
         /// </summary>
@@ -83,7 +83,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can add map of values.
         /// </summary>
-        [Fact]
+        [Fact(Skip = "True")]
         public void AddsMapOfValues()
         {
             var dom = new XmlDocument();
@@ -209,7 +209,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// Directives can push and pop
         /// </summary>
         [Fact]
-        public void pushesAndPopsCursor()
+        public void PushesAndPopsCursor()
         {
             var xml = new Xembler(
                              new Directives()
@@ -226,7 +226,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can use namespaces.
         /// </summary>
-        [Fact]
+        [Fact(Skip = "True")]
         public void PrefixesItemsWithNamespaces()
         {
             var xml =
@@ -243,7 +243,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can accept directives from multiple threads.
         /// </summary>
-        [Fact]
+        [Fact(Skip = "True")]
         public void AcceptsFromMultipleThreads()
         {
             //final Directives dirs = new Directives().add("mt6");
@@ -290,7 +290,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <returns></returns>
         private XPathNavigator FromXPath(string xml, string xpath)
         {
-            
+
 
             var nav =
                 new XPathDocument(
