@@ -37,7 +37,7 @@ namespace Yaapii.Xml.Xembly
             this._name = new ArgOf(node);
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return new FormattedText("ADD {0}", this._name).AsString();
         }

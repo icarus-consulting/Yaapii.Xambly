@@ -38,7 +38,7 @@ namespace Yaapii.Xml.Xembly
             _name = new ArgOf(node);
         }
 
-        public new string ToString() {
+        public override string ToString() {
             return new FormattedText("ADDIF {0}", _name.Raw()).AsString();
         }
 
