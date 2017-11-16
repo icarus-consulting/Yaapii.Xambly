@@ -22,7 +22,7 @@
 
 using System;
 
-namespace Yaapii.Xml.Xembly.Error
+namespace Yaapii.Xml.Xembly
 {
     public sealed class XmlContentException : Exception
     {
