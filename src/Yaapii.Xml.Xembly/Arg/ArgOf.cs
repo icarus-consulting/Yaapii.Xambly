@@ -24,10 +24,18 @@ using System.Text;
 
 namespace Yaapii.Xml.Xembly.Arg
 {
+    /// <summary>
+    /// Argument properly escaped.
+    /// </summary>
     public class ArgOf : IArg
     {
         private readonly string _value;
 
+        /// <summary>
+        /// Ctor.
+        /// </summary>
+        /// <param name="val">Value of it</param>
+        /// <exception cref="XmlContentException">If fails</exception>
         public ArgOf(string val)
         {
             foreach (char chr in val.ToCharArray())
@@ -37,6 +45,10 @@ namespace Yaapii.Xml.Xembly.Arg
             this._value = val;
         }
 
+        /// <summary>
+        /// The string representation.
+        /// </summary>
+        /// <returns>String</returns>
         public string AsString()
         {
             var escaped = new Escaped(this._value).AsString();
@@ -53,6 +65,10 @@ namespace Yaapii.Xml.Xembly.Arg
             return AsString();
         }
 
+        /// <summary>
+        /// Get it's raw value.
+        /// </summary>
+        /// <returns>Value</returns>
         public string Raw()
         {
             return this._value;

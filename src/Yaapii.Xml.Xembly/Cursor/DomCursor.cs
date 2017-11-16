@@ -26,20 +26,35 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly.Cursor
 {
+    /// <summary>
+    /// Cursor at DOM.
+    /// </summary>
     public class DomCursor : ICursor
     {
         private readonly IEnumerable<XmlNode> _nodes;
 
+        /// <summary>
+        /// Cursor at DOM.
+        /// </summary>
+        /// <param name="nodes">Nodes to encapsulate</param>
         public DomCursor(IEnumerable<XmlNode> nodes)
         {
             _nodes = nodes;
         }
 
+        /// <summary>
+        /// The enumerator.
+        /// </summary>
+        /// <returns>Enumerator</returns>
         public IEnumerator<XmlNode> GetEnumerator()
         {
             return this._nodes.GetEnumerator();
         }
 
+        /// <summary>
+        /// The enumerator.
+        /// </summary>
+        /// <returns>Enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

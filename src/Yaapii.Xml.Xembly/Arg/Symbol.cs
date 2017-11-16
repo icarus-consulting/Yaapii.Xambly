@@ -27,19 +27,34 @@ using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xml.Xembly.Arg
 {
+    /// <summary>
+    /// Character repensentation of a XML symbol.
+    /// </summary>
     public class Symbol : IScalar<Char>
     {
         private readonly IText _src;
 
+        /// <summary>
+        /// Convert XML symbol to char.
+        /// </summary>
+        /// <param name="str">XML symbol</param>
         public Symbol(string str) : this(
             new TextOf(str))
         { }
 
+        /// <summary>
+        /// Convert XML symbol to char.
+        /// </summary>
+        /// <param name="src">XML symbol</param>
         public Symbol(IText src)
         {
             this._src = src;
         }
 
+        /// <summary>
+        /// XML symbol as char.
+        /// </summary>
+        /// <returns>The character</returns>
         public char Value()
         {
             var src = _src.AsString();

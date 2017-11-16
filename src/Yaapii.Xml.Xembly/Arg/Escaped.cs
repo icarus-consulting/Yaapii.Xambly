@@ -26,18 +26,33 @@ using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xml.Xembly.Arg
 {
+    /// <summary>
+    /// XML contentnt with escaped representation of all unprintable XML symbols.
+    /// </summary>
     public class Escaped : IText
     {
         private readonly IText _src;
 
+        /// <summary>
+        /// Escape all unprintable characters.
+        /// </summary>
+        /// <param name="src"></param>
         public Escaped(string src) : this(new TextOf(src))
         { }
 
+        /// <summary>
+        /// Escape all unprintable characters.
+        /// </summary>
+        /// <param name="src"></param>
         public Escaped(IText src)
         {
             _src = src;
         }
 
+        /// <summary>
+        /// Clean text.
+        /// </summary>
+        /// <returns>The text</returns>
         public string AsString()
         {
             var output = new StringBuilder(_src.AsString().Length);
@@ -78,6 +93,11 @@ namespace Yaapii.Xml.Xembly.Arg
             return output.ToString();
         }
 
+        /// <summary>
+        /// Compare this with other text.
+        /// </summary>
+        /// <param name="other">Content for comparision</param>
+        /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {
             return other.AsString().Equals(this.AsString());

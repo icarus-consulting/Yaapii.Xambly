@@ -26,6 +26,13 @@ namespace Yaapii.Xml.Xembly
 {
     public interface IDirective
     {
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         ICursor Exec(XmlNode dom, ICursor cursor, IStack stack);
     }
 }

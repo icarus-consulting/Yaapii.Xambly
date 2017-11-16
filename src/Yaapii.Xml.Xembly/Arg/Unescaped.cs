@@ -29,21 +29,43 @@ using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xml.Xembly.Arg
 {
+    /// <summary>
+    /// XML contentnt with unescaped representation of all XML symbols.
+    /// </summary>
     public class Unescaped : IText
     {
         private readonly IScalar<string> _src;
 
+        /// <summary>
+        /// Un-escape all XML symbols.
+        /// </summary>
+        /// <param name="src">The XML text</param>
+        /// <exception cref="XmlContentException">If fails</exception>
         public Unescaped(IArg src) : this(new ScalarOf<string>(() => src.AsString()))
         { }
 
+        /// <summary>
+        /// Un-escape all XML symbols.
+        /// </summary>
+        /// <param name="src">The XML text</param>
+        /// <exception cref="XmlContentException">If fails</exception>
         public Unescaped(string src) : this(new ScalarOf<string>(src))
         { }
 
+        /// <summary>
+        /// Un-escape all XML symbols.
+        /// </summary>
+        /// <param name="src">The XML text</param>
+        /// <exception cref="XmlContentException">If fails</exception>
         private Unescaped(IScalar<string> src)
         {
             this._src = src;
         }
 
+        /// <summary>
+        /// Un-escaped XML content.
+        /// </summary>
+        /// <returns>XML string</returns>
         public string AsString()
         {
             var str = _src.Value();
@@ -82,6 +104,11 @@ namespace Yaapii.Xml.Xembly.Arg
             return output.ToString();
         }
 
+        /// <summary>
+        /// Compare this with other text.
+        /// </summary>
+        /// <param name="other">Content for comparision</param>
+        /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {
             return this.AsString().Equals(other.AsString());
