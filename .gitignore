@@ -9,6 +9,9 @@
 *.userosscache
 *.sln.docstates
 
+src/yaapii.xml.xembly/antlr4/*
+!src/yaapii.xml.xembly/antlr4/*.g
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
