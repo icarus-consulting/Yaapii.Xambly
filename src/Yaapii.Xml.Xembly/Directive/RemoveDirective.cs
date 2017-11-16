@@ -38,7 +38,7 @@ namespace Yaapii.Xml.Xembly
         {
         }
 
-        public new string ToString() {
+        public override string ToString() {
 
             return "REMOVE";
         }

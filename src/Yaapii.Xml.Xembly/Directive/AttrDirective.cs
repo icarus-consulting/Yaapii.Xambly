@@ -48,7 +48,7 @@ namespace Yaapii.Xml.Xembly
             _value = value;
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return new FormattedText(
                             "ATTR {0}, {1}",

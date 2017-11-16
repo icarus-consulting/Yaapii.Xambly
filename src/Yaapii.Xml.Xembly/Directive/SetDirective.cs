@@ -35,7 +35,7 @@ namespace Yaapii.Xml.Xembly
             _value = new ArgOf(val);
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return new FormattedText("SET {0}", this._value).AsString();
         }

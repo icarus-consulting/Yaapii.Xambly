@@ -49,7 +49,7 @@ namespace Yaapii.Xml.Xembly
         /// String representation.
         /// </summary>
         /// <returns>The string</returns>
-        public new string ToString()
+        public override string ToString()
         {
             return new FormattedText("ADD {0}", this._name).AsString();
         }
