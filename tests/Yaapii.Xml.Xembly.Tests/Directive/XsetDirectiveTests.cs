@@ -37,7 +37,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
     public sealed class XsetDirectiveTests
     {
         [Fact]
-        public void setsTextDirectlyIntoDomNodes()
+        public void SetsTextDirectlyIntoDomNodes()
         {
             try
             {
