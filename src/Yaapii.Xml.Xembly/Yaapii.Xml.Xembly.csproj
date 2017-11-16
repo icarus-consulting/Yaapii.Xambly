@@ -4,10 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <Target Name="PreBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="java -jar $(SolutionDir)/tools/antlr-4.7-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
+  </Target>
+  
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="Yaapii.Atoms" Version="0.5.6" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
+  
 </Project>
