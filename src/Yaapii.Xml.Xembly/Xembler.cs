@@ -48,6 +48,10 @@ namespace Yaapii.Xml.Xembly
         /// </summary>
         private readonly IEnumerable<IDirective> _directives;
 
+        public Xembler(params IDirective[] directives) : this(
+            new EnumerableOf<IDirective>(directives))
+        { }
+
         /// <summary>
         /// ctor.
         /// </summary>
@@ -68,7 +72,7 @@ namespace Yaapii.Xml.Xembly
             {
                 return this.Apply(dom);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new IllegalStateException(
                     new FormattedText("quietly failed to apply DOM: {0}", this._directives).AsString(),
@@ -119,7 +123,7 @@ namespace Yaapii.Xml.Xembly
             {
                 return this.Dom();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new IllegalStateException(
                     new FormattedText("failed to create DOM: {0}", this._directives).AsString(),
