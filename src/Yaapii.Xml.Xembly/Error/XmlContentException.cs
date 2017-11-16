@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System;
+
 namespace Yaapii.Xml.Xembly.Error
 {
     public sealed class XmlContentException : Exception
