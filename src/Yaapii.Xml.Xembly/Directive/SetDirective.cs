@@ -26,20 +26,41 @@ using Yaapii.Xml.Xembly.Arg;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// SET directive.
+    /// Sets text value of current node.
+    /// </summary>
     public sealed class SetDirective : IDirective
     {
         private readonly IArg _value;
 
+        /// <summary>
+        /// SET directive.
+        /// Sets text value of current node.
+        /// </summary>
+        /// <param name="val">Text value to set</param>
+        /// <exception cref="XmlContentException"> If invalid input</exception>
         public SetDirective(string val)
         {
             _value = new ArgOf(val);
         }
 
-        public new string ToString()
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
+        public override string ToString()
         {
             return new FormattedText("SET {0}", this._value).AsString();
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var val = _value.Raw();

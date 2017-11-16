@@ -25,16 +25,35 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// POP directive.
+    /// Retrieves cursor from stack.
+    /// </summary>
     public class PopDirective : IDirective
     {
+        /// <summary>
+        /// POP directive.
+        /// Retrieves cursor from stack.
+        /// </summary>
         public PopDirective()
-        {
-        }
+        { }
 
-        public new string ToString() {
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
+        public override string ToString()
+        {
             return "POP";
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             return stack.Pop();

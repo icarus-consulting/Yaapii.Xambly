@@ -33,8 +33,8 @@ namespace Yaapii.Xml.Xembly
         /// ctor.
         /// </summary>
         /// <param name="cause">Cause of it</param>
-        /// <param name="inner">Original exception</param>
-        public SyntaxException(string cause, Exception inner) : base (cause, inner)
+        /// <param name="innerException">Original exception</param>
+        public SyntaxException(string cause, Exception innerException) : base (cause, innerException)
         { }
     }
 }
