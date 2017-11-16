@@ -41,7 +41,7 @@ namespace Yaapii.Xml.Xembly
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="value">Text value to set</param>
-        public AttrDirective(string name, string value) 
+        public AttrDirective(string name, string value)
             : this(
                   new ScalarOf<IArg>(() => new ArgOf(name)),
                   new ScalarOf<IArg>(() => new ArgOf(value))
@@ -66,7 +66,7 @@ namespace Yaapii.Xml.Xembly
         public override string ToString()
         {
             return new FormattedText(
-                            "ATTR {0}, {1}",
+                            "ATTR '{0}', '{1}'",
                             this._name.Value().Raw(),
                             this._value.Value().Raw()
                         ).AsString();
