@@ -18,7 +18,6 @@ namespace Yaapii.Xml.Xembly
             if (this._dom.OwnerDocument == null)
             {
                 doc = this._dom as XmlDocument;
-                doc.AppendChild(this._dom);
             }
             else
             {
