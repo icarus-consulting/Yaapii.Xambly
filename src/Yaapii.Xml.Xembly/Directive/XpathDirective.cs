@@ -12,7 +12,7 @@ using Yaapii.Xml.Xembly.Cursor;
 using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
 
-namespace Yaapii.Xml.Xembly.Directive
+namespace Yaapii.Xml.Xembly
 {
     public class XpathDirective : IDirective
     {
