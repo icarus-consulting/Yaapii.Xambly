@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Xml;
+using System.Xml.XPath;
 using Xunit;
+using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
 
 namespace Yaapii.Xml.Xembly.Directive.Tests
@@ -12,22 +16,23 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         [Fact]
         public void MakesXmlDocument()
         {
-            //MatcherAssert.assertThat(
-            //    XhtmlMatchers.xhtml(
-            //    new Xembler(
-            //        new Directives()
-            //            .pi("xml-stylesheet", "none")
-            //            .add("page")
-            //            .attr("the-name", "with \u20ac")
-            //            .add("child-node").set(" the text\n").up()
-            //            .add("big_text").cdata("<<hello\n\n!!!>>").up()
-            //    ).xml()
-            //),
-            //XhtmlMatchers.hasXPaths(
-            //    "/page[@the-name]",
-            //    "/page/big_text[.='<<hello\n\n!!!>>']"
-            //)
-            //);
+            string xml =
+                new Xembler(
+                    new Directives()
+                        //.pi("xml-stylesheet", "none")
+                        .Add("page")
+                        .Attr("the-name", "with \u20ac")
+                        .Add("child-node").Set(" the text\n").Up()
+                        .Add("big-text").Cdata("<<hello!!!>>").Up()
+                ).Xml();
+
+            var nav =
+                new XPathDocument(
+                    new StringReader(xml)
+                ).CreateNavigator();
+
+            Assert.NotNull(nav.SelectSingleNode("/page[@the-name]"));
+            Assert.NotNull(nav.SelectSingleNode("/page/big-text[normalize-space(.)='<<hello!!!>>']"));
         }
 
         //AKO
@@ -47,7 +52,6 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             //);
         }
 
-        //MTU
         /**
          * Directives can throw when grammar is broken.
          * @throws Exception If some problem inside
@@ -55,31 +59,31 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         [Fact]
         public void ThrowsOnBrokenGrammar()
         {
-            //@Test(expected = SyntaxException.class)
-            //new Directives("not a xembly at all");
+            Assert.Throws<SyntaxException>(() =>
+                new Directives("not a xembly at all"));
         }
 
-        //AKO
         /**
          * Directives can throw when XML content is broken.
          * @throws Exception If some problem inside
          */
-
+        [Fact]
         public void ThrowsOnBrokenXmlContent()
         {
-            //@Test(expected = SyntaxException.class)
-            //new Directives("ADD '\u001b';");
+            Assert.Throws<SyntaxException>(() =>
+                new Directives("ADD '\u001b';"));
         }
 
-        //MTU
         /**
          * Directives can throw when escaped XML content is broken.
          * @throws Exception If some problem inside
          */
+        [Fact]
         public void ThrowsOnBrokenEscapedXmlContent()
         {
-            //    @Test(expected = SyntaxException.class)
-            //new Directives("ADD '&#27;';");
+            Assert.Throws<SyntaxException>(() =>
+                new Directives("ADD '&#27;';"));
+
         }
 
         //AKO
@@ -111,7 +115,6 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             //);
         }
 
-        //MTU
         /**
          * Directives can ignore empty input.
          * @throws Exception If some problem inside
@@ -119,9 +122,8 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         [Fact]
         public void IgnoresEmptyInput()
         {
-            //MatcherAssert.assertThat(
-            //new Directives("\n\t   \r"),
-            //Matchers.emptyIterable());
+            Assert.Empty(
+                new Directives("\n\t   \r"));
         }
 
         //AKO
@@ -151,7 +153,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             //);
         }
 
-        //MTU
+        //NOT FOR NOW - CopyTo missing atm
         /**
          * Directives can copy an existing node.
          * @throws Exception If some problem inside
@@ -205,7 +207,6 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             //);
         }
 
-        //MTU
         /**
          * Directives can convert to string.
          * @throws Exception If some problem inside
@@ -214,19 +215,22 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         [Fact]
         public void ConvertsToString()
         {
-            //final Directives dirs = new Directives();
-            //for (int idx = 0; idx < Tv.TEN; ++idx)
-            //{
-            //    dirs.add("HELLO");
-            //}
+            Directives dirs = new Directives();
+            for (int idx = 0; idx < 10; ++idx)
+            {
+                dirs.Add("HELLO");
+            }
+
             //MatcherAssert.assertThat(
             //    dirs,
             //    Matchers.hasToString(Matchers.containsString("8:"))
             //    );
-            //MatcherAssert.assertThat(
-            //    new Directives(dirs.toString()),
-            //    Matchers.not(Matchers.emptyIterable())
-            //);
+
+            var xml = dirs.ToString();
+
+            Assert.Contains("8:", dirs.ToString());
+
+            Assert.NotEmpty(dirs);
         }
 
         //AKO
@@ -313,7 +317,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             );
 
             Assert.True(
-                new LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
         }
     }
 }
