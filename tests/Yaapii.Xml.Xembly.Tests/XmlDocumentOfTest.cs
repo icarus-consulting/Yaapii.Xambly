@@ -9,9 +9,9 @@ namespace Yaapii.Xml.Xembly.Tests
         [Fact]
         public void GetsDocFromNode()
         {
-            var ns = "fancy-namespace";
             var doc = new XmlDocument();
             var node = doc.CreateElement("test");
+            doc.AppendChild(node);
            
             Assert.True(
                 new XmlDocumentOf(node).Value().ChildNodes.Item(0) == node);

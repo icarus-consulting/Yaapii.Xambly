@@ -12,14 +12,13 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             var dom = new XmlDocument();
 
             Assert.True(
-            new Xembler(
-                    new EnumerableOf<IDirective>(
-                            new AddDirective("root"),
-                            new AddDirective("foo"),
-                            new AddDirective("bar"),
-                            new UpDirective(),
-                            new SetDirective("Hello World")
-                        )).Apply(dom).InnerXml == "<root><foo>Hello World</foo></root>", "Up directive failed");
+                new Xembler(
+                    new AddDirective("root"),
+                    new AddDirective("foo"),
+                    new AddDirective("bar"),
+                    new UpDirective(),
+                    new SetDirective("Hello World")
+                ).Apply(dom).InnerXml == "<root><foo>Hello World</foo></root>", "Up directive failed");
         }
 
         [Fact]
