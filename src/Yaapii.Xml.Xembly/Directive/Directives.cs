@@ -112,7 +112,7 @@ public sealed class Directives : IEnumerable<IDirective>
         {
             if (idx > 0 && width == 0)
             {
-                text.Append('\n').Append(idx).Append(':');
+                text.Append('\n');
             }
 
             String txt = dir.ToString();
@@ -121,6 +121,7 @@ public sealed class Directives : IEnumerable<IDirective>
             if (width > Directives.MARGIN)
             {
                 width = 0;
+                
             }
             ++idx;
         }
@@ -547,8 +548,11 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         var input = new AntlrInputStream(script);
         XemblyLexer lexer = new XemblyLexer(input);
+        lexer.AddErrorListener(new ThrowingErrorListener());
+
         var tokens = new CommonTokenStream(lexer);
         XemblyParser parser = new XemblyParser(tokens);
+        parser.AddErrorListener(new ThrowingErrorListener());
 
         try
         {
