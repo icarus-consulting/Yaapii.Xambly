@@ -33,6 +33,7 @@ grammar Xembly;
 using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Xml.Xembly;
+using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Error;
 using Yaapii.Xml.Xembly.Directive;
 }
@@ -90,7 +91,7 @@ directive returns [IDirective ret]
             throw new ParsingException(ex);
         }
     }
-    |
+/*    |
     'ATTR' name=argument COMMA value=argument
     {
         try {
@@ -98,7 +99,7 @@ directive returns [IDirective ret]
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }
-    }
+    }*/
     |
     'ADD' argument
     {
@@ -108,7 +109,7 @@ directive returns [IDirective ret]
             throw new ParsingException(ex);
         }
     }
-    |
+/*    |
     'ADDIF' argument
     {
         try {
@@ -116,14 +117,14 @@ directive returns [IDirective ret]
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }
-    }
-    |
+    }*/
+/*    |
     'REMOVE'
     {
         $ret = new RemoveDirective();
-    }
+    }*/
     |
-    'STRICT' argument
+/*    'STRICT' argument
     {
         $ret = new StrictDirective(new IntOf($argument.ret.ToString()).Value());
     }
@@ -131,7 +132,7 @@ directive returns [IDirective ret]
     'UP'
     {
         $ret = new UpDirective();
-    }
+    }*/
     |
     'PI' target=argument data=argument
     {
@@ -182,7 +183,7 @@ TEXT
     '"' (~'"')* '"'
     {
         try {
-            this.setText(new Unescaped(this.getText()).Value());
+            this.Text = new Unescaped(this.Text).AsString();
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }
@@ -191,7 +192,7 @@ TEXT
     '\'' (~'\'')* '\''
     {
         try {
-            this.setText(new Unescaped(this.getText()).Value());
+            this.Text = new Unescaped(this.Text).AsString();
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }
@@ -200,5 +201,5 @@ TEXT
 SPACE
     :
     ( ' ' | '\t' | '\n' | '\r' )+
-    { skip(); }
+    { this.Skip(); }
     ;
