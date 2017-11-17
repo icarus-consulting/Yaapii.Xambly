@@ -2,10 +2,23 @@
   
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>ICARUS Consulting GmbH</Authors>
+    <Copyright>ICARUS Consulting GmbH</Copyright>
+    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xembly</RepositoryUrl>
+    <PackageTags>
+      xml-editor, csharp, xml-documents, xpath, xml-builder
+    </PackageTags>
+    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xembly</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xembly/releases</PackageReleaseNotes>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>$(SolutionDir)\artifacts\yaapii.xml.xembly.xml</DocumentationFile>
   </PropertyGroup>
 
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
-    <Exec Command="java -jar $(SolutionDir)/tools/antlr-4.7-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
+    <Exec Command="java -jar $(ProjectDir)/tools/antlr-4.7-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
   </Target>
   
   <ItemGroup>
@@ -14,5 +27,4 @@
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
-  
 </Project>

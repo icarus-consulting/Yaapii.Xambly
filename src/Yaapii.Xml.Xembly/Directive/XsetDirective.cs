@@ -11,7 +11,9 @@ using System.Collections.Concurrent;
 
 namespace Yaapii.Xml.Xembly.Directive
 {
-
+    /// <summary>
+    /// Sets by xpath.
+    /// </summary>
     public sealed class XsetDirective : IDirective
     {
         /// <summary>
@@ -22,12 +24,15 @@ namespace Yaapii.Xml.Xembly.Directive
         /// ctor
         /// </summary>
         /// <param name="val">Text value to set</param>
-        
         public XsetDirective(string val)
         {
             _expr = new ArgOf(val);
         }
 
+        /// <summary>
+        /// This directive as a string
+        /// </summary>
+        /// <returns></returns>
         public new string ToString()
         {
             return new FormattedText("XSET {0}", this._expr).AsString();
@@ -41,15 +46,12 @@ namespace Yaapii.Xml.Xembly.Directive
         /// <returns></returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         { 
-
             XPathNavigator nav = dom.CreateNavigator();
-            
-
             Dictionary<XmlNode, string> values = new Dictionary<XmlNode, string>(0);
 
             foreach (XmlNode node in cursor)
             {
-                    values.Add(node, nav.Evaluate(_expr.Raw()).ToString());   
+                values.Add(node, nav.Evaluate(_expr.Raw()).ToString());   
             }
 
             foreach (KeyValuePair<XmlNode, string> pair in values)
