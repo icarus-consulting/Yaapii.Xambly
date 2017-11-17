@@ -274,10 +274,13 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             }
 
             var lst = new List<string>();
+            var xembler = new Xembler(dirs);
+            var xml = xembler.Xml();
+
             threadStart = new ThreadStart(() =>
             {
                 var xmlContent = String.Empty;
-                xmlContent = new Xembler(dirs).Xml();
+                xmlContent = xembler.Xml();
 
                 lst.Add(xmlContent);
             });
@@ -286,8 +289,6 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             {
                 new Thread(threadStart).Start();
             }
-
-            var xml = new Xembler(dirs).Xml();
 
             Assert.All(lst, tXml => tXml.Equals(xml));
             Assert.EndsWith("<mt6>" + new RepeatedText("<fo9 yu=\"\">some text 90<tr4 s2w3=\"\">some other text 76</tr4></fo9>", 50).AsString() + "</mt6>", xml);
