@@ -226,7 +226,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can use namespaces.
         /// </summary>
-        [Fact(Skip = "True")]
+        [Fact]
         public void PrefixesItemsWithNamespaces()
         {
             var xml =
@@ -237,7 +237,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                         .Add("x:node").Set("HELLO WORLD!")
                 ).Xml();
 
-            Assert.NotNull(FromXPath(xml, "//xhtml:node"));
+            Assert.NotNull(FromXPath(xml, "//x:node"));
         }
 
         /// <summary>
@@ -282,6 +282,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
         }
 
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
@@ -290,14 +291,42 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <returns></returns>
         private XPathNavigator FromXPath(string xml, string xpath)
         {
-
-
             var nav =
                 new XPathDocument(
                     new StringReader(xml)
                 ).CreateNavigator();
 
-            return nav.SelectSingleNode(xpath);
+            var nsm = NamespacesOfDom(xml);
+
+            return nav.SelectSingleNode(xpath, nsm);
+        }
+
+        private XmlNamespaceManager NamespacesOfDom(string xml)
+        {
+            var xDoc = new XmlDocument();
+            xDoc.LoadXml(xml);
+            return NamespacesOfDom(xDoc);
+        }
+        private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
+        {
+            XmlNamespaceManager result = new XmlNamespaceManager(xDoc.NameTable);
+
+            IDictionary<string, string> localNamespaces = null;
+            XPathNavigator xNav = xDoc.CreateNavigator();
+            while (xNav.MoveToFollowing(XPathNodeType.Element))
+            {
+                localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
+                foreach (var localNamespace in localNamespaces)
+                {
+                    string prefix = localNamespace.Key;
+                    if (string.IsNullOrEmpty(prefix))
+                        prefix = "";
+
+                    result.AddNamespace(prefix, localNamespace.Value);
+                }
+            }
+
+            return result;
         }
     }
 }
