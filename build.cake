@@ -1,4 +1,4 @@
-#tool nuget:https://www.nuget.org/packages?package=GitReleaseManager
+#tool nuget:https://api.nuget.org/v3/?package=GitReleaseManager
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -129,7 +129,7 @@ Task("GetCredentials")
 });
 
 Task("Release")
-  .WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
+  //.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
   .IsDependentOn("Pack")
   .IsDependentOn("GetCredentials")
   .Does(() => {
