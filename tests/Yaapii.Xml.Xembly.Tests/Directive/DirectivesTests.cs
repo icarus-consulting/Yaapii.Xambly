@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
@@ -11,7 +12,7 @@ using Yaapii.Atoms.List;
 
 namespace Yaapii.Xml.Xembly.Directive.Tests
 {
-    public class DirectivesTest
+    public class DirectivesTests
     {
         /// <summary>
         /// Directives can make a document
@@ -243,28 +244,25 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can accept directives from multiple threads.
         /// </summary>
-        [Fact(Skip = "True")]
+        [Fact()]
         public void AcceptsFromMultipleThreads()
         {
-            //final Directives dirs = new Directives().add("mt6");
-            //new Callable<Void>() {
-            //@Parallel(threads = Tv.FIFTY)
-            //@Override
-            //public Void call() throws Exception
-            //{
-            //    dirs.append(
-            //            new Directives()
-            //                .add("fo9").attr("yu", "").set("some text 90")
-            //                .add("tr4").attr("s2w3", "").set("some other text 76")
-            //                .up().up()
-            //        );
-            //        return null;
-            //    }
-            //} .call();
-            //MatcherAssert.assertThat(
-            //    XhtmlMatchers.xhtml(new Xembler(dirs).xml()),
-            //            XhtmlMatchers.hasXPath("/mt6[count(fo9[@yu])=50]")
-            //        );
+            var dirs = new Directives().Add("mt6");
+
+            new Thread(
+                new ThreadStart(() =>
+                    {
+                        dirs.Add("fo9")
+                        .Attr("yu", "")
+                        .Set("some text 90")
+                        .Add("tr4")
+                        .Attr("s2w3", "")
+                        .Set("some other text 76")
+                        .Up()
+                        .Up();
+                    })).Start();
+
+            Assert.EndsWith("<mt6><fo9 yu=\"\">some text 90<tr4 s2w3=\"\">some other text 76</tr4></fo9></mt6>", new Xembler(dirs).Xml());
         }
 
         /// <summary>
