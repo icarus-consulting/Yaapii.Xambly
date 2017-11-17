@@ -485,9 +485,8 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>Thi object</returns>
     public Directives Strict(int number)
     {
-        throw new NotImplementedException("GO GO CLE");
-        //this._all.Add(new StrictDirective(number));
-        //return this;
+        this._all.Add(new StrictDirective(number));
+        return this;
     }
 
     /// <summary>
