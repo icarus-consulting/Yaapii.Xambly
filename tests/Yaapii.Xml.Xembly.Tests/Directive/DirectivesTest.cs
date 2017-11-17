@@ -85,14 +85,13 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can add map of values.
         /// </summary>
-        [Fact(Skip = "True")]
+        [Fact]
         public void AddsMapOfValues()
         {
             var dom = new XmlDocument();
-            dom.AppendChild(dom.CreateElement("root"));
             new Xembler(
                 new Directives()
-                .Xpath("/root")
+                .Add("root")
                 .Add(
                     new Dictionary<String, Object>() {
                             { "first", 1 },{ "second", "two" }
@@ -100,16 +99,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 .Add("third")
             ).Apply(dom);
 
-            throw new NotImplementedException();
-
-            //MatcherAssert.assertThat(
-            //    XhtmlMatchers.xhtml(dom),
-            //    XhtmlMatchers.hasXPaths(
-            //        "/root/first[.=1]",
-            //        "/root/second[.='two']",
-            //        "/root/third"
-            //    )
-            //);
+            Assert.True(dom.OuterXml == "<root><first>1</first><second>two</second><third /></root>");
         }
 
         /// <summary>
