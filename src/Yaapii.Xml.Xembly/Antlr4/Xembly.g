@@ -32,6 +32,7 @@ grammar Xembly;
 @header {
 using System.Xml;
 using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly;
 using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Error;
