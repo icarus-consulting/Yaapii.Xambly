@@ -22,6 +22,8 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Linq;
+using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Cursor;
@@ -67,17 +69,49 @@ namespace Yaapii.Xml.Xembly
         {
             var targets = new List<XmlNode>();
             string label = this._name.Raw();
+            //var prefix = new ItemAt<string>(
+            //                    new SplitText(label, ":")
+            //                ).Value();
 
             XmlDocument doc = new XmlDocumentOf(dom).Value();
-
+            
             foreach(var node in cursor)
             {
-                var element = doc.CreateElement(label);
+                var ns = Namespace(node);
+                var element = doc.CreateElement(label,ns);
                 node.AppendChild(element);
                 targets.Add(element);
             }
 
             return new DomCursor(targets);
+        }
+
+        /// <summary>
+        /// Checks for namespace in node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private string Namespace(XmlNode node)
+        {
+            var ns = node.NamespaceURI;
+            var attrNs = "";
+            if (node.Attributes != null)
+            {
+                foreach (XmlAttribute attr in node.Attributes)
+                {
+                    if (attr.Name.StartsWith("xmlns:"))
+                    {
+                        attrNs = attr.Value;
+                        break;
+                    }
+                }
+            }
+            if (string.IsNullOrEmpty(ns))
+            {
+                ns = attrNs;
+            }
+
+            return ns;
         }
     }
 }

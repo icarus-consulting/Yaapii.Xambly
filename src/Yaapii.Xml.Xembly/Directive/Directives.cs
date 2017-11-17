@@ -75,7 +75,7 @@ public sealed class Directives : IEnumerable<IDirective>
     private const int MARGIN = 80;
 
     //List of directives.
-    private readonly ICollection<IDirective> _all = new SynchronizedCollection<IDirective>();
+    private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
 
     /// <summary>
     /// ctor
@@ -485,9 +485,8 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>Thi object</returns>
     public Directives Strict(int number)
     {
-        throw new NotImplementedException("GO GO CLE");
-        //this._all.Add(new StrictDirective(number));
-        //return this;
+        this._all.Add(new StrictDirective(number));
+        return this;
     }
 
     /// <summary>
