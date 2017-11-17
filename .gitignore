@@ -15,6 +15,7 @@ tools/**/*
 src/yaapii.xml.xembly/antlr4/*
 !src/yaapii.xml.xembly/antlr4/*.g
 !src/yaapii.xml.xembly/antlr4/*.cs
+!src/yaapii.xml.xembly/antlr4/*.tokens
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
