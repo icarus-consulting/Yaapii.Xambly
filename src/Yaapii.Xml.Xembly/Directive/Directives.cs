@@ -75,7 +75,7 @@ public sealed class Directives : IEnumerable<IDirective>
     private const int MARGIN = 80;
 
     //List of directives.
-    private readonly ICollection<IDirective> _all = new SynchronizedCollection<IDirective>();
+    private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
 
     /// <summary>
     /// ctor

@@ -124,11 +124,11 @@ directive returns [IDirective ret]
     {
         $ret = new RemoveDirective();
     }
-    |
+/*  |
     'STRICT' argument
     {
         $ret = new StrictDirective(new IntOf($argument.ret.ToString()).Value());
-    }
+    }*/
     |
     'UP'
     {
