@@ -1,4 +1,4 @@
-#tool nuget:?package=GitReleaseManager // add reference to the GitReleaseManager as tool
+#tool GitReleaseManager
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
