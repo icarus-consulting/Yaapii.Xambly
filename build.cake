@@ -130,7 +130,7 @@ Task("GetCredentials")
 });
 
 Task("Release")
-  //.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
+   .WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
   .IsDependentOn("Pack")
   .IsDependentOn("GetCredentials")
   .Does(() => {
