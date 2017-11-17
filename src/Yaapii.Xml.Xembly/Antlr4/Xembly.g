@@ -32,6 +32,7 @@ grammar Xembly;
 @header {
 using System.Xml;
 using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly;
 using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Error;
@@ -123,11 +124,11 @@ directive returns [IDirective ret]
     {
         $ret = new RemoveDirective();
     }
-    |
+/*  |
     'STRICT' argument
     {
         $ret = new StrictDirective(new IntOf($argument.ret.ToString()).Value());
-    }
+    }*/
     |
     'UP'
     {
