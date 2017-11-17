@@ -47,10 +47,10 @@ Task("Restore")
   // and run a niget restore
 	var projects = GetFiles("./**/*.csproj");
 
-	foreach(var project in projects)
-	{
-	    DotNetCoreRestore(project.FullPath);
-  }
+	//foreach(var project in projects)
+	//{
+	    DotNetCoreRestore("Yaapii.Xembly");
+  //}
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ Task("Restore")
 ///////////////////////////////////////////////////////////////////////////////
 Task("Build")
   .IsDependentOn("Clean") // we can define Task`s which a dependet on other task like this
-  //.IsDependentOn("Restore")
+  .IsDependentOn("Restore")
   .Does(() =>
 {
 
