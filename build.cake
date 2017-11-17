@@ -1,4 +1,4 @@
-#tool nuget:https://www.nuget.org/packages/gitreleasemanager?package=GitReleaseManager
+#tool nuget:https://www.nuget.org/packages?package=GitReleaseManager
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -18,7 +18,7 @@ var framework     = "netstandard2.0";
 var project = new DirectoryPath("./src/Yaapii.Xml.Xembly/Yaapii.Xml.Xembly.csproj");
 
 var owner = "icarus-consulting";
-var repository = "Yaapii.Xml.Xembly";
+var repository = "Yaapii.Xembly";
 
 var username = "";
 var password = "";
