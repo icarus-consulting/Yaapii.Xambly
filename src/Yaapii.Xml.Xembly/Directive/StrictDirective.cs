@@ -40,11 +40,23 @@ namespace Yaapii.Xml.Xembly
             _number = nodes;
         }
 
+        /// <summary>
+        /// Checks for equality
+        /// </summary>
+        /// <param name="obj">object to check</param>
+        /// <returns>true if equal</returns>
         public override bool Equals(object obj)
         {
             return GetHashCode() == obj.GetHashCode();
         }
 
+        /// <summary>
+        /// Execute the directive
+        /// </summary>
+        /// <param name="dom">node to execute on</param>
+        /// <param name="cursor">cursor</param>
+        /// <param name="stack">the stack</param>
+        /// <returns></returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var lengthOfCursor = new LengthOf(cursor).Value();
@@ -80,11 +92,19 @@ namespace Yaapii.Xml.Xembly
             return cursor;
         }
 
+        /// <summary>
+        /// Haskcode of this StrictDirective
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return _number.GetHashCode();
         }
 
+        /// <summary>
+        /// This StrictDirective as a string
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return new FormattedText("STRICT \"{0}\"", _number).AsString();

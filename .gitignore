@@ -9,8 +9,13 @@
 *.userosscache
 *.sln.docstates
 
+tools/**/*
+!tools/antlr-4.7-complete.jar
+
 src/yaapii.xml.xembly/antlr4/*
 !src/yaapii.xml.xembly/antlr4/*.g
+!src/yaapii.xml.xembly/antlr4/*.cs
+!src/yaapii.xml.xembly/antlr4/*.tokens
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
