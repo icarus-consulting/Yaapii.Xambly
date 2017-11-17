@@ -8,6 +8,8 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
+using Yaapii.Xml.Xembly.Cursor;
+using Yaapii.Xml.Xembly.Stack;
 
 namespace Yaapii.Xml.Xembly.Directive.Tests
 {
@@ -297,7 +299,6 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 ).CreateNavigator();
 
             var nsm = NamespacesOfDom(xml);
-
             return nav.SelectSingleNode(xpath, nsm);
         }
 
