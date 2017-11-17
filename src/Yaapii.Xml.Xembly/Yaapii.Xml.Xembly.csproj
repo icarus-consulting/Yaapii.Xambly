@@ -2,6 +2,15 @@
   
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>ICARUS Consulting GmbH</Authors>
+    <Copyright>ICARUS Consulting GmbH</Copyright>
+    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xembly</RepositoryUrl>
+    <PackageTags>
+      xml-editor, csharp, xml-documents, xpath, xml-builder
+    </PackageTags>
+    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xembly</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xembly/releases</PackageReleaseNotes>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,5 +27,4 @@
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
-  
 </Project>
