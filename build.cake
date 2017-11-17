@@ -1,4 +1,4 @@
-#tool GitReleaseManager
+#tool nuget:https://www.nuget.org/packages/gitreleasemanager?package=GitReleaseManager
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
