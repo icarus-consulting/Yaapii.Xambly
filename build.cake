@@ -47,10 +47,10 @@ Task("Restore")
   // and run a niget restore
 	var projects = GetFiles("./**/*.csproj");
 
-	//foreach(var project in projects)
-	//{
-	    DotNetCoreRestore("Yaapii.Xembly");
-  //}
+	foreach(var project in projects)
+	{
+	    DotNetCoreRestore(project.FullPath);
+        }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
