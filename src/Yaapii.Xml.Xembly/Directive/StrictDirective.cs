@@ -47,17 +47,34 @@ namespace Yaapii.Xml.Xembly
 
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            if (cursor.Count() != _number)
+            var lengthOfCursor = new LengthOf(cursor).Value();
+
+            if (lengthOfCursor != _number)
             {
-                if (cursor.Count() == 0)
+                if (lengthOfCursor == 0)
                 {
-                    throw new ImpossibleModificationException(new FormattedText("no current nodes while {0} expected", _number).AsString());
+                    throw new ImpossibleModificationException(
+                        new FormattedText(
+                            "no current nodes while {0} expected",
+                            _number
+                        ).AsString());
                 }
-                if (cursor.Count() == 1)
+                if (lengthOfCursor == 1)
                 {
-                    throw new ImpossibleModificationException(new FormattedText("one current node '{0}' while strictly {1} expected", cursor.First().Name, _number).AsString());
+                    throw new ImpossibleModificationException(
+                        new FormattedText(
+                            "one current node '{0}' while strictly {1} expected",
+                            new ItemAt<XmlNode>(cursor).Value().Name,
+                            _number
+                        ).AsString());
                 }
-                throw new ImpossibleModificationException(new FormattedText("{0} current nodes [{1}] while strictly {2} expected", cursor.Count(), Names(cursor), _number).AsString());
+                throw new ImpossibleModificationException(
+                    new FormattedText(
+                        "{0} current nodes [{1}] while strictly {2} expected",
+                        lengthOfCursor,
+                        Names(cursor),
+                        _number
+                    ).AsString());
             }
 
             return cursor;
@@ -78,7 +95,14 @@ namespace Yaapii.Xml.Xembly
         /// <returns> Text presentation of them </returns>
         private string Names(IEnumerable<XmlNode> nodes)
         {
-            var nodeNames = new Mapped<XmlNode, string>(nodes, tNode => $"{tNode.ParentNode?.Name + String.Empty}/{tNode.Name}");
+            var nodeNames = new Mapped<XmlNode, string>(
+                nodes,
+                tNode => new FormattedText(
+                    "{0}/{1}", 
+                    tNode.ParentNode?.Name + String.Empty,
+                    tNode.Name
+                ).AsString()
+            );
 
             return new JoinedText(", ", nodeNames).AsString();
         }
