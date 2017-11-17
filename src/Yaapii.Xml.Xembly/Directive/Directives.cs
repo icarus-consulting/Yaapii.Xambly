@@ -75,7 +75,7 @@ public sealed class Directives : IEnumerable<IDirective>
     private const int MARGIN = 80;
 
     //List of directives.
-    private readonly ICollection<IDirective> _all = new SynchronizedCollection<IDirective>();
+    private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
 
     /// <summary>
     /// ctor
@@ -112,7 +112,7 @@ public sealed class Directives : IEnumerable<IDirective>
         {
             if (idx > 0 && width == 0)
             {
-                text.Append('\n').Append(idx).Append(':');
+                text.Append('\n');
             }
 
             String txt = dir.ToString();
@@ -121,6 +121,7 @@ public sealed class Directives : IEnumerable<IDirective>
             if (width > Directives.MARGIN)
             {
                 width = 0;
+                
             }
             ++idx;
         }
@@ -427,21 +428,20 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Xset(Object text)
     {
-        throw new NotImplementedException("GO GO Rewatchers");
-        //try
-        //{
-        //    this._all.Add(new XsetDirective(text.ToString()));
-        //}
-        //catch (XmlContentException ex)
-        //{
-        //    throw new IllegalArgumentException(
-        //        new FormattedText(
-        //            "failed to understand XML content, XSET({0})",
-        //            text).AsString(),
-        //        ex
-        //    );
-        //}
-        //return this;
+        try
+        {
+            this._all.Add(new XsetDirective(text.ToString()));
+        }
+        catch (XmlContentException ex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to understand XML content, XSET({0})",
+                    text).AsString(),
+                ex
+            );
+        }
+        return this;
     }
 
     /// <summary>
@@ -485,9 +485,8 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>Thi object</returns>
     public Directives Strict(int number)
     {
-        throw new NotImplementedException("GO GO CLE");
-        //this._all.Add(new StrictDirective(number));
-        //return this;
+        this._all.Add(new StrictDirective(number));
+        return this;
     }
 
     /// <summary>
@@ -547,8 +546,11 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         var input = new AntlrInputStream(script);
         XemblyLexer lexer = new XemblyLexer(input);
+        lexer.AddErrorListener(new ThrowingErrorListener());
+
         var tokens = new CommonTokenStream(lexer);
         XemblyParser parser = new XemblyParser(tokens);
+        parser.AddErrorListener(new ThrowingErrorListener());
 
         try
         {

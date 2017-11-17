@@ -26,14 +26,29 @@ using Yaapii.Xml.Xembly.Arg;
 
 namespace Yaapii.Xml.Xembly.Directive
 {
+    /// <summary>
+    /// CDATA directive.
+    /// Sets CDATA value of current node
+    /// </summary>
     public class CdataDirective : IDirective
     {
         private readonly IArg _value;
+
+        /// <summary>
+        /// CDATA directive.
+        /// Sets CDATA value of current node
+        /// </summary>
+        /// <param name="val">Text value to set</param>
+        /// <exception cref="XmlContentException">If invalid input</exception>
         public CdataDirective(string val)
         {
             _value = new ArgOf(val);
         }
 
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
             return new FormattedText(
@@ -42,6 +57,13 @@ namespace Yaapii.Xml.Xembly.Directive
                         ).AsString();
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             XmlDocument doc;

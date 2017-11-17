@@ -28,20 +28,41 @@ using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// ADDIF directive.
+    /// Adds new node, if it's absent.
+    /// </summary>
     public class AddIfDirective : IDirective
     {
-
         private readonly IArg _name;
 
+        /// <summary>
+        /// ADDIF directive.
+        /// Adds new node, if it's absent.
+        /// </summary>
+        /// <param name="node">Name of node to add</param>
+        /// <exception cref="XmlContentException">If invalid input</exception>
         public AddIfDirective(string node)
         {
             _name = new ArgOf(node);
         }
 
-        public new string ToString() {
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
+        public override string ToString()
+        {
             return new FormattedText("ADDIF {0}", _name.Raw()).AsString();
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XmlNode>();
@@ -53,7 +74,8 @@ namespace Yaapii.Xml.Xembly
                 var len = kids.Count;
                 for (int i = 0; i < len; i++)
                 {
-                    if(kids[i].Name.ToLower() == label){
+                    if(kids[i].Name.ToLower() == label)
+                    {
                         target = kids[i];
                         break;
                     }
@@ -61,9 +83,11 @@ namespace Yaapii.Xml.Xembly
 
                 if(target == null){
                     XmlDocument doc = null;
-                    if(dom.OwnerDocument == null) {
+                    if(dom.OwnerDocument == null)
+                    {
                         doc = (XmlDocument)dom;
-                    } else {
+                    } else
+                    {
                         doc = dom.OwnerDocument;
                     }
 

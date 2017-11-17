@@ -32,6 +32,7 @@ grammar Xembly;
 @header {
 using System.Xml;
 using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly;
 using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Error;
@@ -83,7 +84,7 @@ directive returns [IDirective ret]
         }
     }
     |
-/*    'XSET' argument
+    'XSET' argument
     {
         try {
             $ret = new XsetDirective($argument.ret.ToString());
@@ -91,7 +92,7 @@ directive returns [IDirective ret]
             throw new ParsingException(ex);
         }
     }
-    |*/
+    |
     'ATTR' name=argument COMMA value=argument
     {
         try {
@@ -124,11 +125,11 @@ directive returns [IDirective ret]
         $ret = new RemoveDirective();
     }
     |
-/*    'STRICT' argument
+    'STRICT' argument
     {
         $ret = new StrictDirective(new IntOf($argument.ret.ToString()).Value());
     }
-    |*/
+    |
     'UP'
     {
         $ret = new UpDirective();

@@ -24,18 +24,30 @@ using System;
 
 namespace Yaapii.Xml.Xembly.Error
 {
+    /// <summary>
+    /// When argument illegal.
+    /// </summary>
     public class IllegalArgumentException : Exception
     {
+        /// <summary>
+        /// When argument illegal.
+        /// </summary>
         public IllegalArgumentException()
-        {
-        }
+        { }
 
-        public IllegalArgumentException(string message) : base(message)
-        {
-        }
+        /// <summary>
+        /// When argument illegal.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        public IllegalArgumentException(string cause) : base(cause)
+        { }
 
-        public IllegalArgumentException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+        /// <summary>
+        /// When argument illegal.
+        /// </summary>
+        /// <param name="cause">Cause of it</param>
+        /// <param name="innerException">Original exception</param>
+        public IllegalArgumentException(string cause, Exception innerException) : base(cause, innerException)
+        { }
     }
 }

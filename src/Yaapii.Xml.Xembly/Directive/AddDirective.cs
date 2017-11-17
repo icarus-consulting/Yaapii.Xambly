@@ -22,41 +22,96 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Linq;
+using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Xml.Xembly.Cursor;
 
 namespace Yaapii.Xml.Xembly
 {
+    /// <summary>
+    /// ADD directive.
+    /// Adds new node to all current nodes.
+    /// </summary>
     public sealed class AddDirective : IDirective
     {
         private readonly IArg _name;
 
+        /// <summary>
+        /// ADD directive.
+        /// Adds new node to all current nodes.
+        /// </summary>
+        /// <param name="node">Name of node to add</param>
+        /// <exception cref="XmlContentException">If invalid input</exception>
         public AddDirective(string node)
         {
             this._name = new ArgOf(node);
         }
 
-        public new string ToString()
+        /// <summary>
+        /// String representation.
+        /// </summary>
+        /// <returns>The string</returns>
+        public override string ToString()
         {
             return new FormattedText("ADD {0}", this._name).AsString();
         }
 
+        /// <summary>
+        /// Execute it in the given document with current position at the given node.
+        /// </summary>
+        /// <param name="dom">Document</param>
+        /// <param name="cursor">Nodes we're currently at</param>
+        /// <param name="stack">Execution stack</param>
+        /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XmlNode>();
             string label = this._name.Raw();
+            //var prefix = new ItemAt<string>(
+            //                    new SplitText(label, ":")
+            //                ).Value();
 
             XmlDocument doc = new XmlDocumentOf(dom).Value();
-
+            
             foreach(var node in cursor)
             {
-                var element = doc.CreateElement(label);
+                var ns = Namespace(node);
+                var element = doc.CreateElement(label,ns);
                 node.AppendChild(element);
                 targets.Add(element);
             }
 
             return new DomCursor(targets);
+        }
+
+        /// <summary>
+        /// Checks for namespace in node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private string Namespace(XmlNode node)
+        {
+            var ns = node.NamespaceURI;
+            var attrNs = "";
+            if (node.Attributes != null)
+            {
+                foreach (XmlAttribute attr in node.Attributes)
+                {
+                    if (attr.Name.StartsWith("xmlns:"))
+                    {
+                        attrNs = attr.Value;
+                        break;
+                    }
+                }
+            }
+            if (string.IsNullOrEmpty(ns))
+            {
+                ns = attrNs;
+            }
+
+            return ns;
         }
     }
 }
