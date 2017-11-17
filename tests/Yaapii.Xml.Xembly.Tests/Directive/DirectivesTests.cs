@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -9,6 +10,7 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
+using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Cursor;
 using Yaapii.Xml.Xembly.Stack;
 
@@ -251,20 +253,44 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         {
             var dirs = new Directives().Add("mt6");
 
-            new Thread(
-                new ThreadStart(() =>
-                    {
-                        dirs.Add("fo9")
-                        .Attr("yu", "")
-                        .Set("some text 90")
-                        .Add("tr4")
-                        .Attr("s2w3", "")
-                        .Set("some other text 76")
-                        .Up()
-                        .Up();
-                    })).Start();
+            var threadStart = new ThreadStart(() =>
+            {
+                lock (dirs)
+                {
+                    dirs.Add("fo9")
+                    .Attr("yu", "")
+                    .Set("some text 90")
+                    .Add("tr4")
+                    .Attr("s2w3", "")
+                    .Set("some other text 76")
+                    .Up()
+                    .Up();
+                }
+            });
 
-            Assert.EndsWith("<mt6><fo9 yu=\"\">some text 90<tr4 s2w3=\"\">some other text 76</tr4></fo9></mt6>", new Xembler(dirs).Xml());
+            for (int i = 0; i < 50; i++)
+            {
+                new Thread(threadStart).Start();
+            }
+
+            var lst = new List<string>();
+            threadStart = new ThreadStart(() =>
+            {
+                var xmlContent = String.Empty;
+                xmlContent = new Xembler(dirs).Xml();
+
+                lst.Add(xmlContent);
+            });
+
+            for (int i = 0; i < 50; i++)
+            {
+                new Thread(threadStart).Start();
+            }
+
+            var xml = new Xembler(dirs).Xml();
+
+            Assert.All(lst, tXml => tXml.Equals(xml));
+            Assert.EndsWith("<mt6>" + new RepeatedText("<fo9 yu=\"\">some text 90<tr4 s2w3=\"\">some other text 76</tr4></fo9>", 50).AsString() + "</mt6>", xml);
         }
 
         /// <summary>
