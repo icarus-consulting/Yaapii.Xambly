@@ -58,7 +58,7 @@ Task("Restore")
 ///////////////////////////////////////////////////////////////////////////////
 Task("Build")
   .IsDependentOn("Clean") // we can define Task`s which a dependet on other task like this
-  .IsDependentOn("Restore")
+  //.IsDependentOn("Restore")
   .Does(() =>
 {
 
