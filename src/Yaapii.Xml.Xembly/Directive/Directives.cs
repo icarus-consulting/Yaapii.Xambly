@@ -44,11 +44,11 @@ using System.Collections;
 /// 
 /// new Xembler(
 ///   new Directives("XPATH 'root'; ADD 'employee';")
-/// ).Apply(dom);</pre>
+/// ).Apply(dom);</code>
+/// </para>
+/// <para>{@link Directives} can be used as a builder of Xembly script:
 ///
-/// <p>{@link Directives} can be used as a builder of Xembly script:
-///
-/// <pre> Document dom = DocumentBuilderFactory.newInstance()
+/// <code> Document dom = DocumentBuilderFactory.newInstance()
 ///   .newDocumentBuilder().newDocument();
 /// dom.appendChild(dom.createElement("root"));
 /// new Xembler(
@@ -61,8 +61,9 @@ using System.Collections;
 ///     .xpath("employee[&#64;id='100']")
 ///     .strict(1)
 ///     .remove()
-/// ).apply(dom);</pre>
+/// ).apply(dom);</code>
 ///
+/// </para>
 /// <para>
 /// The class is mutable and thread-safe.
 /// author: ICARUS Consulting GmbH
@@ -130,11 +131,19 @@ public sealed class Directives : IEnumerable<IDirective>
                 new TextOf(text)).AsString();
     }
 
+    /// <summary>
+    /// The enumerator
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator<IDirective> GetEnumerator()
     {
         return this._all.GetEnumerator();
     }
 
+    /// <summary>
+    /// The enumerator
+    /// </summary>
+    /// <returns></returns>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
@@ -163,65 +172,66 @@ public sealed class Directives : IEnumerable<IDirective>
     /// </summary>
     /// <param name="node"><see cref="XmlNode"/> to analyze</param>
     /// <returns>Collection of directives</returns>
-    //public static IEnumerable<IDirective> CopyOf(XmlNode node)
-    //{
-    //    Directives dirs = new Directives();
-    //    if (node.Attributes.Count > 0)
-    //    {
-    //        var attrs = node.Attributes;
-    //        int len = attrs.getLength();
-    //        for (int idx = 0; idx < len; ++idx)
-    //        {
-    //            Attr attr = Attr.class.cast(attrs.item(idx));
-    //dirs.attr(attr.getNodeName(), attr.getNodeValue());
-    //        }
-    //    }
-    //    if (node.hasChildNodes()) {
-    //        final NodeList children = node.getChildNodes();
-    //        final int len = children.getLength();
-    //        for (int idx = 0; idx<len; ++idx) {
-    //            final Node child = children.item(idx);
-    //            switch (child.getNodeType()) {
-    //                case Node.ELEMENT_NODE:
-    //                    dirs.add(child.getNodeName())
-    //                        .append(Directives.copyOf(child))
-    //                        .up();
-    //                    break;
-    //                case Node.ATTRIBUTE_NODE:
-    //                    dirs.attr(child.getNodeName(), child.getNodeValue());
-    //                    break;
-    //                case Node.TEXT_NODE:
-    //                case Node.CDATA_SECTION_NODE:
-    //                    if (len == 1) {
-    //                        dirs.set(child.getTextContent());
-    //                    } else if (!child.getTextContent().trim().isEmpty()) {
-    //                        throw new IllegalArgumentException(
-    //                            new FormattedText(
-    //                                // @checkstyle LineLength (1 line)
-    //                                "TEXT node #%d is not allowed together with other %d nodes in %s",
-    //                                idx, len, child.getNodeName()
-    //                            )
-    //                        );
-    //                    }
-    //                    break;
-    //                case Node.PROCESSING_INSTRUCTION_NODE:
-    //                    dirs.pi(child.getNodeName(), child.getNodeValue());
-    //                    break;
-    //                case Node.ENTITY_NODE:
-    //                case Node.COMMENT_NODE:
-    //                    break;
-    //                default:
-    //                    throw new IllegalArgumentException(
-    //                        new FormattedText(
-    //                            "unsupported type %d of node %s",
-    //                            child.getNodeType(), child.getNodeName()
-    //                        )
-    //                    );
-    //            }
-    //        }
-    //    }
-    //    return dirs;
-    //}
+    public static IEnumerable<IDirective> CopyOf(XmlNode node)
+    {
+        throw new NotImplementedException();
+        //    Directives dirs = new Directives();
+        //    if (node.Attributes.Count > 0)
+        //    {
+        //        var attrs = node.Attributes;
+        //        int len = attrs.getLength();
+        //        for (int idx = 0; idx < len; ++idx)
+        //        {
+        //            Attr attr = Attr.class.cast(attrs.item(idx));
+        //dirs.attr(attr.getNodeName(), attr.getNodeValue());
+        //        }
+        //    }
+        //    if (node.hasChildNodes()) {
+        //        final NodeList children = node.getChildNodes();
+        //        final int len = children.getLength();
+        //        for (int idx = 0; idx<len; ++idx) {
+        //            final Node child = children.item(idx);
+        //            switch (child.getNodeType()) {
+        //                case Node.ELEMENT_NODE:
+        //                    dirs.add(child.getNodeName())
+        //                        .append(Directives.copyOf(child))
+        //                        .up();
+        //                    break;
+        //                case Node.ATTRIBUTE_NODE:
+        //                    dirs.attr(child.getNodeName(), child.getNodeValue());
+        //                    break;
+        //                case Node.TEXT_NODE:
+        //                case Node.CDATA_SECTION_NODE:
+        //                    if (len == 1) {
+        //                        dirs.set(child.getTextContent());
+        //                    } else if (!child.getTextContent().trim().isEmpty()) {
+        //                        throw new IllegalArgumentException(
+        //                            new FormattedText(
+        //                                // @checkstyle LineLength (1 line)
+        //                                "TEXT node #%d is not allowed together with other %d nodes in %s",
+        //                                idx, len, child.getNodeName()
+        //                            )
+        //                        );
+        //                    }
+        //                    break;
+        //                case Node.PROCESSING_INSTRUCTION_NODE:
+        //                    dirs.pi(child.getNodeName(), child.getNodeValue());
+        //                    break;
+        //                case Node.ENTITY_NODE:
+        //                case Node.COMMENT_NODE:
+        //                    break;
+        //                default:
+        //                    throw new IllegalArgumentException(
+        //                        new FormattedText(
+        //                            "unsupported type %d of node %s",
+        //                            child.getNodeType(), child.getNodeName()
+        //                        )
+        //                    );
+        //            }
+        //        }
+        //    }
+        //    return dirs;
+    }
 
     /// Append all directives.
     /// <param name="dirs">Directives to append</param>
@@ -289,9 +299,9 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <typeparam name="Value">type of the value</typeparam>
     /// <param name="nodes">the Dictionary with data to create</param>
     /// <returns>this object</returns>
-    public Directives Add<K, V>(Dictionary<K, V> nodes)
+    public Directives Add<Key, Value>(Dictionary<Key, Value> nodes)
     {
-        foreach (KeyValuePair<K, V> entry in nodes)
+        foreach (KeyValuePair<Key, Value> entry in nodes)
         {
             this.Add(entry.Key.ToString())
                 .Set(entry.Value.ToString())
@@ -366,12 +376,13 @@ public sealed class Directives : IEnumerable<IDirective>
     ///<summary>
     /// Add processing instruction.
     ///
-    /// <p>If a value provided contains illegal XML characters, a runtime
+    /// <para>If a value provided contains illegal XML characters, a runtime
     /// exception will be thrown. To avoid this, it is recommended to use
     /// <see cref="Yaapii.Xml.Xembly.Arg.Escaped"/>
+    /// </para>
     ///</summary>
     /// <param name="target">target PI name</param>
-    /// <param name="data"/>Data to set</param>
+    /// <param name="data">Data to set</param>
     /// <exception cref="IllegalArgumentException"/>
     /// <returns>This object</returns>
     public Directives Pi(Object target, Object data)
