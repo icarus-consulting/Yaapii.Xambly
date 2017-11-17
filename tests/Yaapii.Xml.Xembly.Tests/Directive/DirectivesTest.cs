@@ -238,8 +238,8 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                         .Attr("xmlns:x", "http://www.w3.org/1999/xhtml")
                         .Add("x:node").Set("HELLO WORLD!")
                 ).Xml();
-            
-            Assert.NotNull(FromXPath(xml,"//x:node"));
+
+            Assert.NotNull(FromXPath(xml, "//x:node"));
         }
 
         /// <summary>
@@ -284,6 +284,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
         }
 
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
@@ -298,8 +299,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 ).CreateNavigator();
 
             var nsm = NamespacesOfDom(xml);
-
-            return nav.SelectSingleNode(xpath,nsm);
+            return nav.SelectSingleNode(xpath, nsm);
         }
 
         private XmlNamespaceManager NamespacesOfDom(string xml)
