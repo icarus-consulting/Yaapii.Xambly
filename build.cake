@@ -1,5 +1,5 @@
 //#tool nuget:https://api.nuget.org/v3/?package=GitReleaseManager&prerelease
-#tool nuget:?package=GitReleaseManager
+#tool nuget:?package=gitreleasemanager
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
