@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
-    <Exec Command="java -jar $(SolutionDir)/tools/antlr-4.7-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
+    <Exec Command="java -jar $(ProjectDir)/tools/antlr-4.7-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
   </Target>
   
   <ItemGroup>
