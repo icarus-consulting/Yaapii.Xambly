@@ -1,5 +1,6 @@
-#tool nuget:https://api.nuget.org/v3/?package=GitReleaseManager
+//#tool nuget:?package=GitReleaseManager
 
+#tool nuget:https://www.nuget.org/api/v2/?package=GitReleaseManager
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ Task("Restore")
 	foreach(var project in projects)
 	{
 	    DotNetCoreRestore(project.FullPath);
-  }
+        }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,7 +130,7 @@ Task("GetCredentials")
 });
 
 Task("Release")
-  //.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
+   .WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
   .IsDependentOn("Pack")
   .IsDependentOn("GetCredentials")
   .Does(() => {
