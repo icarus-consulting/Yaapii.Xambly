@@ -215,7 +215,13 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                                  .Add("los-angeles")
                        ).Xml();
 
-            Assert.True(xml == "<?xml version=\"1.0\" encoding=\"utf-16\"?><jeff><lebowski birthday=\"today\" /><los-angeles /></jeff>");
+            Assert.True(
+                null != FromXPath(
+                    xml, "/jeff/lebowski[@birthday]") &&
+                null != FromXPath(
+                    xml, "/jeff/los-angeles") &&
+                null != FromXPath(
+                    xml, "/jeff/dude"));
         }
 
         /// <summary>
