@@ -26,12 +26,7 @@ using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Atoms.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Collections;
-using System.Collections.ObjectModel;
-using Yaapii.Atoms;
-using Yaapii.Atoms.Scalar;
 using Yaapii.Xml.Xembly.Cursor;
-using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
 
 namespace Yaapii.Xml.Xembly
@@ -46,10 +41,11 @@ namespace Yaapii.Xml.Xembly
         /// XPath factory.
         /// </summary>
         private readonly IArg _expr;
-        /// <summary>
-        /// Pattern to match root-only XPath queries.
-        /// </summary>
-        private static readonly Regex ROOT_ONLY = new Regex("/([^/\\(\\[\\{:]+)");
+        
+        // <summary>
+        // Pattern to match root-only XPath queries.
+        // </summary>
+        //private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
 
         /// <summary>
         /// XPATH directive.
@@ -80,17 +76,19 @@ namespace Yaapii.Xml.Xembly
         /// <returns>New current nodes</returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            ICollection<XmlNode> targets;
+            IEnumerable<XmlNode> targets;
             string query = this._expr.Raw();
 
-            if(ROOT_ONLY.IsMatch(query))
-            {
-                targets = this.RootOnly(ROOT_ONLY.Match(query).Value, dom);
-            }
-            else
-            {
-                targets = this.Traditional(query, dom, cursor);
-            }
+            // CSA: Not working in this version. Use only traditional function.
+            //if (ROOT_ONLY.IsMatch(query))
+            //{
+            //    targets = this.RootOnly(ROOT_ONLY.Match(query).Groups[1].Value, dom);
+            //}
+            //else
+            //{
+            //    targets = this.Traditional(query, dom, cursor);
+            //}
+            targets = this.Traditional(query, dom, cursor);
 
             return new DomCursor(targets);
 
@@ -104,7 +102,7 @@ namespace Yaapii.Xml.Xembly
         /// <param name="current">Nodes we're currently at</param>
         /// <returns>Found nodes</returns>
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
-        private ICollection<XmlNode> Traditional(string query, XmlNode dom, IEnumerable<XmlNode> current)
+        private IEnumerable<XmlNode> Traditional(string query, XmlNode dom, IEnumerable<XmlNode> current)
         {
             var targets = new HashSet<XmlNode>();
             foreach(XmlNode node in this.Roots(dom, current))
@@ -131,41 +129,48 @@ namespace Yaapii.Xml.Xembly
 
         /// <summary>
         /// Fetches only root node.
+        /// The root node is found if <paramref name="root"/> contains "*" or the root node name.
         /// </summary>
         /// <param name="root">Root node name</param>
         /// <param name="dom">Document</param>
         /// <returns>Found nodes</returns>
-        private ICollection<XmlNode> RootOnly(string root, XmlNode dom)
-        {
-            XmlNode target = new XmlDocumentOf(dom).Value();
+        //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
+        //{
+        //    var target = new XmlDocumentOf(dom).Value().DocumentElement;
+        //    var targets = new EnumerableOf<XmlNode>();  // empty list
 
-            var targets = new List<XmlNode>();
-            if (root != null && target != null
-               && root.Equals("*") || target.Name.Equals(root))
-            {
-                targets.Add(target);
-            }
-            return targets;
-        }
+        //    if (root != null && 
+        //        target != null && 
+        //        ("*".Equals(root) || target.Name.Equals(root)))
+        //    {
+        //        targets = new EnumerableOf<XmlNode>(target);
+        //    }
+        //    return targets;
+        //}
 
         /// <summary>
         /// Get roots to start searching from.
+        /// The root nodes are the <paramref name="nodes"/> if there are any or the document root node.
         /// </summary>
         /// <param name="dom">Document</param>
         /// <param name="nodes">Current nodes</param>
         /// <returns>Root nodes to start searching from</returns>
         private IEnumerable<XmlNode> Roots(XmlNode dom, IEnumerable<XmlNode> nodes)
         {
-            ICollection<XmlNode> roots = new List<XmlNode>();
+            IEnumerable<XmlNode> roots = nodes;
+
+            // Return document root if there are no nodes.
             if (new Yaapii.Atoms.Enumerable.LengthOf(nodes).Value() == 0)
             {
-                roots.Add(dom);
+                roots = new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
+                    new XmlDocumentOf(
+                        dom
+                    ).Value().DocumentElement);
             }
-            else
-            {
-                roots.Add(dom.OwnerDocument);
-            }
-
+            
+            // DocumentElement may be null. Then remove it from the list.
+            roots = new Yaapii.Atoms.Enumerable.Filtered<XmlNode>((node) => node != null, roots);
+            
             return roots;
         }
     }
