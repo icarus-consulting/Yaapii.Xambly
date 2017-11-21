@@ -42,9 +42,9 @@ namespace Yaapii.Xml.Xembly
         /// </summary>
         private readonly IArg _expr;
         
-        /// <summary>
-        /// Pattern to match root-only XPath queries.
-        /// </summary>
+        // <summary>
+        // Pattern to match root-only XPath queries.
+        // </summary>
         //private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
 
         /// <summary>
