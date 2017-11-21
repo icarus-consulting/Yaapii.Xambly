@@ -26,11 +26,7 @@ using Yaapii.Xml.Xembly.Arg;
 using Yaapii.Atoms.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Collections;
-using System.Collections.ObjectModel;
-using Yaapii.Atoms.Scalar;
 using Yaapii.Xml.Xembly.Cursor;
-using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
 
 namespace Yaapii.Xml.Xembly
@@ -45,10 +41,11 @@ namespace Yaapii.Xml.Xembly
         /// XPath factory.
         /// </summary>
         private readonly IArg _expr;
+        
         /// <summary>
         /// Pattern to match root-only XPath queries.
         /// </summary>
-        private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
+        //private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
 
         /// <summary>
         /// XPATH directive.
@@ -82,15 +79,16 @@ namespace Yaapii.Xml.Xembly
             IEnumerable<XmlNode> targets;
             string query = this._expr.Raw();
 
-            //if(false)
-            if (ROOT_ONLY.IsMatch(query))
-            {
-                targets = this.RootOnly(ROOT_ONLY.Match(query).Groups[1].Value, dom);
-            }
-            else
-            {
-                targets = this.Traditional(query, dom, cursor);
-            }
+            // CSA: Not working in this version. Use only traditional function.
+            //if (ROOT_ONLY.IsMatch(query))
+            //{
+            //    targets = this.RootOnly(ROOT_ONLY.Match(query).Groups[1].Value, dom);
+            //}
+            //else
+            //{
+            //    targets = this.Traditional(query, dom, cursor);
+            //}
+            targets = this.Traditional(query, dom, cursor);
 
             return new DomCursor(targets);
 
@@ -136,19 +134,19 @@ namespace Yaapii.Xml.Xembly
         /// <param name="root">Root node name</param>
         /// <param name="dom">Document</param>
         /// <returns>Found nodes</returns>
-        private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
-        {
-            var target = new XmlDocumentOf(dom).Value().DocumentElement;
-            var targets = new EnumerableOf<XmlNode>();  // empty list
+        //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
+        //{
+        //    var target = new XmlDocumentOf(dom).Value().DocumentElement;
+        //    var targets = new EnumerableOf<XmlNode>();  // empty list
 
-            if (root != null && 
-                target != null && 
-                ("*".Equals(root) || target.Name.Equals(root)))
-            {
-                targets = new EnumerableOf<XmlNode>(target);
-            }
-            return targets;
-        }
+        //    if (root != null && 
+        //        target != null && 
+        //        ("*".Equals(root) || target.Name.Equals(root)))
+        //    {
+        //        targets = new EnumerableOf<XmlNode>(target);
+        //    }
+        //    return targets;
+        //}
 
         /// <summary>
         /// Get roots to start searching from.
@@ -169,7 +167,10 @@ namespace Yaapii.Xml.Xembly
                         dom
                     ).Value().DocumentElement);
             }
-
+            
+            // DocumentElement may be null. Then remove it from the list.
+            roots = new Filtered<XmlNode>(roots, (node) => node != null);
+            
             return roots;
         }
     }
