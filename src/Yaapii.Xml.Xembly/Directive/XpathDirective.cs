@@ -160,16 +160,16 @@ namespace Yaapii.Xml.Xembly
             IEnumerable<XmlNode> roots = nodes;
 
             // Return document root if there are no nodes.
-            if (new Atoms.List.LengthOf(nodes).Value() == 0)
+            if (new Yaapii.Atoms.Enumerable.LengthOf(nodes).Value() == 0)
             {
-                roots = new EnumerableOf<XmlNode>(
+                roots = new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
                     new XmlDocumentOf(
                         dom
                     ).Value().DocumentElement);
             }
             
             // DocumentElement may be null. Then remove it from the list.
-            roots = new Filtered<XmlNode>(roots, (node) => node != null);
+            roots = new Yaapii.Atoms.Enumerable.Filtered<XmlNode>((node) => node != null, roots);
             
             return roots;
         }

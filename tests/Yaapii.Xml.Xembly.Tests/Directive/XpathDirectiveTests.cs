@@ -73,7 +73,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
                 .Exec(
                     dom,
                     new DomCursor(
-                        new EnumerableOf<XmlNode>(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
                             first)),
                     new DomStack())
                 );
@@ -92,7 +92,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
                     "/some-root").Exec(
                     dom,
                     new DomCursor(
-                        new EnumerableOf<XmlNode>()),
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>()),
                     new DomStack()));
         }
 
