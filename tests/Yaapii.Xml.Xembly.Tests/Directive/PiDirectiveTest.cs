@@ -40,7 +40,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         {
             Assert.True(
                 new Xembler(
-                        new EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new AddDirective("root"),
                                 new PiDirective("ab", "boom \u20ac"),
                                 new AddDirective("test"),
@@ -57,7 +57,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         public void AddsProcessingInstructionsDirectlyToDom()
         {
             var dom = new Xembler(
-                            new EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new AddDirective("xxx")
                             )
                         ).Dom();
@@ -82,7 +82,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         public void PrependsProcessingInstructionsToDomRoot()
         {
             var dom = new Xembler(
-                            new EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new PiDirective("alpha","beta \u20ac"),
                                 new AddDirective("x4")
                             )

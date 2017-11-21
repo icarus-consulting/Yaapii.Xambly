@@ -47,7 +47,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
            );
 
             Assert.True(
-                new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
                 .Xpath("/root")
                 .Add(
                     new Dictionary<String, Object>() {
-                            { "first", 1 },{ "second", "two" }
+                        { "first", 1 },{ "second", "two" }
                     })
                 .Add("third")
             ).Apply(dom);
@@ -281,7 +281,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             );
 
             Assert.True(
-                new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
         }
 
 
