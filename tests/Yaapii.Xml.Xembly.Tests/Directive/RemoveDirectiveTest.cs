@@ -35,7 +35,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
 
             Assert.True(
             new Xembler(
-                new EnumerableOf<IDirective>(
+                new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                     new AddDirective("root"),
                     new AddDirective("foobar"),
                     new RemoveDirective()
@@ -49,7 +49,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
                     new Xembler(
-                        new EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                             new AddDirective("root"),
                             new RemoveDirective()
                         )).Apply(
@@ -65,7 +65,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             Assert.Throws<ImpossibleModificationException>(() =>
             {
                 new Xembler(
-                    new EnumerableOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                         new RemoveDirective()
                     )).Apply(
                         new XmlDocument()
@@ -88,7 +88,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
 
             new RemoveDirective().Exec(
                 dom,
-                new DomCursor(new EnumerableOf<XmlNode>(first)),
+                new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(first)),
                 new DomStack()
             );
 

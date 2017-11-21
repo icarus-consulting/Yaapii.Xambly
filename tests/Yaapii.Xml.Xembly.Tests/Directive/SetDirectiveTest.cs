@@ -34,7 +34,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         public void SetTextContentOfNode()
         {
             Assert.True(
-                new Xembler(new EnumerableOf<IDirective>(
+                new Xembler(new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new SetDirective("foobar")
@@ -58,7 +58,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
                     .Exec(
                         dom,
                         new DomCursor(
-                                new EnumerableOf<XmlNode>(first, second)
+                                new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(first, second)
                                 ),
                         new DomStack()
                     );

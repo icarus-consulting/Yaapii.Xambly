@@ -35,7 +35,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
 
             Assert.True(
                 new Xembler(
-                    new EnumerableOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foo"),
                         new UpDirective(),
@@ -60,7 +60,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
 
             new AddIfDirective("b").Exec(
                 dom,
-                new DomCursor(new EnumerableOf<XmlNode>(root)),
+                new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(root)),
                 new DomStack()
             );
 

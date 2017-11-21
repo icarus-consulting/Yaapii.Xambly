@@ -33,7 +33,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         {
             Assert.True(
                     new Xembler(
-                        new EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new AddDirective("root"),
                                 new AddDirective("item")
                             )).Dom().InnerXml == "<root><item /></root>","Add Directive failed");
@@ -44,7 +44,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
         {
             Assert.True(
             new Xembler(
-                    new EnumerableOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                             new AddDirective("root"),
                             new AddDirective("item")
                         )).Apply(new XmlDocument()).InnerXml == "<root><item /></root>","Add Directive failed");

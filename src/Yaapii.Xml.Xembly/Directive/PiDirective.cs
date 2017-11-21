@@ -83,7 +83,7 @@ namespace Yaapii.Xml.Xembly.Directive
             var instr = doc.CreateProcessingInstruction(this._target.Raw(), this._data.Raw());
 
             // if cursor list is empty
-            if(new LengthOf(cursor).Value() == 0){
+            if(new Yaapii.Atoms.Enumerable.LengthOf(cursor).Value() == 0){
                 dom.InsertBefore(instr,doc.DocumentElement);
             } else {
                 foreach (var node in cursor)
