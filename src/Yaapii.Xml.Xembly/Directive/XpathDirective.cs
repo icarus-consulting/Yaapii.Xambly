@@ -157,7 +157,7 @@ namespace Yaapii.Xml.Xembly
         private IEnumerable<XmlNode> Roots(XmlNode dom, IEnumerable<XmlNode> nodes)
         {
             ICollection<XmlNode> roots = new List<XmlNode>();
-            if (new Yaapii.Atoms.List.LengthOf(nodes).Value() == 0)
+            if (new Yaapii.Atoms.Enumerable.LengthOf(nodes).Value() == 0)
             {
                 roots.Add(dom);
             }

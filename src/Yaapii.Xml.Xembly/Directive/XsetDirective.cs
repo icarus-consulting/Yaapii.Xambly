@@ -33,10 +33,11 @@ namespace Yaapii.Xml.Xembly.Directive
         /// This directive as a string
         /// </summary>
         /// <returns></returns>
-        public new string ToString()
+        public override string ToString()
         {
             return new FormattedText("XSET {0}", this._expr).AsString();
         }
+
         /// <summary>
         /// Sets the Text in the 
         /// </summary>

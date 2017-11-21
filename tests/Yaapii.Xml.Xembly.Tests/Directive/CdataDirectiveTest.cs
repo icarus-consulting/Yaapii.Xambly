@@ -34,7 +34,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             var dom = new XmlDocument();
             Assert.True(
                     new Xembler(
-                            new EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                     new AddDirective("root"),
                                     new AddDirective("foo"),
                                     new CdataDirective("Hello World")

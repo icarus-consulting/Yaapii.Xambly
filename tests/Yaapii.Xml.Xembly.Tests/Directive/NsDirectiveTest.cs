@@ -43,7 +43,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             ).Exec(
                 dom,
                 new DomCursor(
-                    new EnumerableOf<XmlNode>(root)
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(root)
                 ),
                 new DomStack()
             );

@@ -75,7 +75,7 @@ namespace Yaapii.Xml.Xembly
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xembler(params IDirective[] directives) : this(
-            new EnumerableOf<IDirective>(directives))
+            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(directives))
         { }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Yaapii.Xml.Xembly
         /// <param name="dom">DOM document/node</param>
         public XmlNode Apply(XmlNode dom)
         {
-            ICursor cursor = new DomCursor(new EnumerableOf<XmlNode>(dom));
+            ICursor cursor = new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(dom));
             int pos = 1;
 
             IStack stack = new DomStack();

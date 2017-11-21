@@ -59,7 +59,7 @@ namespace Yaapii.Xml.Xembly
         /// <returns></returns>
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
-            var lengthOfCursor = new LengthOf(cursor).Value();
+            var lengthOfCursor = new Yaapii.Atoms.Enumerable.LengthOf(cursor).Value();
 
             if (lengthOfCursor != _number)
             {
@@ -76,7 +76,7 @@ namespace Yaapii.Xml.Xembly
                     throw new ImpossibleModificationException(
                         new FormattedText(
                             "one current node '{0}' while strictly {1} expected",
-                            new ItemAt<XmlNode>(cursor).Value().Name,
+                            new Yaapii.Atoms.Enumerable.ItemAt<XmlNode>(cursor).Value().Name,
                             _number
                         ).AsString());
                 }
@@ -116,12 +116,12 @@ namespace Yaapii.Xml.Xembly
         private string Names(IEnumerable<XmlNode> nodes)
         {
             var nodeNames = new Mapped<XmlNode, string>(
-                nodes,
                 tNode => new FormattedText(
                     "{0}/{1}", 
                     tNode.ParentNode?.Name + String.Empty,
                     tNode.Name
-                ).AsString()
+                ).AsString(),
+                nodes
             );
 
             return new JoinedText(", ", nodeNames).AsString();

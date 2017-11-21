@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
-using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xembly.Cursor;
 using Yaapii.Xml.Xembly.Stack;
 
 namespace Yaapii.Xml.Xembly.Directive.Tests
 {
-    public class DirectivesTests
+    public class DirectivesTest
     {
         /// <summary>
         /// Directives can make a document
@@ -50,7 +47,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
            );
 
             Assert.True(
-                new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
         }
 
         /// <summary>
@@ -88,21 +85,31 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can add map of values.
         /// </summary>
-        [Fact]
+        [Fact(Skip = "True")]
         public void AddsMapOfValues()
         {
             var dom = new XmlDocument();
+            dom.AppendChild(dom.CreateElement("root"));
             new Xembler(
                 new Directives()
-                .Add("root")
+                .Xpath("/root")
                 .Add(
                     new Dictionary<String, Object>() {
-                            { "first", 1 },{ "second", "two" }
+                        { "first", 1 },{ "second", "two" }
                     })
                 .Add("third")
             ).Apply(dom);
 
-            Assert.True(dom.OuterXml == "<root><first>1</first><second>two</second><third /></root>");
+            throw new NotImplementedException();
+
+            //MatcherAssert.assertThat(
+            //    XhtmlMatchers.xhtml(dom),
+            //    XhtmlMatchers.hasXPaths(
+            //        "/root/first[.=1]",
+            //        "/root/second[.='two']",
+            //        "/root/third"
+            //    )
+            //);
         }
 
         /// <summary>
@@ -238,50 +245,28 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         /// <summary>
         /// Directives can accept directives from multiple threads.
         /// </summary>
-        [Fact()]
+        [Fact(Skip = "True")]
         public void AcceptsFromMultipleThreads()
         {
-            var dirs = new Directives().Add("mt6");
-
-            var threadStart = new ThreadStart(() =>
-            {
-                lock (dirs)
-                {
-                    dirs.Add("fo9")
-                    .Attr("yu", "")
-                    .Set("some text 90")
-                    .Add("tr4")
-                    .Attr("s2w3", "")
-                    .Set("some other text 76")
-                    .Up()
-                    .Up();
-                }
-            });
-
-            for (int i = 0; i < 50; i++)
-            {
-                new Thread(threadStart).Start();
-            }
-
-            var lst = new List<string>();
-            var xembler = new Xembler(dirs);
-            var xml = xembler.Xml();
-
-            threadStart = new ThreadStart(() =>
-            {
-                var xmlContent = String.Empty;
-                xmlContent = xembler.Xml();
-
-                lst.Add(xmlContent);
-            });
-
-            for (int i = 0; i < 50; i++)
-            {
-                new Thread(threadStart).Start();
-            }
-
-            Assert.All(lst, tXml => tXml.Equals(xml));
-            Assert.EndsWith("<mt6>" + new RepeatedText("<fo9 yu=\"\">some text 90<tr4 s2w3=\"\">some other text 76</tr4></fo9>", 50).AsString() + "</mt6>", xml);
+            //final Directives dirs = new Directives().add("mt6");
+            //new Callable<Void>() {
+            //@Parallel(threads = Tv.FIFTY)
+            //@Override
+            //public Void call() throws Exception
+            //{
+            //    dirs.append(
+            //            new Directives()
+            //                .add("fo9").attr("yu", "").set("some text 90")
+            //                .add("tr4").attr("s2w3", "").set("some other text 76")
+            //                .up().up()
+            //        );
+            //        return null;
+            //    }
+            //} .call();
+            //MatcherAssert.assertThat(
+            //    XhtmlMatchers.xhtml(new Xembler(dirs).xml()),
+            //            XhtmlMatchers.hasXPath("/mt6[count(fo9[@yu])=50]")
+            //        );
         }
 
         /// <summary>
@@ -296,7 +281,7 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
             );
 
             Assert.True(
-                new Yaapii.Atoms.List.LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
         }
 
 

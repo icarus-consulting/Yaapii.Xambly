@@ -49,7 +49,7 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
             Assert.Throws<ImpossibleModificationException>(() =>
             {
                 new Xembler(
-                        new EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                     new AddDirective("foo"),
                                     new UpDirective(),
                                     new UpDirective(),
