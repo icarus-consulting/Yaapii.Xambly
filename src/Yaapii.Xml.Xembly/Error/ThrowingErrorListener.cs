@@ -10,13 +10,18 @@ namespace Yaapii.Xml.Xembly.Error
     {
         public static ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
 
-        public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
-            int line, int charPositionInLine, string msg, RecognitionException e)
+        //public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
+        //    int line, int charPositionInLine, string msg, RecognitionException e)
+        //{
+        //    throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
+        //}
+
+        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
         }
 
-        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
         }
