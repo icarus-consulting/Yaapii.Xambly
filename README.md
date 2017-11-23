@@ -1,5 +1,5 @@
 # Yaapii.Xembly
-Port of [Xembly Library[(https://github.com/yegor256/xembly) from Yegor Bugayenko.
+Port of [Xembly Library](https://github.com/yegor256/xembly) from Yegor Bugayenko.
 
 The following usage guide is taken from the original repository.
 
