@@ -96,6 +96,23 @@ namespace Yaapii.Xml.Xembly.Tests.Directive
                     new DomStack()));
         }
 
+        [Fact]
+        public void WorksWithDoubleQuotes()
+        {
+            var dom = new XmlDocument();
+
+            new Xembler(new Directives().Add("Tags").Add("Tag").Set("Transient")).Apply(dom);
+            
+
+            Assert.NotEmpty(
+                new XpathDirective(
+                    "//Tag[contains(.,'Transient')]").Exec(
+                    dom,
+                    new DomCursor(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(dom)),
+                    new DomStack()));
+        }
+
         /// <summary>
         /// XpathDirective can find root in cloned document.
         /// </summary>
