@@ -426,54 +426,15 @@ that can't be done by means of Xembly:
   * Elements and text content can't be mixed, e.g.
     this structure is not supported: `<test>hello <b>friend</a></test>`
 
-Some of these limitations may be removed in the next versions. Please,
-submit [an issue](https://github.com/yegor256/xembly/issues).
+Some of these limitations may be removed in the next versions.
 
 ## How To Contribute
 
 Fork repository, make changes, send us a pull request. We will review
 your changes and apply them to the `master` branch shortly, provided
 they don't violate our quality standards. To avoid frustration, before
-sending us your pull request, please run full Maven build:
+sending us your pull request, please run full build from powershell:
 
 ```
-$ mvn clean install -Pqulice
+.\build.ps1
 ```
-
-You must fix all static analysis issues, otherwise we won't be able
-to merge your pull request. The build must be "clean".
-
-## Delivery Pipeline
-
-Git `master` branch is our cutting edge of development. It always contains
-the latest version of the product, always in `-SNAPSHOT` suffixed version. Nobody
-is allowed to commit directly to `master` &mdash; this branch is basically
-[read-only](http://www.yegor256.com/2014/07/21/read-only-master-branch.html).
-Everybody contributes changes via
-[pull requrests](http://www.yegor256.com/2014/04/15/github-guidelines.html). We are
-using [rultor](http://www.rultor.com), a hosted
-[chatbot](http://www.yegor256.com/2015/11/03/chatbot-better-than-ui-for-microservice.html),
-in order to merge pull requests into `master`. Only our architect is allowed to send pull
-requests to @rultor for merge, using `merge` command.
-Before it happens, a mandatory code review must be performed for a pull request.
-
-After each successful merge of a pull request, our project manager
-gives `deploy` command to @rultor. The code from `master` branch is
-tested, packaged, and deployed to [Sonatype](http://central.sonatype.org/),
-in version `*-SNAPSHOT`.
-
-Every once in a while, the architect may decide that it's time to release
-a new [minor/major](http://www.semver.org) version of the product. When
-it happens, he gives `release` command to @rultor. The code from `master`
-branch is tested, versioned, packaged, and deployed to
-[Sonatype](http://central.sonatype.org/) and [Maven Central](http://search.maven.org/).
-A new Git tag is created. A new GitHub release is created and briefly documented.
-All this is done automatically by @rultor.
-
-## Got questions?
-
-If you have questions or general suggestions, don't hesitate to submit
-a new [Github issue](https://github.com/yegor256/xembly/issues/new).
-But keep these
-[Five Principles of Bug Tracking](http://www.yegor256.com/2014/11/24/principles-of-bug-tracking.html)
-in mind.
