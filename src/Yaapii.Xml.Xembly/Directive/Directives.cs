@@ -30,7 +30,7 @@ using Yaapii.Xml.Xembly;
 using Yaapii.Xml.Xembly.Directive;
 using Yaapii.Xml.Xembly.Error;
 using System.Collections;
-
+using Yaapii.Atoms;
 
 ///
 /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
@@ -82,6 +82,13 @@ public sealed class Directives : IEnumerable<IDirective>
     /// ctor
     /// </summary>
     public Directives() : this(new List<IDirective>())
+    { }
+
+    /// <summary>
+    /// ctor.
+    /// </summary>
+    /// <param name="text">Xembly script</param>
+    public Directives(IText text) : this(text.AsString())
     { }
 
     /// <summary>
