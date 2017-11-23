@@ -277,11 +277,14 @@ namespace Yaapii.Xml.Xembly.Directive.Tests
         {
             IEnumerable<IDirective> dirs =
                 new Directives(
-                    "ADD 'yummy directive';"
-            );
+                    "ADD 'root'; ADD 'something'; SET 'Teststring';" +
+                    "XPATH '/root/something[contains(.,\"Teststring\")]'; UP; " +
+                    "ADD 'yummydirective';");
+
+            new Xembler(dirs).Apply(new XmlDocument());
 
             Assert.True(
-                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
         }
 
 

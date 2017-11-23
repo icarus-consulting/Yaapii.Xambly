@@ -129,10 +129,10 @@ namespace Yaapii.Xml.Xembly
                     throw new ImpossibleModificationException(
                         new FormattedText("directive {0}: {1}", pos, dir).AsString());
                 }
-                catch (Exception) //TODO: Original catches DOMException. We don't have that. But do we have something similar?
+                catch (Exception ex) //TODO: Original catches DOMException. We don't have that. But do we have something similar?
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText("Exception at dir {0}: {1}", pos, dir).AsString());
+                        new FormattedText("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString());
                 }
                 ++pos;
             }

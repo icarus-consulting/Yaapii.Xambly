@@ -77,7 +77,7 @@ namespace Yaapii.Xml.Xembly
         public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
         {
             IEnumerable<XmlNode> targets;
-            string query = this._expr.Raw();
+            string query = SingleQuoted(this._expr.Raw());
 
             // CSA: Not working in this version. Use only traditional function.
             //if (ROOT_ONLY.IsMatch(query))
@@ -125,6 +125,11 @@ namespace Yaapii.Xml.Xembly
             }
 
             return targets;
+        }
+
+        private string SingleQuoted(string arg)
+        {
+            return arg.Replace("\"", "'");
         }
 
         /// <summary>
