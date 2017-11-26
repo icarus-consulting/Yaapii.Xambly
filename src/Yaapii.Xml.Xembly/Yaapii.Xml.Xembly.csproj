@@ -14,7 +14,7 @@
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xembly/releases</PackageReleaseNotes>
   </PropertyGroup>
   
-  <Target Name="PreBuild" AfterTargets="PreBuildEvent">
+  <Target Name="CompileAntlr4" AfterTargets="PreBuildEvent">
     <Exec Command="java -jar $(ProjectDir)/tools/antlr-4.6-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xembly.g" />
   </Target>
   
