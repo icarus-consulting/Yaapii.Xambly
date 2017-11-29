@@ -2,16 +2,16 @@
 using Xunit;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xml.Xembly.Tests
 {
-    public class XamblerTest
+    public class XemblerUnitTests
     {
         [Fact]
         public void MakesChangesToDomDocument()
         {
             var doc = new XmlDocument();
 
-            //new Xambler(
+            //new Xembler(
                 //new Directives)
         }
     }
