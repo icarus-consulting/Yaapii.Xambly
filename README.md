@@ -1,10 +1,10 @@
-# Yaapii.Xembly
-Port of [Xembly Library](https://github.com/yegor256/xembly) from Yegor Bugayenko.
+# Yaapii.Xambly
+Port of [Xembly Library](https://github.com/yegor256/Xembly) from Yegor Bugayenko.
 
 The following usage guide is taken from the original repository.
 
 ### Prepare ANTLR4 on your machine (optional)
-If you want to participate in the development of xembly, you have to setup ANTLR4 parser on your development machine.
+If you want to participate in the development of Xambly, you have to setup ANTLR4 parser on your development machine.
 ANTLR is a parser generating library. You write in a language defined by ANTLR4, compile that with the ANTLR4 compiler and get classes for C#, javascript etc. These classes then can parse your text so that you receive objects to work with.
 
 ANTLR.g file -> compile manually by calling antlr compiler in cmd or pre-build -> use classes in code
@@ -13,15 +13,15 @@ ANTLR.g file -> compile manually by calling antlr compiler in cmd or pre-build -
 
 # Usage
 
-**Xembly** is an [Assembly](http://en.wikipedia.org/wiki/Assembly_language)-like
+**Xambly** is an [Assembly](http://en.wikipedia.org/wiki/Assembly_language)-like
 [imperative](http://en.wikipedia.org/wiki/Imperative_programming) programming language
 for data manipulation in XML documents.
 It is a much simplier alternative to
 [XSLT](http://www.w3.org/TR/xslt) and [XQuery](http://www.w3.org/TR/xquery).
 Read this blog post
-for a more detailed explanation: [Xembly, an Assembly for XML](http://www.yegor256.com/2014/04/09/xembly-intro.html).
+for a more detailed explanation: [Xembly, an Assembly for XML](http://www.yegor256.com/2014/04/09/Xembly-intro.html).
 
-Here is a command line implementation (as Ruby gem): [xembly-gem](https://github.com/yegor256/xembly-gem)
+Here is a command line implementation (as Ruby gem): [Xembly-gem](https://github.com/yegor256/Xembly-gem)
 
 For example, you have an XML document:
 
@@ -34,7 +34,7 @@ For example, you have an XML document:
 ```
 
 And you want to change the amount of the order #553
-from `$45.00` to `$140.00`. Xembly script would look like:
+from `$45.00` to `$140.00`. Xambly script would look like:
 
 ```
 XPATH "orders/order[@id=553]";
@@ -44,37 +44,6 @@ SET "$140.00";
 It is much simpler and compact than
 [XSLT](http://www.w3.org/TR/xslt) or [XQuery](http://www.w3.org/TR/xquery).
 
-This Java package implements Xembly:
-
-```java
-Document document = DocumentBuilderFactory.newInstance()
-  .newDocumentBuilder().newDocument();
-new Xembler(
-  new Directives(
-    "ADD 'orders'; ADD 'order'; ATTR 'id', '553'; SET '$140.00';"
-  )
-).apply(document);
-```
-
-Since version 0.9 you can directly transform directives to XML:
-
-```java
-String xml = new Xembler(
-  new Directives()
-    .add("root")
-    .add("order")
-    .attr("id", "553")
-    .set("$140.00")
-).xml();
-```
-
-This code will produce this XML document:
-
-```xml
-<root>
-  <order id="553">$140</order>
-</root>
-```
 
 ## Directives
 
@@ -95,7 +64,7 @@ Full list of supported directives in the current version:
   * `NS`: sets namespace of all current nodes
 
 "Cursor" or "current nodes" is where we're currently located
-in the XML document. When Xembly script starts, the cursor is
+in the XML document. When Xambly script starts, the cursor is
 empty and simply points to the highest level in the XML hierarchy.
 Pay attention, it doesn't point to the root node. It points to one
 level above the root. Remember, when document is empty, there is no root.
@@ -126,7 +95,7 @@ via supplementary methods, one per each directive. In both cases,
 you need to use class `Directives`:
 
 ```java
-import org.xembly.Directives;
+import org.Xambly.Directives;
 new Directives("XPATH '//car'; REMOVE;");
 new Directives().xpath("//car").remove();
 ```
@@ -245,7 +214,7 @@ PI "xsl-stylesheet" "href='http://example.com'";
 `PUSH` and `POP` directives saves current DOM position to stack
 and restores it from there.
 
-Let's say you start your Xembly manipulations from a place in DOM,
+Let's say you start your Xambly manipulations from a place in DOM,
 which location is not determined for you. After your manipulations are
 done, you want to get back to exactly the same place. You should
 use `PUSH` to save your current location and `POP` to restore it
@@ -308,10 +277,10 @@ Let's say you want to build an XML document with a collection
 of names:
 
 ```java
-package org.xembly.example;
-import org.xembly.Directives;
-import org.xembly.Xembler;
-public class XemblyExample {
+package org.Xambly.example;
+import org.Xambly.Directives;
+import org.Xambly.Xambler;
+public class XamblyExample {
   public static void main(String[] args) throws Exception {
     String[] names = new String[] {
       "Jeffrey Lebowski",
@@ -322,7 +291,7 @@ public class XemblyExample {
     for (String name : names) {
       directives.add("actor").set(name).up();
     }
-    System.out.println(new Xembler(directives).xml());
+    System.out.println(new Xambler(directives).xml());
   }
 }
 ```
@@ -341,7 +310,7 @@ Standard output will contain this text:
 ## Merging Documents
 
 When you need to add an entire XML document, you can convert
-it first into Xembly directives and then add them all together:
+it first into Xambly directives and then add them all together:
 
 ```java
 Iterable<Iterable> dirs = new Directives()
@@ -351,12 +320,12 @@ Iterable<Iterable> dirs = new Directives()
 ```
 
 This static utility method `copyOf()` converts an instance of class
-`org.w3c.dom.Node` into a collection of Xembly directives. Then,
+`org.w3c.dom.Node` into a collection of Xambly directives. Then,
 method `append()` adds them all together to the main list.
 
 Unfortunately, not every valid XML document can be parsed by `copyOf()`. For
 example, this one will lead to a runtime exception:
-`<car>2015<name>BMW</name></car>`. Read more about Xembly limitations,
+`<car>2015<name>BMW</name></car>`. Read more about Xambly limitations,
 a few paragraphs below.
 
 ## Escaping Invalid XML Text
@@ -365,7 +334,7 @@ XML, as standard, doesn't allow certain characters in its body. For example,
 this code will throw an exception:
 
 ```java
-String xml = new Xembler(
+String xml = new Xambler(
   new Directives().add("car").set("\u00")
 ).xml();
 ```
@@ -377,27 +346,27 @@ are not allowed: `\u00..\u08`, `\u0B..\u0C`, `\u0E..\u1F`,
 This means that you should validate everything and make sure you're
 setting only "valid" text values to XML nodes. Sometimes, it's not feasible
 to always check them. Sometimes you may simply need to save whatever
-is possible and call it a day. There a utility static method `Xembler.escape()`, to help
+is possible and call it a day. There a utility static method `Xambler.escape()`, to help
 you do that:
 
 ```java
-String xml = new Xembler(
-  new Directives().add("car").set(Xembler.escape("\u00"))
+String xml = new Xambler(
+  new Directives().add("car").set(Xambler.escape("\u00"))
 ).xml();
 ```
 
-This code won't throw an exception. Method `Xembler.escape()` will
+This code won't throw an exception. Method `Xambler.escape()` will
 conver "\u00" to "\\u0000". It is recommended to use this method
 everywhere, if you are not sure about the quality of the content.
 
-## Shaded Xembly JAR With Dependencies
+## Shaded Xambly JAR With Dependencies
 
 Usually, you're supposed to use this dependency in your `pom.xml`:
 
 ```xml
 <dependency>
   <groupId>com.jcabi.incubator</groupId>
-  <artifactId>xembly</artifactId>
+  <artifactId>Xambly</artifactId>
 </dependency>
 ```
 
@@ -407,16 +376,16 @@ use our "shaded" JAR, that includes all dependencies:
 ```xml
 <dependency>
   <groupId>com.jcabi.incubator</groupId>
-  <artifactId>xembly</artifactId>
+  <artifactId>Xambly</artifactId>
   <classifier>jar-with-dependencies</classifier>
 </dependency>
 ```
 
 ## Known Limitations
 
-Xembly is not intended to be a replacement of XSL or XQuery. It is
+Xambly is not intended to be a replacement of XSL or XQuery. It is
 a lightweight (!) instrument for XML manipulations. There are a few things
-that can't be done by means of Xembly:
+that can't be done by means of Xambly:
 
   * You can't add, remove, or modify XML comments
     (but you can find them with XPath)

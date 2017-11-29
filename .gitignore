@@ -12,10 +12,10 @@
 tools/**/*
 !tools/antlr-4.7-complete.jar
 
-src/yaapii.xml.xembly/antlr4/*
-!src/yaapii.xml.xembly/antlr4/*.g
-!src/yaapii.xml.xembly/antlr4/*.cs
-!src/yaapii.xml.xembly/antlr4/*.tokens
+src/yaapii.Xml.Xambly/antlr4/*
+!src/yaapii.Xml.Xambly/antlr4/*.g
+!src/yaapii.Xml.Xambly/antlr4/*.cs
+!src/yaapii.Xml.Xambly/antlr4/*.tokens
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

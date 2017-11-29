@@ -12,7 +12,7 @@ build_script:
 test: off
 artifacts:
 - path: '.\artifacts\**\*.nupkg'
-- path: '.\artifacts\**\yaapii.xml.xembly.xml'
+- path: '.\artifacts\**\yaapii.Xml.Xambly.xml'
 deploy:
   - provider: NuGet
     name: AppVeyor Feed
