@@ -54,7 +54,7 @@ namespace Yaapii.Xml.Xembly
         /// <param name="dom">DOM document/node</param>
         public XmlNode Apply(XmlNode dom)
         {
-            return ApllyLowered(dom);
+            return ApplyLowered(dom);
         }
 
         /// <summary>
