@@ -30,7 +30,7 @@ namespace Yaapii.Xml.Xembly
     /// </summary>
     public sealed class LowerXambler : IXambler
     {
-        private readonly bool _lowerNames;
+        private readonly bool _lowerNodeNames;
         private readonly bool _lowerValues;
         private readonly IXambler _origin;
 
@@ -38,12 +38,12 @@ namespace Yaapii.Xml.Xembly
         /// primary ctor
         /// </summary>
         /// <param name="xembler">decorated Xembler</param>
-        /// <param name="lowerNames">lower names</param>
+        /// <param name="lowerNodeNames">lower node names</param>
         /// <param name="lowerValues">lower values</param>
-        public LowerXambler(IXambler xembler, bool lowerNames = true, bool lowerValues = false)
+        public LowerXambler(IXambler xembler, bool lowerNodeNames = true, bool lowerValues = false)
         {
             _origin = xembler;
-            _lowerNames = lowerNames;
+            _lowerNodeNames = lowerNodeNames;
             _lowerValues = lowerValues;
         }
 
@@ -65,7 +65,7 @@ namespace Yaapii.Xml.Xembly
         {
             try
             {
-                return ApllyLowered(dom, true);
+                return ApplyLowered(dom, true);
             }
             catch (IllegalStateException)
             {
@@ -139,7 +139,7 @@ namespace Yaapii.Xml.Xembly
             }
         }
 
-        private XmlNode ApllyLowered(XmlNode dom, bool quietly = false)
+        private XmlNode ApplyLowered(XmlNode dom, bool quietly = false)
         {
             var doc = dom.NodeType == XmlNodeType.Document ? dom as XmlDocument : new XmlDocument().AppendChild(dom).OwnerDocument;
             doc = LoweredDocument(doc);
@@ -147,7 +147,7 @@ namespace Yaapii.Xml.Xembly
             return quietly ? _origin.ApplyQuietly(doc.DocumentElement) : _origin.Apply(doc.DocumentElement);
         }
 
-        private void LowerDescendantsNames(XmlNodeList children, XmlNode newParentNode, XmlDocument newDocument)
+        private void LoweredElements(XmlNodeList children, XmlNode newParentNode, XmlDocument newDocument)
         {
             var nodes = children.OfType<XmlNode>();
 
@@ -175,11 +175,11 @@ namespace Yaapii.Xml.Xembly
                 newNode.Value = tNode.Value;
                 newParentNode.AppendChild(newNode);
 
-                LowerDescendantsNames(tNode.ChildNodes, newNode, newDocument);
+                LoweredElements(tNode.ChildNodes, newNode, newDocument);
             }
         }
 
-        private void LowerDescendantsValues(XmlNodeList children)
+        private void LoweredValues(XmlNodeList children)
         {
             var childrenList = children.OfType<XmlNode>();
 
@@ -200,7 +200,7 @@ namespace Yaapii.Xml.Xembly
 
                 if (tChild.HasChildNodes)
                 {
-                    LowerDescendantsValues(tChild.ChildNodes);
+                    LoweredValues(tChild.ChildNodes);
                 }
             }
         }
@@ -209,10 +209,10 @@ namespace Yaapii.Xml.Xembly
         {
             if (_lowerValues)
             {
-                LowerDescendantsValues(result.ChildNodes);
+                LoweredValues(result.ChildNodes);
             }
 
-            if (_lowerNames)
+            if (_lowerNodeNames)
             {
                 result = NameLoweredXmlDocument(result);
             }
@@ -256,7 +256,7 @@ namespace Yaapii.Xml.Xembly
                 result.CreateDocumentType(docType.Name, docType.PublicId, docType.SystemId, docType.InternalSubset);
             }
 
-            LowerDescendantsNames(xmlDocument.ChildNodes, result, result);
+            LoweredElements(xmlDocument.ChildNodes, result, result);
 
             return result;
         }
