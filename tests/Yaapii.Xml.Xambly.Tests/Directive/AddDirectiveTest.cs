@@ -24,7 +24,7 @@ using System.Xml;
 using Xunit;
 using Yaapii.Atoms.List;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public class AddDirectiveTest
     {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using Xunit;
-using Yaapii.Xml.Xambly.Stack;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public sealed class PopDirectiveTests
     {

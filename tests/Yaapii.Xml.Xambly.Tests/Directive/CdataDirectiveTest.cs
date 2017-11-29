@@ -22,10 +22,8 @@
 
 using System.Xml;
 using Xunit;
-using Yaapii.Atoms.List;
-using Yaapii.Xml.Xambly.Directive;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public class CdataDirectiveTest
     {

@@ -46,7 +46,7 @@ using Yaapii.Atoms;
 ///   new Directives("XPATH 'root'; ADD 'employee';")
 /// ).Apply(dom);</code>
 /// </para>
-/// <para>{@link Directives} can be used as a builder of Xembly script:
+/// <para>{@link Directives} can be used as a builder of Xambly script:
 ///
 /// <code> Document dom = DocumentBuilderFactory.newInstance()
 ///   .newDocumentBuilder().newDocument();
@@ -87,14 +87,14 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <summary>
     /// ctor.
     /// </summary>
-    /// <param name="text">Xembly script</param>
+    /// <param name="text">Xambly script</param>
     public Directives(IText text) : this(text.AsString())
     { }
 
     /// <summary>
     /// ctor.
     /// </summary>
-    /// <param name="text">Xembly script</param>
+    /// <param name="text">Xambly script</param>
     public Directives(String text) : this(Directives.Parse(text))
     { }
 

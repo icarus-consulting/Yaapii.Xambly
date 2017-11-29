@@ -27,7 +27,7 @@ using System.Xml;
 using Xunit;
 using Yaapii.Xml.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xml.Xambly.Arg.Tests
 {
     public class EscapedTest
     {

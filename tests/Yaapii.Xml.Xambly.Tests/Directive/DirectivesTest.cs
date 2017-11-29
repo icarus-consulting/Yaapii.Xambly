@@ -36,7 +36,7 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         }
 
         /// <summary>
-        /// Directives can parse Xembly grammar
+        /// Directives can parse Xambly grammar
         /// </summary>
         [Fact]
         public void ParsesIncomingGrammar()
@@ -57,7 +57,7 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         public void ThrowsOnBrokenGrammar()
         {
             Assert.Throws<SyntaxException>(() =>
-                new Directives("not a xembly at all"));
+                new Directives("not a xambly at all"));
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         }
 
         /// <summary>
-        /// Directives can parse Xembly script
+        /// Directives can parse Xambly script
         /// </summary>
         [Fact]
         public void ParsesGrammar()

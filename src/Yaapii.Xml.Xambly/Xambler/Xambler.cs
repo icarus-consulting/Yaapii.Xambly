@@ -22,25 +22,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Atoms.List;
-using Yaapii.Xml.Xambly.Stack;
-using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Error;
 using System.IO;
 using System.Text;
+using System.Xml;
+using Yaapii.Atoms.Text;
+using Yaapii.Xml.Xambly;
+using Yaapii.Xml.Xambly.Error;
+using Yaapii.Xml.Xambly.Stack;
+using Yaapii.Xml.Xambly.Cursor;
 
 namespace Yaapii.Xml.Xambly
 {
     /// <summary>
-    /// Processor of Xembly directives, main entry point to the module.
+    /// Processor of Xambly directives, main entry point to the module.
     /// 
     /// <para>For example, to modify a DOM document:
     /// 
     /// <example>
     /// XMLDocument dom = ....
-    /// new Xambler(
+    /// new Xembler(
     /// new Directives()
     ///     .xpath("/root")
     ///     .addIfAbsent("employees")
@@ -50,10 +50,10 @@ namespace Yaapii.Xml.Xambly
     /// </example>
     /// </para>
     /// 
-    /// <para>You can also convert your Xembly directives directly to XML document:
+    /// <para>You can also convert your Xambly directives directly to XML document:
     /// 
     /// <example>
-    /// String xml = new Xambler(
+    /// String xml = new Xembler(
     /// new Directives()
     ///     .xpath("/root")
     ///     .addIfAbsent("employees")
@@ -63,7 +63,7 @@ namespace Yaapii.Xml.Xambly
     /// </example>
     /// </para>
     /// </summary>
-    public sealed class Xambler
+    public sealed class Xambler : IXambler
     {
         /// <summary>
         /// The directives to apply.
@@ -71,7 +71,7 @@ namespace Yaapii.Xml.Xambly
         private readonly IEnumerable<IDirective> _directives;
 
         /// <summary>
-        /// Processor of Xembly directives, main entry point to the module.
+        /// Processor of Xambly directives, main entry point to the module.
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(params IDirective[] directives) : this(
@@ -79,7 +79,7 @@ namespace Yaapii.Xml.Xambly
         { }
 
         /// <summary>
-        /// Processor of Xembly directives, main entry point to the module.
+        /// Processor of Xambly directives, main entry point to the module.
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(IEnumerable<IDirective> directives)
@@ -169,7 +169,7 @@ namespace Yaapii.Xml.Xambly
         }
 
         /// <summary>
-        /// COnvert to XML Document, redirect all Exceptions to IllegalStateException.
+        /// Convert to XML Document, redirect all Exceptions to IllegalStateException.
         /// </summary>
         /// <returns>The quietly.</returns>
         public String XmlQuietly()
