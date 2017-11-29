@@ -20,19 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Xml.Xambly.Directive;
 using Yaapii.Xml.Xambly.Stack;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public sealed class XsetDirectiveTests
     {

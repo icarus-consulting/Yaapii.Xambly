@@ -28,7 +28,7 @@ using Yaapii.Xml.Xambly.Cursor;
 using Yaapii.Xml.Xambly.Directive;
 using Yaapii.Xml.Xambly.Stack;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public class NsDirectiveTest
     {
