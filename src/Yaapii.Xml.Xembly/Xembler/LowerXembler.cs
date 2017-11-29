@@ -15,9 +15,11 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Xml.Xembly.Error;
 
 namespace Yaapii.Xml.Xembly
@@ -71,9 +73,7 @@ namespace Yaapii.Xml.Xembly
             }
             catch (Exception ex)
             {
-                throw new IllegalStateException(
-                    "Quietly failed to apply lower DOM!",
-                    ex);
+                throw new IllegalStateException("Quietly failed to apply lower DOM!", ex);
             }
         }
 
@@ -145,42 +145,41 @@ namespace Yaapii.Xml.Xembly
 
         private void LowerDescendantsNames(XmlNodeList children, XmlNode newParentNode, XmlDocument newDocument)
         {
-            children
-                .OfType<XmlNode>()
-                .ToList()
-                .ForEach(tNode =>
+            var nodes = children.OfType<XmlNode>();
+
+            foreach (var tNode in nodes)
+            {
+                XmlNode newNode;
+
+                if (tNode.NodeType != XmlNodeType.Element)
                 {
-                    XmlNode newNode;
+                    newNode = newDocument.CreateNode(tNode.NodeType, tNode.Prefix, tNode.LocalName, tNode.NamespaceURI);
+                }
+                else
+                {
+                    var newEle = newDocument.CreateElement(tNode.Prefix, tNode.LocalName.ToLower(), tNode.NamespaceURI);
+                    newNode = newEle;
 
-                    if (tNode.NodeType != XmlNodeType.Element)
-                    {
-                        newNode = newDocument.CreateNode(tNode.NodeType, tNode.Prefix, tNode.LocalName, tNode.NamespaceURI);
-                    }
-                    else
-                    {
-                        var newEle = newDocument.CreateElement(tNode.Prefix, tNode.LocalName.ToLower(), tNode.NamespaceURI);
-                        newNode = newEle;
+                    // Lower Attributes
+                    tNode
+                        .Attributes
+                        .OfType<XmlNode>()
+                        .ToList()
+                        .ForEach(tAttribute => newEle.SetAttribute(tAttribute.Name.ToLower(), tAttribute.Value));
+                }
 
-                        // Lower Attributes
-                        tNode
-                            .Attributes
-                            .OfType<XmlNode>()
-                            .ToList()
-                            .ForEach(tAttribute => newEle.SetAttribute(tAttribute.Name.ToLower(), tAttribute.Value));
-                    }
+                newNode.Value = tNode.Value;
+                newParentNode.AppendChild(newNode);
 
-                    newNode.Value = tNode.Value;
-                    newParentNode.AppendChild(newNode);
-
-                    LowerDescendantsNames(tNode.ChildNodes, newNode, newDocument);
-                });
+                LowerDescendantsNames(tNode.ChildNodes, newNode, newDocument);
+            }
         }
 
         private void LowerDescendantsValues(XmlNodeList children)
         {
-            var childrenList = children.OfType<XmlNode>().ToList();
+            var childrenList = children.OfType<XmlNode>();
 
-            childrenList.ForEach(tChild =>
+            foreach (var tChild in childrenList)
             {
                 if (!String.IsNullOrEmpty(tChild.Value))
                 {
@@ -199,7 +198,7 @@ namespace Yaapii.Xml.Xembly
                 {
                     LowerDescendantsValues(tChild.ChildNodes);
                 }
-            });
+            }
         }
 
         private XmlDocument LoweredDocument(XmlDocument result)

@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace Yaapii.Xml.Xembly.Tests
 {
-    public class XemblerTest
+    public class XemblerUnitTests
     {
         [Fact]
         public void MakesChangesToDomDocument()
