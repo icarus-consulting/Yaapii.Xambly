@@ -87,14 +87,14 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <summary>
     /// ctor.
     /// </summary>
-    /// <param name="text">Xembly script</param>
+    /// <param name="text">Xambly script</param>
     public Directives(IText text) : this(text.AsString())
     { }
 
     /// <summary>
     /// ctor.
     /// </summary>
-    /// <param name="text">Xembly script</param>
+    /// <param name="text">Xambly script</param>
     public Directives(String text) : this(Directives.Parse(text))
     { }
 

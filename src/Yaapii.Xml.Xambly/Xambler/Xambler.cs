@@ -34,7 +34,7 @@ using Yaapii.Xml.Xambly.Cursor;
 namespace Yaapii.Xml.Xambly
 {
     /// <summary>
-    /// Processor of Xembly directives, main entry point to the module.
+    /// Processor of Xambly directives, main entry point to the module.
     /// 
     /// <para>For example, to modify a DOM document:
     /// 
@@ -50,7 +50,7 @@ namespace Yaapii.Xml.Xambly
     /// </example>
     /// </para>
     /// 
-    /// <para>You can also convert your Xembly directives directly to XML document:
+    /// <para>You can also convert your Xambly directives directly to XML document:
     /// 
     /// <example>
     /// String xml = new Xembler(
@@ -71,7 +71,7 @@ namespace Yaapii.Xml.Xambly
         private readonly IEnumerable<IDirective> _directives;
 
         /// <summary>
-        /// Processor of Xembly directives, main entry point to the module.
+        /// Processor of Xambly directives, main entry point to the module.
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(params IDirective[] directives) : this(
@@ -79,7 +79,7 @@ namespace Yaapii.Xml.Xambly
         { }
 
         /// <summary>
-        /// Processor of Xembly directives, main entry point to the module.
+        /// Processor of Xambly directives, main entry point to the module.
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(IEnumerable<IDirective> directives)

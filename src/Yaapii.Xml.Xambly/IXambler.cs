@@ -3,7 +3,7 @@
 namespace Yaapii.Xml.Xambly
 {
     /// <summary>
-    /// Interface for Processor of Xembly directives (main entry point to the module)
+    /// Interface for Processor of Xambly directives (main entry point to the module)
     /// </summary>
     public interface IXambler
     {
