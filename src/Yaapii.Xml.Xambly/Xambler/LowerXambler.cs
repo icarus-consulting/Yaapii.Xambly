@@ -22,10 +22,10 @@ using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xambly;
 using Yaapii.Xml.Xambly.Error;
 
-namespace Yaapii.Xml.Xembly
+namespace Yaapii.Xml.Xambly
 {
     /// <summary>
-    /// Decorator of Processor of Xembly directives, main entry point to the module.
+    /// Decorator of Processor of Xambly directives, main entry point to the module.
     /// Lowers names of Elements + Attributes and/or Values of all Nodes
     /// </summary>
     public sealed class LowerXambler : IXambler

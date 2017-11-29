@@ -46,7 +46,7 @@ using Yaapii.Atoms;
 ///   new Directives("XPATH 'root'; ADD 'employee';")
 /// ).Apply(dom);</code>
 /// </para>
-/// <para>{@link Directives} can be used as a builder of Xembly script:
+/// <para>{@link Directives} can be used as a builder of Xambly script:
 ///
 /// <code> Document dom = DocumentBuilderFactory.newInstance()
 ///   .newDocumentBuilder().newDocument();
