@@ -108,7 +108,9 @@ Task("Pack")
        {
 	       settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
          
-       } else {     
+       } 
+	   else 
+	   {     
          settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(tag.Name);
        }
    }
