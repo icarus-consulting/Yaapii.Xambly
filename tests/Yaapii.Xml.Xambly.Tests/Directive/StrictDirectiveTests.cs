@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
-using Yaapii.Atoms.List;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public sealed class StrictDirectiveTests
     {

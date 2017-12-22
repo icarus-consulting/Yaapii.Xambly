@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+﻿using System.Xml;
 using Xunit;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xml.Xambly.Directive.Tests
 {
     public sealed class PushDirectiveTests
     {

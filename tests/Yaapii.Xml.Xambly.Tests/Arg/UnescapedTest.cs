@@ -22,9 +22,8 @@
 
 using System.Xml;
 using Xunit;
-using Yaapii.Xml.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Tests.Arg
+namespace Yaapii.Xml.Xambly.Arg.Tests
 {
     public class UnescapedTest
     {
