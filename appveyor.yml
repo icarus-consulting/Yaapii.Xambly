@@ -25,10 +25,11 @@ deploy:
     skip_symbols: true
     artifact: /.*\.nupkg/
 - provider: NuGet
-  name: Nuget.org
-  on: 
-    branch: master
-  api_key:
-    secure: AuUbKCY+YVcotkpwDEqZMGpK3G64913kOq3+Xt9DYBCZbdADh/xYvHHatjirUpy/
-  skip_symbols: false
-  artifact: /.*\.nupkg/
+    name: Nuget feed
+    on:
+      branch: master
+      appveyor_repo_tag: true
+    api_key:
+      secure: AuUbKCY+YVcotkpwDEqZMGpK3G64913kOq3+Xt9DYBCZbdADh/xYvHHatjirUpy/
+    skip_symbols: false
+    artifact: /.*\.nupkg/
