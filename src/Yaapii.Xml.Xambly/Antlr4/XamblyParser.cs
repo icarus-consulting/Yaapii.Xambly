@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from C:\Users\mtu.ICARUS-CONSULT\Documents\Projekte\Yaapii.Xambly\src\Yaapii.Xml.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
+// Generated from D:\Daten\GITHUB\Yaapii.Xambly\src\Yaapii.Xml.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
