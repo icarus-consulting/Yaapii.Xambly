@@ -50,12 +50,34 @@ namespace Yaapii.Xml.Xambly.Directive
     /// );
     /// </param>
     /// </summary>
-    /// <param name="node"><see cref="XmlNode"/> to analyze</param>
-    /// <returns>Collection of directives</returns>
     public sealed class CopyOf : IEnumerable<IDirective>
     {
         private readonly IScalar<XmlNode> _node;
 
+
+        ///<summary>
+        /// Creates a collection of directives, which can create a copy
+        /// of provided node.
+        ///
+        /// <param>For example, you already have a node in an XML document,
+        /// which you'd like to add to another XML document:
+        /// </param>
+        ///
+        /// <param> XmlDocument target = parse("&lt;root/&gt;");
+        /// XmlNode node = parse("&lt;user name='Jeffrey'/&gt;");
+        /// new Xambler(
+        ///   new Directives()
+        ///     .Xpath("////")
+        ///     .Add("jeff")
+        ///     .Append(new CopyOf(node))
+        /// ).Apply(target);
+        /// assert print(target).equals(
+        ///   "&lt;root&gt;&lt;jeff name='Jeffrey'&gt;&lt;/root&gt;"
+        /// );
+        /// </param>
+        /// </summary>
+        /// <param name="node"><see cref="XmlNode"/> to analyze</param>
+        /// <returns>Collection of directives</returns>
         public CopyOf(XmlNode node) : this(new ScalarOf<XmlNode>(node))
         {
 
