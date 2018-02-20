@@ -25,9 +25,9 @@ using System.Xml;
 using Yaapii.Xml.Xambly.Arg;
 using Yaapii.Atoms.Text;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Atoms.List;
+using Yaapii.Atoms.Enumerable;
+using System.Text.RegularExpressions;
 
 namespace Yaapii.Xml.Xambly
 {
@@ -37,6 +37,12 @@ namespace Yaapii.Xml.Xambly
     /// </summary>
     public class XpathDirective : IDirective
     {
+        /// <summary>
+        /// An absolute XPath stards with exat on "/" at the beginning.
+        /// This regular expression checks if the query stards with exact one "/" followed by any character except a second "/" (like "//")
+        /// </summary>
+        private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
+        
         /// <summary>
         /// XPath factory.
         /// </summary>
@@ -88,7 +94,28 @@ namespace Yaapii.Xml.Xambly
             //{
             //    targets = this.Traditional(query, dom, cursor);
             //}
-            targets = this.Traditional(query, dom, cursor);
+
+            // CSA: This fork is only needed if the cursor points to an XmlNode which is not existing in the dom. 
+            //      In this case the Xpath should work if it contains an absolute path.
+            // Node: The Traditional (XmlNode.SelectNodes(query)) can hadle absolute XPath's also if the cursor points to any child node in the dom. 
+            //       It fails if the cursor points to an stranger node which is not part of the dom.
+            // Update: This fork is not directly needed absolutely anymore. It comes from an undetected bug in the RemoveDirective (after deleting the cursor points to the deleted nodes and not to the parents).
+            //         But i thik the class is more robust with this behaviour and i do not want to delete the code and tests here.
+            if (AbsoluteXPath(query))
+            {
+                targets =
+                    this.Traditional(
+                        query,
+                        dom,
+                        new EnumerableOf<XmlNode>(
+                            new XmlDocumentOf(dom).Value().DocumentElement
+                        )
+                    );
+            }
+            else
+            {
+                targets = this.Traditional(query, dom, cursor);
+            }
 
             return new DomCursor(targets);
 
@@ -127,6 +154,11 @@ namespace Yaapii.Xml.Xambly
             return targets;
         }
 
+        private bool AbsoluteXPath(string query)
+        {
+            return new Regex(ABSOLUTE_XPATH_REGEX).IsMatch(query);
+        }
+
         private string SingleQuoted(string arg)
         {
             return arg.Replace("\"", "'");
@@ -141,14 +173,16 @@ namespace Yaapii.Xml.Xambly
         /// <returns>Found nodes</returns>
         //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
         //{
-        //    var target = new XmlDocumentOf(dom).Value().DocumentElement;
+        //    var rootElem = new XmlDocumentOf(dom).Value().DocumentElement;
         //    var targets = new EnumerableOf<XmlNode>();  // empty list
 
-        //    if (root != null && 
-        //        target != null && 
-        //        ("*".Equals(root) || target.Name.Equals(root)))
+        //    if (
+        //        root != null &&
+        //        rootElem != null &&
+        //        ("*".Equals(root) || rootElem.Name.Equals(root))
+        //    )
         //    {
-        //        targets = new EnumerableOf<XmlNode>(target);
+        //        targets = new EnumerableOf<XmlNode>(rootElem);
         //    }
         //    return targets;
         //}
@@ -165,16 +199,20 @@ namespace Yaapii.Xml.Xambly
             IEnumerable<XmlNode> roots = nodes;
 
             // Return document root if there are no nodes.
-            if (new Yaapii.Atoms.Enumerable.LengthOf(nodes).Value() == 0)
+            if (new LengthOf(nodes).Value() == 0)
             {
-                roots = new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
+                roots = new EnumerableOf<XmlNode>(
                     new XmlDocumentOf(
                         dom
                     ).Value().DocumentElement);
             }
             
             // DocumentElement may be null. Then remove it from the list.
-            roots = new Yaapii.Atoms.Enumerable.Filtered<XmlNode>((node) => node != null, roots);
+            roots = 
+                new Filtered<XmlNode>(
+                    (node) => node != null,
+                    roots
+                );
             
             return roots;
         }
