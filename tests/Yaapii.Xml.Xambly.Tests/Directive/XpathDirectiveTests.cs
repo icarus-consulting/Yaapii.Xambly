@@ -13,23 +13,29 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         /// <summary>
         /// XpathDirective can find nodes.
         /// </summary>
-        [Fact]
-        public void FindsNodesWithXpathExpression()
+        [Theory]
+        [InlineData("/root/foo[@bar=1]/test")]
+        [InlineData("/root/bar")]
+        public void FindsNodesWithXpathExpression(string testXPath)
         {
             var dom = new XmlDocument();
 
             new Xambler(
                 new Directives(
-                    "ADD 'root'; ADD 'foo'; ATTR 'bar', '1'; UP; ADD 'bar';")).Apply(dom);
+                    "ADD 'root'; ADD 'foo'; ATTR 'bar', '1'; UP; ADD 'bar';"
+                )
+            ).Apply(dom);
             new Xambler(
                 new Directives(
-                    "XPATH '//*[@bar=1]'; ADD 'test';")).Apply(dom);
+                    "XPATH '//*[@bar=1]'; ADD 'test';"
+                )
+            ).Apply(dom);
 
             Assert.True(
                 null != FromXPath(
-                    dom.InnerXml.ToString(), "/root/foo[@bar=1]/test") &&
-                null != FromXPath(
-                    dom.InnerXml.ToString(), "/root/bar")
+                    dom.InnerXml.ToString(),
+                    testXPath
+                )
             );
         }
 
@@ -44,7 +50,9 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
 
             new Xambler(
                 new Directives(
-                    "XPATH '/nothing'; XPATH '/top'; STRICT '1'; ADD 'hey';")).Apply(dom);
+                    "XPATH '/nothing'; XPATH '/top'; STRICT '1'; ADD 'hey';"
+                )
+            ).Apply(dom);
             Assert.NotNull(FromXPath(dom.InnerXml.ToString(), "/top/hey"));
         }
 
@@ -68,10 +76,11 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                 .Exec(
                     dom,
                     new DomCursor(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
-                            first)),
-                    new DomStack())
-                );
+                        new Atoms.Enumerable.EnumerableOf<XmlNode>(first)
+                    ),
+                    new DomStack()
+                )
+            );
         }
 
         /// <summary>
@@ -87,8 +96,11 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                     "/some-root").Exec(
                     dom,
                     new DomCursor(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>()),
-                    new DomStack()));
+                        new Atoms.Enumerable.EnumerableOf<XmlNode>()
+                    ),
+                    new DomStack()
+                )
+            );
         }
 
         [Fact]
@@ -96,7 +108,9 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         {
             var dom = new XmlDocument();
 
-            new Xambler(new Directives().Add("Tags").Add("Tag").Set("Transient")).Apply(dom);
+            new Xambler(
+                new Directives().Add("Tags").Add("Tag").Set("Transient")
+            ).Apply(dom);
             
 
             Assert.NotEmpty(
@@ -104,8 +118,11 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                     "//Tag[contains(.,'Transient')]").Exec(
                     dom,
                     new DomCursor(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(dom)),
-                    new DomStack()));
+                        new Atoms.Enumerable.EnumerableOf<XmlNode>(dom)
+                    ),
+                    new DomStack()
+                )
+            );
         }
 
         /// <summary>
@@ -121,19 +138,21 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
             var clone = dom.CloneNode(true);
             new Xambler(
                 new Directives(
-                    "XPATH '/*'; STRICT '1'; ADD 'boom-5';")).Apply(clone);
+                    "XPATH '/*'; STRICT '1'; ADD 'boom-5';"
+                )
+            ).Apply(clone);
             Assert.NotNull(
-                FromXPath(clone.InnerXml.ToString(), "/high/boom-5"));
+                FromXPath(clone.InnerXml.ToString(), "/high/boom-5")
+            );
         }
 
-    #region Helper
-    /// <summary>
-    /// A navigator from an Xml and XPath
-    /// </summary>
-    /// <param name="xml"></param>
-    /// <param name="xpath"></param>
-    /// <returns></returns>
-    private XPathNavigator FromXPath(string xml, string xpath)
+        /// <summary>
+        /// A navigator from an Xml and XPath
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        private XPathNavigator FromXPath(string xml, string xpath)
         {
             var nav =
                 new XPathDocument(
@@ -172,6 +191,5 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
 
             return result;
         }
-        #endregion Helper
     }
 }
