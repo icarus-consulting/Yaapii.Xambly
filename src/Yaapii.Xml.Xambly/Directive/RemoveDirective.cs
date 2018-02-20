@@ -23,6 +23,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Error;
+using Yaapii.Xml.Xambly.Cursor;
 using Yaapii.Xml.Xambly.Error;
 
 namespace Yaapii.Xml.Xambly
@@ -90,7 +91,7 @@ namespace Yaapii.Xml.Xambly
                 parents.Add(parent);
             }
 
-            return cursor;
+            return new DomCursor(parents);
         }
     }
 }
