@@ -3,6 +3,8 @@ using System.IO;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.IO;
 using Yaapii.Xml.Xambly.Cursor;
 using Yaapii.Xml.Xambly.Stack;
 
@@ -143,6 +145,50 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
             ).Apply(clone);
             Assert.NotNull(
                 FromXPath(clone.InnerXml.ToString(), "/high/boom-5")
+            );
+        }
+
+        [Fact]
+        public void NavigatesFromRoot()
+        {
+            var dom = new XmlDocument();
+            var root = dom.CreateElement("root");
+            var first = dom.CreateElement("child");
+            root.AppendChild(first);
+            dom.AppendChild(root);
+
+            Assert.Contains(
+                first,
+                new XpathDirective(
+                    "/root/child"
+                ).Exec(
+                    dom,
+                    new DomCursor(new EnumerableOf<XmlNode>(first)),
+                    new DomStack()
+                )
+            );
+        }
+
+        [Fact]
+        public void NavigatesFromRootWithStrangerCursor()
+        {
+            var dom = new XmlDocument();
+            var root = dom.CreateElement("root");
+            var first = dom.CreateElement("child");
+            root.AppendChild(first);
+            dom.AppendChild(root);
+            // this element doesn't belongs to the dom!
+            var strangerCursor = dom.CreateElement("deleted");
+
+            Assert.Contains(
+                first,
+                new XpathDirective(
+                    "/root/child"
+                ).Exec(
+                    dom,
+                    new DomCursor(new EnumerableOf<XmlNode>(strangerCursor)),
+                    new DomStack()
+                )
             );
         }
 
