@@ -296,6 +296,29 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                 new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
         }
 
+        /// <summary>
+        /// An absolute XPath should set the cursor successfully.
+        /// </summary>
+        [Fact]
+        public void NavigatesFromRootAfterDeletedNode()
+        {
+            var xml = new XmlDocument();
+            xml.Load(new InputOf("<root><child name='Jerome'><property name='test'/></child></root>").Stream());
+            var xambler =
+                new Xambler(
+                    new Directives()
+                        .Xpath("/root/child[@name='Jerome']/property[@name='test']")
+                        .Remove()   // Node will be deleted. After this operation the cursor points to the parent nodes.
+                        .Xpath("/root/child[@name='Jerome']")
+                        .Add("property")
+                        .Attr("name", "test2")
+                ).Apply(xml);
+
+            Assert.Equal(
+                "<root><child name=\"Jerome\"><property name=\"test2\" /></child></root>",
+                xambler.OuterXml
+            );
+        }
 
         /// <summary>
         /// A navigator from an Xml and XPath
