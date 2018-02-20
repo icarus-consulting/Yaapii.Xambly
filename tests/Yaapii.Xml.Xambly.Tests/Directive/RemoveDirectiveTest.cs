@@ -22,7 +22,7 @@
 
 using System.Xml;
 using Xunit;
-using Yaapii.Atoms.List;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Xml.Xambly.Cursor;
 using Yaapii.Xml.Xambly.Stack;
 
@@ -34,14 +34,16 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         public void RemoveCurrentNode() {
 
             Assert.True(
-            new Xambler(
-                new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
-                    new AddDirective("root"),
-                    new AddDirective("foobar"),
-                    new RemoveDirective()
-                )).Apply(
+                new Xambler(
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new AddDirective("root"),
+                        new AddDirective("foobar"),
+                        new RemoveDirective()
+                    )
+                ).Apply(
                     new XmlDocument()
-                    ).InnerXml == "<root></root>", "Remove node failed");
+                ).InnerXml == "<root></root>", "Remove node failed"
+            );
         }
 
         [Fact]
@@ -52,9 +54,10 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                         new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                             new AddDirective("root"),
                             new RemoveDirective()
-                        )).Apply(
-                            new XmlDocument()
-                            );
+                        )
+                    ).Apply(
+                        new XmlDocument()
+                    );
                 }
             );
         }
@@ -63,14 +66,15 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         public void ThrowsExceptionOnRemoveDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-            {
-                new Xambler(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
-                        new RemoveDirective()
-                    )).Apply(
+                {
+                    new Xambler(
+                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                            new RemoveDirective()
+                        )
+                    ).Apply(
                         new XmlDocument()
-                        );
-            }
+                    );
+                }
             );
         }
 
@@ -94,6 +98,34 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
 
             Assert.True(
                 dom.InnerXml == "<root><b /></root>", "Remove directive failed"
+            );
+        }
+
+        [Fact]
+        public void CursorPointsToParents()
+        {
+            var dom = new XmlDocument();
+            var root = dom.CreateElement("root");
+            var first = dom.CreateElement("a");
+            var firstChild = dom.CreateElement("a_child");
+            first.AppendChild(firstChild);
+            root.AppendChild(first);
+            var second = dom.CreateElement("b");
+            var secondChild = dom.CreateElement("b_child");
+            second.AppendChild(secondChild);
+            root.AppendChild(second);
+
+            dom.AppendChild(root);
+
+            var cursor =
+                new RemoveDirective().Exec(
+                    dom,
+                    new DomCursor(new EnumerableOf<XmlNode>(firstChild, secondChild)),
+                    new DomStack()
+                );
+            Assert.Equal(
+                new EnumerableOf<XmlNode>(first, second),
+                cursor
             );
         }
     }
