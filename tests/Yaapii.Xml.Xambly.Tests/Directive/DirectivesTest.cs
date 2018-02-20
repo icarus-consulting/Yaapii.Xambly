@@ -85,8 +85,11 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         /// <summary>
         /// Directives can add map of values.
         /// </summary>
-        [Fact]
-        public void AddsMapOfValues()
+        [Theory]
+        [InlineData("/root/first[.=1]")]
+        [InlineData("/root/second[.='two']")]
+        [InlineData("/root/third")]
+        public void AddsMapOfValues(string testXPath)
         {
             var dom = new XmlDocument();
             dom.AppendChild(dom.CreateElement("root"));
@@ -96,14 +99,13 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                     .Xpath("//root")
                     .Add(
                         new Dictionary<String, Object>() {
-                            { "first", 1 },{ "second", "two" }
+                            { "first", 1 },
+                            { "second", "two" }
                         })
                     .Add("third")
                 ).Apply(dom).InnerXml;
 
-            Assert.True(FromXPath(xml, "/root/first[.=1]") != null);
-            Assert.True(FromXPath(xml, "/root/second[.='two']") != null);
-            Assert.True(FromXPath(xml, "/root/second[.='two']") != null);
+            Assert.True(FromXPath(xml, testXPath) != null);
         }
 
         /// <summary>
