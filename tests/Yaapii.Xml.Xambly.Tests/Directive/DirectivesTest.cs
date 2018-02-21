@@ -288,6 +288,31 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         }
 
 
+        [Fact]
+        public void UsefulInfoAtAddingAttributeToDocumentNode()
+        {
+            try
+            {
+                var xml = new XmlDocument();
+                var xambler =
+                    new Xambler(
+                        new Directives()
+                            .Add("root")
+                            .Add("child")
+                            .Xpath("/")
+                            .Attr("some", "attribute")
+                    ).Apply(xml);
+                Assert.True(false, "Exception expected!");
+            }
+            catch (Exception ex)
+            {
+                Assert.Contains(
+                    "Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.",
+                    ex.Message
+                );
+            }
+        }
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
