@@ -124,11 +124,11 @@ namespace Yaapii.Xml.Xambly
                 {
                     cursor = dir.Exec(dom, cursor, stack);
                 }
-                catch (ImpossibleModificationException)
-                {
-                    throw new ImpossibleModificationException(
-                        new FormattedText("directive {0}: {1}", pos, dir).AsString());
-                }
+                //catch (ImpossibleModificationException ex)
+                //{
+                //    throw new ImpossibleModificationException(
+                //        new FormattedText("directive {0}: {1}", pos, dir).AsString());
+                //}
                 catch (Exception ex) //TODO: Original catches DOMException. We don't have that. But do we have something similar?
                 {
                     throw new ImpossibleModificationException(
