@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
@@ -86,7 +87,14 @@ namespace Yaapii.Xml.Xambly
 
             foreach (var node in cursor)
             {
-                ((XmlElement)node).SetAttribute(key, value);
+                try
+                {
+                    ((XmlElement)node).SetAttribute(key, value);
+                }
+                catch (InvalidCastException ex)
+                {
+                    throw new ImpossibleModificationException($"Unable to set attribute to node '{node.Name}'. Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.", ex);
+                }
             }
 
             return cursor;
