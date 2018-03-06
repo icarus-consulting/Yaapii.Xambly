@@ -320,6 +320,24 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
             );
         }
 
+        [Fact]
+        public void UsefulInfoAtAddingAttributeToDocumentNode()
+        {
+            Assert.Throws<ImpossibleModificationException>(() =>
+                {
+                    var xml = new XmlDocument();
+                    var xambler =
+                        new Xambler(
+                            new Directives()
+                                .Add("root")
+                                .Add("child")
+                                .Xpath("/")
+                                .Attr("some", "attribute")
+                        ).Apply(xml);
+                }
+            );
+        }
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
