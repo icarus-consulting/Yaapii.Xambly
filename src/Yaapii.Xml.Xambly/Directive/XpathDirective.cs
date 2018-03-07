@@ -85,22 +85,6 @@ namespace Yaapii.Xml.Xambly
             IEnumerable<XmlNode> targets;
             string query = SingleQuoted(this._expr.Raw());
 
-            // CSA: Not working in this version. Use only traditional function.
-            //if (ROOT_ONLY.IsMatch(query))
-            //{
-            //    targets = this.RootOnly(ROOT_ONLY.Match(query).Groups[1].Value, dom);
-            //}
-            //else
-            //{
-            //    targets = this.Traditional(query, dom, cursor);
-            //}
-
-            // CSA: This fork is only needed if the cursor points to an XmlNode which is not existing in the dom. 
-            //      In this case the Xpath should work if it contains an absolute path.
-            // Node: The Traditional (XmlNode.SelectNodes(query)) can hadle absolute XPath's also if the cursor points to any child node in the dom. 
-            //       It fails if the cursor points to an stranger node which is not part of the dom.
-            // Update: This fork is not directly needed absolutely anymore. It comes from an undetected bug in the RemoveDirective (after deleting the cursor points to the deleted nodes and not to the parents).
-            //         But i thik the class is more robust with this behaviour and i do not want to delete the code and tests here.
             if (AbsoluteXPath(query))
             {
                 targets =
