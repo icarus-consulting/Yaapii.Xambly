@@ -18,8 +18,10 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         /// <summary>
         /// Directives can make a document
         /// </summary>
-        [Fact]
-        public void MakesXmlDocument()
+        [Theory]
+        [InlineData("/page[@the-name]")]
+        [InlineData("/page/big-text[normalize-space(.)='<<hello!!!>>']")]
+        public void MakesXmlDocument(string testXPath)
         {
             string xml =
                 new Xambler(
@@ -31,8 +33,7 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                         .Add("big-text").Cdata("<<hello!!!>>").Up()
                 ).Xml();
 
-            Assert.NotNull(FromXPath(xml, "/page[@the-name]"));
-            Assert.NotNull(FromXPath(xml, "/page/big-text[normalize-space(.)='<<hello!!!>>']"));
+            Assert.NotNull(FromXPath(xml, testXPath));
         }
 
         /// <summary>
@@ -85,8 +86,11 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         /// <summary>
         /// Directives can add map of values.
         /// </summary>
-        [Fact]
-        public void AddsMapOfValues()
+        [Theory]
+        [InlineData("/root/first[.=1]")]
+        [InlineData("/root/second[.='two']")]
+        [InlineData("/root/third")]
+        public void AddsMapOfValues(string testXPath)
         {
             var dom = new XmlDocument();
             dom.AppendChild(dom.CreateElement("root"));
@@ -96,14 +100,13 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                     .Xpath("//root")
                     .Add(
                         new Dictionary<String, Object>() {
-                            { "first", 1 },{ "second", "two" }
+                            { "first", 1 },
+                            { "second", "two" }
                         })
                     .Add("third")
                 ).Apply(dom).InnerXml;
 
-            Assert.True(FromXPath(xml, "/root/first[.=1]") != null);
-            Assert.True(FromXPath(xml, "/root/second[.='two']") != null);
-            Assert.True(FromXPath(xml, "/root/second[.='two']") != null);
+            Assert.True(FromXPath(xml, testXPath) != null);
         }
 
         /// <summary>
@@ -177,10 +180,15 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         [Fact]
         public void AddsElementsCaseSensitively()
         {
-            var xml = new Xambler(new Directives().Add("XHtml").AddIf("Body")).Xml();
+            var xml = 
+                new Xambler(
+                    new Directives()
+                        .Add("XHtml")
+                        .AddIf("Body")
+                ).Xml();
             Assert.True(
-                 xml == "<?xml version=\"1.0\" encoding=\"utf-16\"?><XHtml><Body /></XHtml>"
-                );
+                xml == "<?xml version=\"1.0\" encoding=\"utf-16\"?><XHtml><Body /></XHtml>"
+            );
         }
 
         /// <summary>
@@ -198,31 +206,32 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
             var xml = dirs.ToString();
 
             Assert.True(
-                new Regex("ADD \"HELLO\";").Matches(xml).Count == 10);
+                new Regex("ADD \"HELLO\";").Matches(xml).Count == 10
+            );
         }
 
         /// <summary>
         /// Directives can push and pop
         /// </summary>
-        [Fact]
-        public void PushesAndPopsCursor()
+        [Theory]
+        [InlineData("/jeff/lebowski[@birthday]")]
+        [InlineData("/jeff/los-angeles")]
+        [InlineData("/jeff/dude")]
+        public void PushesAndPopsCursor(string testXPath)
         {
-            var xml = new Xambler(
-                             new Directives()
-                                 .Add("jeff")
-                                 .Push().Add("lebowski")
-                                 .Push().Xpath("/jeff").Add("dude").Pop()
-                                 .Attr("birthday", "today").Pop()
-                                 .Add("los-angeles")
-                       ).Xml();
+            var xml = 
+                new Xambler(
+                    new Directives()
+                        .Add("jeff")
+                        .Push().Add("lebowski")
+                        .Push().Xpath("/jeff").Add("dude").Pop()
+                        .Attr("birthday", "today").Pop()
+                        .Add("los-angeles")
+                ).Xml();
 
             Assert.True(
-                null != FromXPath(
-                    xml, "/jeff/lebowski[@birthday]") &&
-                null != FromXPath(
-                    xml, "/jeff/los-angeles") &&
-                null != FromXPath(
-                    xml, "/jeff/dude"));
+                null != FromXPath(xml, testXPath)
+            );
         }
 
         /// <summary>
@@ -287,6 +296,29 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                 new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
         }
 
+        /// <summary>
+        /// An absolute XPath should set the cursor successfully.
+        /// </summary>
+        [Fact]
+        public void NavigatesFromRootAfterDeletedNode()
+        {
+            var xml = new XmlDocument();
+            xml.Load(new InputOf("<root><child name='Jerome'><property name='test'/></child></root>").Stream());
+            var xambler =
+                new Xambler(
+                    new Directives()
+                        .Xpath("/root/child[@name='Jerome']/property[@name='test']")
+                        .Remove()   // Node will be deleted. After this operation the cursor points to the parent nodes.
+                        .Xpath("/root/child[@name='Jerome']")
+                        .Add("property")
+                        .Attr("name", "test2")
+                ).Apply(xml);
+
+            Assert.Equal(
+                "<root><child name=\"Jerome\"><property name=\"test2\" /></child></root>",
+                xambler.OuterXml
+            );
+        }
 
         [Fact]
         public void UsefulInfoAtAddingAttributeToDocumentNode()

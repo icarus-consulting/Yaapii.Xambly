@@ -25,9 +25,9 @@ using System.Xml;
 using Yaapii.Xml.Xambly.Arg;
 using Yaapii.Atoms.Text;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Atoms.List;
+using Yaapii.Atoms.Enumerable;
+using System.Text.RegularExpressions;
 
 namespace Yaapii.Xml.Xambly
 {
@@ -37,6 +37,12 @@ namespace Yaapii.Xml.Xambly
     /// </summary>
     public class XpathDirective : IDirective
     {
+        /// <summary>
+        /// An absolute XPath stards with exat on "/" at the beginning.
+        /// This regular expression checks if the query stards with exact one "/" followed by any character except a second "/" (like "//")
+        /// </summary>
+        private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
+        
         /// <summary>
         /// XPath factory.
         /// </summary>
@@ -79,16 +85,21 @@ namespace Yaapii.Xml.Xambly
             IEnumerable<XmlNode> targets;
             string query = SingleQuoted(this._expr.Raw());
 
-            // CSA: Not working in this version. Use only traditional function.
-            //if (ROOT_ONLY.IsMatch(query))
-            //{
-            //    targets = this.RootOnly(ROOT_ONLY.Match(query).Groups[1].Value, dom);
-            //}
-            //else
-            //{
-            //    targets = this.Traditional(query, dom, cursor);
-            //}
-            targets = this.Traditional(query, dom, cursor);
+            if (AbsoluteXPath(query))
+            {
+                targets =
+                    this.Traditional(
+                        query,
+                        dom,
+                        new EnumerableOf<XmlNode>(
+                            new XmlDocumentOf(dom).Value().DocumentElement
+                        )
+                    );
+            }
+            else
+            {
+                targets = this.Traditional(query, dom, cursor);
+            }
 
             return new DomCursor(targets);
 
@@ -127,6 +138,11 @@ namespace Yaapii.Xml.Xambly
             return targets;
         }
 
+        private bool AbsoluteXPath(string query)
+        {
+            return new Regex(ABSOLUTE_XPATH_REGEX).IsMatch(query);
+        }
+
         private string SingleQuoted(string arg)
         {
             return arg.Replace("\"", "'");
@@ -141,14 +157,16 @@ namespace Yaapii.Xml.Xambly
         /// <returns>Found nodes</returns>
         //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
         //{
-        //    var target = new XmlDocumentOf(dom).Value().DocumentElement;
+        //    var rootElem = new XmlDocumentOf(dom).Value().DocumentElement;
         //    var targets = new EnumerableOf<XmlNode>();  // empty list
 
-        //    if (root != null && 
-        //        target != null && 
-        //        ("*".Equals(root) || target.Name.Equals(root)))
+        //    if (
+        //        root != null &&
+        //        rootElem != null &&
+        //        ("*".Equals(root) || rootElem.Name.Equals(root))
+        //    )
         //    {
-        //        targets = new EnumerableOf<XmlNode>(target);
+        //        targets = new EnumerableOf<XmlNode>(rootElem);
         //    }
         //    return targets;
         //}
@@ -165,16 +183,20 @@ namespace Yaapii.Xml.Xambly
             IEnumerable<XmlNode> roots = nodes;
 
             // Return document root if there are no nodes.
-            if (new Yaapii.Atoms.Enumerable.LengthOf(nodes).Value() == 0)
+            if (new LengthOf(nodes).Value() == 0)
             {
-                roots = new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(
+                roots = new EnumerableOf<XmlNode>(
                     new XmlDocumentOf(
                         dom
                     ).Value().DocumentElement);
             }
             
             // DocumentElement may be null. Then remove it from the list.
-            roots = new Yaapii.Atoms.Enumerable.Filtered<XmlNode>((node) => node != null, roots);
+            roots = 
+                new Filtered<XmlNode>(
+                    (node) => node != null,
+                    roots
+                );
             
             return roots;
         }
