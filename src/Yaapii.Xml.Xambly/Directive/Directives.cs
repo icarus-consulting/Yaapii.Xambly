@@ -24,7 +24,6 @@ using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Xml;
 using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xambly;
 using Yaapii.Xml.Xambly.Directive;
@@ -72,14 +71,14 @@ using Yaapii.Atoms;
 public sealed class Directives : IEnumerable<IDirective>
 {
 
-    //Right margin.
+    // Right margin.
     private const int MARGIN = 80;
 
-    //List of directives.
+    // List of directives.
     private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
 
     /// <summary>
-    /// ctor
+    /// ctor.
     /// </summary>
     public Directives() : this(new List<IDirective>())
     { }
@@ -96,6 +95,13 @@ public sealed class Directives : IEnumerable<IDirective>
     /// </summary>
     /// <param name="text">Xambly script</param>
     public Directives(String text) : this(Directives.Parse(text))
+    { }
+
+    /// <summary>
+    /// ctor.
+    /// </summary>
+    public Directives(params IDirective[] dirs) : this(
+        new List<IDirective>(dirs))
     { }
 
     /// <summary>
