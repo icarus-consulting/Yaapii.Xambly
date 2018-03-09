@@ -44,12 +44,14 @@ namespace Yaapii.Xml.Xambly
         /// Should convert to XML Document.
         /// </summary>
         /// <returns>The xml as string</returns>
-        string Xml();
+        /// <param name="createHeader">Option to get the XML Document with or without header</param>
+        string Xml(bool createHeader = true);
 
         /// <summary>
         /// Should convert to XML Document, but redirect all Exceptions to IllegalStateException.
         /// </summary>
         /// <returns>The quietly.</returns>
-        string XmlQuietly();
+        /// <param name="createHeader">Option to get the XML Document with or without header</param>
+        string XmlQuietly(bool createHeader = true);
     }
 }
