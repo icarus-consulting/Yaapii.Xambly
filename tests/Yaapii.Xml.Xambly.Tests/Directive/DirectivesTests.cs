@@ -87,7 +87,7 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
         /// Directives takes Xambly grammar as IText
         /// </summary>
         [Fact]
-        public void ParsesIncomingGrammarAsIText()
+        public void ParsesIncomingGrammarFromIText()
         {
             IEnumerable<IDirective> dirs =
                new Directives(
