@@ -113,19 +113,21 @@ namespace Yaapii.Xml.Xambly
         }
 
         /// <summary> Convert to XML Document with lowered Names and/or Values. </summary>
-        /// <returns> The xml. </returns>
-        public string Xml()
+        /// <returns> The XML. </returns>
+        /// <param name="createHeader">Option to get the XML Document with or without header (version, encoding)</param>
+        public string Xml(bool createHeader = true)
         {
-            return LoweredXml();
+            return LoweredXml(createHeader);
         }
 
         /// <summary> Convert to XML Documentwith lowered Names and/or Values, redirect all Exceptions to IllegalStateException. </summary>
         /// <returns> The quietly. </returns>
-        public String XmlQuietly()
+        /// <param name="createHeader">Option to get the XML Document with or without header (version, encoding)</param>
+        public String XmlQuietly(bool createHeader = true)
         {
             try
             {
-                return LoweredXml(true);
+                return LoweredXml(createHeader, true);
             }
             catch (IllegalStateException)
             {
@@ -228,10 +230,13 @@ namespace Yaapii.Xml.Xambly
             return result;
         }
 
-        private string LoweredXml(bool quietly = false)
+        private string LoweredXml(bool createHeader, bool quietly = false)
         {
+            var settings = new XmlWriterSettings();
+            settings.ConformanceLevel = createHeader ? ConformanceLevel.Document : ConformanceLevel.Fragment;
+
             using (var stringWriter = new StringWriter())
-            using (var xmlTextWriter = XmlWriter.Create(stringWriter))
+            using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
             {
                 LoweredDom(quietly).WriteTo(xmlTextWriter);
                 xmlTextWriter.Flush();

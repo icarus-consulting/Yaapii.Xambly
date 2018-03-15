@@ -172,11 +172,12 @@ namespace Yaapii.Xml.Xambly
         /// Convert to XML Document, redirect all Exceptions to IllegalStateException.
         /// </summary>
         /// <returns>The quietly.</returns>
-        public String XmlQuietly()
+        /// <param name="withHeader">Option to get the XML Document with or without header (version, encoding)</param>
+        public string XmlQuietly(bool withHeader = true)
         {
             try
             {
-                return this.Xml();
+                return this.Xml(withHeader);
             }
             catch (Exception ex)
             {
@@ -189,11 +190,17 @@ namespace Yaapii.Xml.Xambly
         /// <summary>
         /// Convert to XML Document.
         /// </summary>
+        /// <param name="withHeader">Option to create the XML header in the XML document or not</param>
         /// <returns>The xml.</returns>
-        public string Xml()
+        /// <param name="withHeader">Option to get the XML Document with or without header (version, encoding)</param>
+        public string Xml(bool withHeader = true)
+        //public string Xml()
         {
+            var settings = new XmlWriterSettings();
+            settings.ConformanceLevel = withHeader ? ConformanceLevel.Document : ConformanceLevel.Fragment;
+
             using (var stringWriter = new StringWriter())
-            using (var xmlTextWriter = XmlWriter.Create(stringWriter))
+            using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
             {
                 Dom().WriteTo(xmlTextWriter);
                 xmlTextWriter.Flush();
