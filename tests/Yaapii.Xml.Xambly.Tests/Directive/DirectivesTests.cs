@@ -6,8 +6,10 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
 using Yaapii.Atoms.List;
+using Yaapii.Atoms.Text;
 using Yaapii.Xml.Xambly.Cursor;
 using Yaapii.Xml.Xambly.Stack;
 
@@ -36,6 +38,36 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
             Assert.NotNull(FromXPath(xml, testXPath));
         }
 
+        [Fact]
+        public void TakesDirectiveParams()
+        {
+            string xml =
+                new Xambler(
+                    new Directives(
+                        new AddDirective("page"),
+                        new AddDirective("child-node")
+                    )
+                ).Xml();
+
+            Assert.NotNull(FromXPath(xml, "/page/child-node"));
+        }
+
+        [Fact]
+        public void TakesDirectiveList()
+        {
+            string xml =
+                new Xambler(
+                    new Directives(
+                        new EnumerableOf<IDirective>(
+                            new AddDirective("page"),
+                            new AddDirective("child-node")
+                        )
+                    )
+                ).Xml();
+
+            Assert.NotNull(FromXPath(xml, "/page/child-node"));
+        }
+
         /// <summary>
         /// Directives can parse Xambly grammar
         /// </summary>
@@ -46,6 +78,21 @@ namespace Yaapii.Xml.Xambly.Directive.Tests
                new Directives(
                    "ADD 'yummy directive';"
            );
+
+            Assert.True(
+                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
+        }
+
+        /// <summary>
+        /// Directives takes Xambly grammar as IText
+        /// </summary>
+        [Fact]
+        public void ParsesIncomingGrammarFromIText()
+        {
+            IEnumerable<IDirective> dirs =
+               new Directives(
+                   new TextOf("ADD 'yummy directive';")
+            );
 
             Assert.True(
                 new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);

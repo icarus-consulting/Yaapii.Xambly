@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yaapii.Xml.Xambly", "src\Ya
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yaapii.Xml.Xambly.Tests", "tests\Yaapii.Xml.Xambly.Tests\Yaapii.Xml.Xambly.Tests.csproj", "{BB9B1122-DD8B-4996-9A66-0EE5D6298D45}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F1443812-81E6-4DC4-822D-FB1F66DE8936}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BCF93090-CFF8-4CA1-B760-5CE870BC865E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,7 +36,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{BB9B1122-DD8B-4996-9A66-0EE5D6298D45} = {F1443812-81E6-4DC4-822D-FB1F66DE8936}
+		{BB9B1122-DD8B-4996-9A66-0EE5D6298D45} = {BCF93090-CFF8-4CA1-B760-5CE870BC865E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ADD664F2-D61C-4A08-914B-3C627EA219D6}
