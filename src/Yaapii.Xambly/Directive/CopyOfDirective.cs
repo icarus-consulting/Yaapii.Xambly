@@ -50,7 +50,7 @@ namespace Yaapii.Xml.Xambly.Directive
     /// );
     /// </param>
     /// </summary>
-    public sealed class CopyOf : IEnumerable<IDirective>
+    public sealed class CopyOfDirective : IEnumerable<IDirective>
     {
         private readonly IScalar<XmlNode> _node;
 
@@ -78,10 +78,8 @@ namespace Yaapii.Xml.Xambly.Directive
         /// </summary>
         /// <param name="node"><see cref="XmlNode"/> to analyze</param>
         /// <returns>Collection of directives</returns>
-        public CopyOf(XmlNode node) : this(new ScalarOf<XmlNode>(node))
-        {
-
-        }
+        public CopyOfDirective(XmlNode node) : this(new ScalarOf<XmlNode>(node))
+        { }
 
         ///<summary>
         /// Creates a collection of directives, which can create a copy
@@ -106,7 +104,7 @@ namespace Yaapii.Xml.Xambly.Directive
         /// </summary>
         /// <param name="node"><see cref="XmlNode"/> to analyze</param>
         /// <returns>Collection of directives</returns>
-        private CopyOf(IScalar<XmlNode> node)
+        private CopyOfDirective(IScalar<XmlNode> node)
         {
             _node = node;
         }
@@ -134,10 +132,10 @@ namespace Yaapii.Xml.Xambly.Directive
                         dirs.Set(child.Value);
                         break;
                     case XmlNodeType.Element:
-                        dirs.Append(new CopyOf(child)).Up();
+                        dirs.Append(new CopyOfDirective(child)).Up();
                         break;
                     case XmlNodeType.ProcessingInstruction:
-                        dirs.Pi(child.Name,child.Value);
+                        dirs.Pi(child.Name, child.Value);
                         break;
                     case XmlNodeType.Attribute:
                     case XmlNodeType.Comment:

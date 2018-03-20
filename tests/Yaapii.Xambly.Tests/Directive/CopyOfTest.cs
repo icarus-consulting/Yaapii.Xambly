@@ -28,7 +28,7 @@ namespace Yaapii.Xml.Xambly.Tests.Directive
             new Xambler(
                 new Directives()
                         .Add("dudes")
-                        .Append(new CopyOf(xml.DocumentElement))).Apply(dom);
+                        .Append(new CopyOfDirective(xml.DocumentElement))).Apply(dom);
 
             Assert.True(
                     new LengthOf(dom.SelectNodes("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0 &&

@@ -30,6 +30,8 @@ using Yaapii.Xml.Xambly.Directive;
 using Yaapii.Xml.Xambly.Error;
 using System.Collections;
 using Yaapii.Atoms;
+using System.Xml;
+using Yaapii.Atoms.Scalar;
 
 ///
 /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
@@ -197,6 +199,52 @@ public sealed class Directives : IEnumerable<IDirective>
                 ex
             );
         }
+        return this;
+    }
+
+    ///<summary>
+    /// Adds a collection of directives, which are a copy
+    /// of the provided node.
+    ///
+    /// <param>For example, you already have a node in an XML document,
+    /// which you'd like to add to another XML document:
+    /// </param>
+    ///
+    /// <param> XmlDocument target = parse("&lt;root/&gt;");
+    /// XmlNode node = parse("&lt;user name='Jeffrey'/&gt;");
+    /// new Xambler(
+    ///   new Directives()
+    ///     .Xpath("////")
+    ///     .Add("jeff")
+    ///     .Append(new CopyOf(node))
+    /// ).Apply(target);
+    /// assert print(target).equals(
+    ///   "&lt;root&gt;&lt;jeff name='Jeffrey'&gt;&lt;/root&gt;"
+    /// );
+    /// </param>
+    /// </summary>
+    /// <param name="node">Node to add</param>
+    /// <returns>the updated list of directives</returns>
+    public Directives CopyOf(XmlNode node)
+    {
+        try
+        {
+            new Each<IDirective>(
+                dir => this._all.Add(dir),
+                new CopyOfDirective(node)
+            ).Invoke();
+        }
+        catch (ArgumentException aex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to add xml node '{0}'",
+                    node.ToString()
+                ).AsString(),
+                aex
+            );
+        }
+
         return this;
     }
 
