@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Yaapii.Xambly\Yaapii.Xambly.csproj" />
-    <ProjectReference Include="..\..\src\Yaapii.Xml.Xambly\Yaapii.Xambly.csproj" />
   </ItemGroup>
 
 </Project>
