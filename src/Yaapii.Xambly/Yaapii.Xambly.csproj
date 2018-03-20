@@ -5,7 +5,7 @@
     <Authors>ICARUS Consulting GmbH</Authors>
     <Copyright>ICARUS Consulting GmbH</Copyright>
     <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</RepositoryUrl>
-    <DocumentationFile>D:\Development\work\Yaapii.Xambly\artifacts\yaapii.xml.xambly.xml</DocumentationFile>
+    <DocumentationFile>artifacts\yaapii.xml.xambly.xml</DocumentationFile>
     <PackageTags>
       xml-editor, csharp, xml-documents, xpath, xml-builder
     </PackageTags>
