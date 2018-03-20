@@ -8,11 +8,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
-    <PackageReference Include="Yaapii.Atoms" Version="0.7.0" />
+    <PackageReference Include="Yaapii.Atoms" Version="0.13.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Yaapii.Xml.Xambly\Yaapii.Xml.Xambly.csproj" />
+    <ProjectReference Include="..\..\src\Yaapii.Xambly\Yaapii.Xambly.csproj" />
+    <ProjectReference Include="..\..\src\Yaapii.Xml.Xambly\Yaapii.Xambly.csproj" />
   </ItemGroup>
 
 </Project>

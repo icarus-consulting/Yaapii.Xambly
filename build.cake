@@ -50,7 +50,7 @@ Task("Restore")
 	foreach(var project in projects)
 	{
 	    DotNetCoreRestore(project.FullPath);
-        }
+    }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,12 +106,12 @@ Task("Pack")
        var tag = BuildSystem.AppVeyor.Environment.Repository.Tag;
        if(!tag.IsTag) 
        {
-	       settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
+			settings.VersionSuffix = "build" + AppVeyor.Environment.Build.Number.ToString().PadLeft(5,'0');
          
        } 
 	   else 
 	   {     
-         settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(tag.Name);
+			settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(tag.Name);
        }
    }
 	
