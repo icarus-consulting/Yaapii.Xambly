@@ -16,7 +16,7 @@ var configuration = Argument("configuration", "Release");
 // this is relative to the project root folder
 var buildArtifacts      = new DirectoryPath("./artifacts/");
 var framework     = "netstandard2.0";
-var project = new DirectoryPath("./src/Yaapii.Xml.Xambly/Yaapii.Xml.Xambly.csproj");
+var project = new DirectoryPath("./src/Yaapii.Xambly/Yaapii.Xambly.csproj");
 
 var owner = "icarus-consulting";
 var repository = "Yaapii.Xambly";
