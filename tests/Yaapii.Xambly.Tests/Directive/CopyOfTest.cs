@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
+﻿using System.Xml;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
@@ -35,7 +31,14 @@ namespace Yaapii.Xml.Xambly.Tests.Directive
                     new LengthOf(dom.SelectNodes("/dudes/jeff[first and second]")).Value() > 0 &&
                     new LengthOf(dom.SelectNodes("/dudes/jeff/file[@a='x']/f[name='\u20ac']")).Value() > 0
                 );
+        }
 
+        [Fact(Skip = "true")]
+        public void CopyOfXmlDocument()
+        {
+            var doc = new XmlDocument();
+            var dirs = new CopyOfDirective(doc);
+            var xml = new Xambler(dirs).Xml();
         }
     }
 }
