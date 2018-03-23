@@ -174,7 +174,7 @@ namespace Yaapii.Xml.Xambly
                         .ForEach(tAttribute => newEle.SetAttribute(tAttribute.Name.ToLower(), tAttribute.Value));
                 }
 
-                newNode.Value = tNode.Value;
+                newNode.InnerText = tNode.Value;
                 newParentNode.AppendChild(newNode);
 
                 LoweredElements(tNode.ChildNodes, newNode, newDocument);

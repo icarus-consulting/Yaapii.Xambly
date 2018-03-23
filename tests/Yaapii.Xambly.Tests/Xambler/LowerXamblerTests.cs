@@ -4,7 +4,7 @@ namespace Yaapii.Xml.Xambly.Tests
 {
     public sealed class LowerXamblerTests
     {
-        [Fact(Skip = "Skipped - Fix LowerXambler here")]
+        [Fact]
         public void MakesXmlLower()
         {
             string xml =
@@ -16,12 +16,12 @@ namespace Yaapii.Xml.Xambly.Tests
                 ).Xml();
 
             Assert.StartsWith(
-                "<page>",
+                "<?xml version=\"1.0\" encoding=\"utf-16\"?><page></page>",
                 xml
             );
         }
 
-        [Fact(Skip = "Skipped until LowerXembler works")]
+        [Fact]
         public void CreatesXmlWithHeader()
         {
             string xml =
@@ -39,7 +39,7 @@ namespace Yaapii.Xml.Xambly.Tests
             );
         }
 
-        [Fact(Skip = "Skipped until LowerXembler works")]
+        [Fact]
         public void CreatesXmlWithoutHeader()
         {
             string xml =
@@ -57,7 +57,7 @@ namespace Yaapii.Xml.Xambly.Tests
             );
         }
 
-        [Fact(Skip = "Skipped until LowerXembler works")]
+        [Fact]
         public void CreatesXmlWithHeaderFromXmlQuietly()
         {
             string xml =
@@ -75,7 +75,7 @@ namespace Yaapii.Xml.Xambly.Tests
             );
         }
 
-        [Fact(Skip = "Skipped until LowerXembler works")]
+        [Fact]
         public void CreatesXmlWithoutHeaderFromXmlQuietly()
         {
             string xml =
