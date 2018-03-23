@@ -23,9 +23,9 @@
 using System.Xml;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// PI directive.

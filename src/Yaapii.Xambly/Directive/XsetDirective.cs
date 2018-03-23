@@ -4,12 +4,12 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 using System.Xml.XPath;
 using System.Collections;
 using System.Collections.Concurrent;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// Sets by xpath.

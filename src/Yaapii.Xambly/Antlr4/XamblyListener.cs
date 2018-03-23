@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\Development\work\Yaapii.Xambly\src\Yaapii.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
+// Generated from D:\Projekte_VisualStudio\ContainsInGitHub\Yaapii.Xembly\src\Yaapii.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -23,10 +23,10 @@
 using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly;
-using Yaapii.Xml.Xambly.Arg;
-using Yaapii.Xml.Xambly.Error;
-using Yaapii.Xml.Xambly.Directive;
+using Yaapii.Xambly;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Directive;
 
 using Antlr4.Runtime.Misc;
 using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;

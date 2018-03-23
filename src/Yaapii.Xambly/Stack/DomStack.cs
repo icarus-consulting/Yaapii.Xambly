@@ -22,8 +22,9 @@
 
 using System;
 using System.Collections.Generic;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly.Stack
+namespace Yaapii.Xambly.Stack
 {
     /// <summary>
     /// Stack of DOM cursors.

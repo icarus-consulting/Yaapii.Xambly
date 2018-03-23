@@ -24,7 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly.Cursor
+namespace Yaapii.Xambly.Cursor
 {
     /// <summary>
     /// Cursor at DOM.

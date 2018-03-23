@@ -25,10 +25,10 @@ using System.Xml;
 using System.Linq;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
-using Yaapii.Xml.Xambly.Cursor;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Cursor;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// ADD directive.
@@ -43,7 +43,6 @@ namespace Yaapii.Xml.Xambly
         /// Adds new node to all current nodes.
         /// </summary>
         /// <param name="node">Name of node to add</param>
-        /// <exception cref="XmlContentException">If invalid input</exception>
         public AddDirective(string node)
         {
             this._name = new ArgOf(node);

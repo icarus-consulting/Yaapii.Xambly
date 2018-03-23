@@ -6,9 +6,9 @@ using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Directive;
+using Yaapii.Xambly.Directive;
 
-namespace Yaapii.Xml.Xambly.Tests.Directive
+namespace Yaapii.Xambly.Tests.Directive
 {
     public sealed class CopyOfTest
     {

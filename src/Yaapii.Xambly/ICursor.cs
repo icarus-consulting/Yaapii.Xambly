@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Cursor.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 using Yaapii.Atoms;
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Makes a XmlDocument, whatever kind of node you give it to this.

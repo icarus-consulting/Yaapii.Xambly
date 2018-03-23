@@ -25,9 +25,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Xunit;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Arg.Tests
+namespace Yaapii.Xambly.Arg.Tests
 {
     public class EscapedTest
     {
