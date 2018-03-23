@@ -1,5 +1,8 @@
 //#tool nuget:?package=GitReleaseManager
-
+#tool nuget:?package=OpenCover
+#tool nuget:?package=xunit.runner.console
+#tool nuget:?package=Codecov
+#addin nuget:?package=Cake.Codecov
 #tool nuget:https://www.nuget.org/api/v2/?package=GitReleaseManager
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -23,6 +26,7 @@ var repository = "Yaapii.Xambly";
 
 var username = "";
 var password = "";
+var codecovToken = "";
 
 var isAppVeyor          = AppVeyor.IsRunningOnAppVeyor;
 
@@ -85,6 +89,48 @@ Task("Test")
 });
 
 ///////////////////////////////////////////////////////////////////////////////
+// Code Coverage
+///////////////////////////////////////////////////////////////////////////////
+Task("Generate-Coverage")
+.IsDependentOn("Build")
+.Does(() => 
+{
+	try
+	{
+		OpenCover(
+			tool => 
+			{
+				tool.DotNetCoreTest("./tests/Yaapii.Xambly.Tests/",
+				new DotNetCoreTestSettings
+				{
+					 Configuration = "Release"
+				});
+			},
+			new FilePath("./coverage.xml"),
+			new OpenCoverSettings()
+			{
+				OldStyle = true
+			}
+			.WithFilter("+[*]*")
+			.WithFilter("-[*.Tests]*")
+		);
+	}
+	catch(Exception ex)
+	{
+		Information("Error: " + ex.ToString());
+	}
+});
+
+Task("Upload-Coverage")
+.IsDependentOn("Generate-Coverage")
+.IsDependentOn("GetCredentials")
+.WithCriteria(() => isAppVeyor)
+.Does(() =>
+{
+    Codecov("coverage.xml", codecovToken);
+});
+
+///////////////////////////////////////////////////////////////////////////////
 // Packaging
 ///////////////////////////////////////////////////////////////////////////////
 Task("Pack")
@@ -129,6 +175,7 @@ Task("GetCredentials")
 {
     username = EnvironmentVariable("GITHUB_USERNAME");
     password = EnvironmentVariable("GITHUB_PASSWORD");
+	codecovToken = EnvironmentVariable("CODECOV_TOKEN");
 });
 
 Task("Release")
@@ -159,6 +206,8 @@ Task("Release")
 Task("Default")
   .IsDependentOn("Build")
   .IsDependentOn("Test")
+    .IsDependentOn("Generate-Coverage")
+  .IsDependentOn("Upload-Coverage")
   .IsDependentOn("Pack")
   .IsDependentOn("Release")
   .Does(() =>
