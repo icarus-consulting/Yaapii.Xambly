@@ -117,10 +117,13 @@ namespace Yaapii.Xml.Xambly.Directive
         {
             var dirs = new Directives();
             var node = _node.Value();
-            dirs.Add(node.Name);
-            foreach (XmlAttribute attr in node.Attributes)
+            if (node.NodeType == XmlNodeType.Element)
             {
-                dirs.Attr(attr.Name, attr.Value);
+                dirs.Add(node.Name);
+                foreach (XmlAttribute attr in node.Attributes)
+                {
+                    dirs.Attr(attr.Name, attr.Value);
+                }
             }
 
             foreach (XmlNode child in node.ChildNodes)
