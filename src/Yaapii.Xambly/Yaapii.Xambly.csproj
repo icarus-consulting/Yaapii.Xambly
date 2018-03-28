@@ -13,6 +13,11 @@
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
     <Exec Command="java -jar $(ProjectDir)/tools/antlr-4.6-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xambly.g" />
   </Target>
