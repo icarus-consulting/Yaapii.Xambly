@@ -23,7 +23,7 @@
 using System.Xml;
 using Xunit;
 
-namespace Yaapii.Xml.Xambly.Arg.Tests
+namespace Yaapii.Xambly.Arg.Tests
 {
     public class UnescapedTest
     {

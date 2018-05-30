@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xambly.Tests
 {
     public sealed class LowerXamblerTests
     {

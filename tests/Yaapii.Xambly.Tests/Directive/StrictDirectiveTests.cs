@@ -3,8 +3,9 @@ using System.IO;
 using System.Xml;
 using System.Xml.XPath;
 using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly.Directive.Tests
+namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class StrictDirectiveTests
     {

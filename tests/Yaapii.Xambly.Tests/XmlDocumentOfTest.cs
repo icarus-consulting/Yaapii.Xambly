@@ -2,7 +2,7 @@
 using Xunit;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xambly.Tests
 {
     public class XmlDocumentOfTest
     {

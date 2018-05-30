@@ -19,10 +19,10 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly;
-using Yaapii.Xml.Xambly.Error;
+using Yaapii.Xambly;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Decorator of Processor of Xambly directives, main entry point to the module.

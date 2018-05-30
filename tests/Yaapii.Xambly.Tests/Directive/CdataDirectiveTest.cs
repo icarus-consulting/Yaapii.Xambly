@@ -23,7 +23,7 @@
 using System.Xml;
 using Xunit;
 
-namespace Yaapii.Xml.Xambly.Directive.Tests
+namespace Yaapii.Xambly.Directive.Tests
 {
     public class CdataDirectiveTest
     {

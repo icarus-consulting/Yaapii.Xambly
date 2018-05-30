@@ -20,8 +20,9 @@ using System.Linq;
 using System.Xml;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// STRICT directive.

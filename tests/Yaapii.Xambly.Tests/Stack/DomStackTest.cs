@@ -21,9 +21,10 @@
 // SOFTWARE.
 
 using Xunit;
-using Yaapii.Xml.Xambly.Tests;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Tests;
 
-namespace Yaapii.Xml.Xambly.Stack.Tests
+namespace Yaapii.Xambly.Stack.Tests
 {
     public class DomStackTest
     {

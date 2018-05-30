@@ -27,7 +27,7 @@ using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 
-namespace Yaapii.Xml.Xambly.Arg
+namespace Yaapii.Xambly.Arg
 {
     /// <summary>
     /// XML content with unescaped representation of all XML symbols.
@@ -40,7 +40,6 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Un-escape all XML symbols.
         /// </summary>
         /// <param name="src">The XML text</param>
-        /// <exception cref="XmlContentException">If fails</exception>
         public Unescaped(IArg src) : this(new ScalarOf<string>(() => src.AsString()))
         { }
 
@@ -48,7 +47,6 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Un-escape all XML symbols.
         /// </summary>
         /// <param name="src">The XML text</param>
-        /// <exception cref="XmlContentException">If fails</exception>
         public Unescaped(string src) : this(new ScalarOf<string>(src))
         { }
 
@@ -56,7 +54,7 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Un-escape all XML symbols.
         /// </summary>
         /// <param name="src">The XML text</param>
-        /// <exception cref="XmlContentException">If fails</exception>
+
         private Unescaped(IScalar<string> src)
         {
             this._src = src;
@@ -66,6 +64,8 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Un-escaped XML content.
         /// </summary>
         /// <returns>XML string</returns>
+        /// <exception cref="ArgumentOutOfRangeException">If fails</exception>
+        /// <exception cref="XmlException">If fails</exception>
         public string AsString()
         {
             var str = _src.Value();

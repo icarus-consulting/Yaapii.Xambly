@@ -22,7 +22,7 @@
 
 using System.Text;
 
-namespace Yaapii.Xml.Xambly.Arg
+namespace Yaapii.Xambly.Arg
 {
     /// <summary>
     /// Argument properly escaped.
@@ -35,7 +35,7 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Argument properly escaped.
         /// </summary>
         /// <param name="val">Value of it</param>
-        /// <exception cref="XmlContentException">If fails</exception>
+        /// <exception cref="NotIllegal">If fails</exception>
         public ArgOf(string val)
         {
             foreach (char chr in val.ToCharArray())

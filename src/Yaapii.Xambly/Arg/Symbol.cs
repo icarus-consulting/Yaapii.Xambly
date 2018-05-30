@@ -25,7 +25,7 @@ using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Text;
 
-namespace Yaapii.Xml.Xambly.Arg
+namespace Yaapii.Xambly.Arg
 {
     /// <summary>
     /// Character repensentation of a XML symbol.

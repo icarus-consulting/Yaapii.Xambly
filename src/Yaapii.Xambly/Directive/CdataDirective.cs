@@ -22,9 +22,9 @@
 
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// CDATA directive.
@@ -39,7 +39,6 @@ namespace Yaapii.Xml.Xambly.Directive
         /// Sets CDATA value of current node
         /// </summary>
         /// <param name="val">Text value to set</param>
-        /// <exception cref="XmlContentException">If invalid input</exception>
         public CdataDirective(string val)
         {
             _value = new ArgOf(val);

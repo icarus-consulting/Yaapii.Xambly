@@ -22,7 +22,7 @@
 
 using System;
 
-namespace Yaapii.Xml.Xambly.Error
+namespace Yaapii.Xambly.Error
 {
     /// <summary>
     /// When argument illegal.

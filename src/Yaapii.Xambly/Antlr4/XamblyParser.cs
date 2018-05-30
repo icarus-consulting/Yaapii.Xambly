@@ -23,10 +23,10 @@
 using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly;
-using Yaapii.Xml.Xambly.Arg;
-using Yaapii.Xml.Xambly.Error;
-using Yaapii.Xml.Xambly.Directive;
+using Yaapii.Xambly;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Directive;
 
 using System;
 using System.Text;

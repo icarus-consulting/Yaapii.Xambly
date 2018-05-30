@@ -24,7 +24,7 @@ using System.Text;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Text;
 
-namespace Yaapii.Xml.Xambly.Arg
+namespace Yaapii.Xambly.Arg
 {
     /// <summary>
     /// XML content with escaped representation of all unprintable XML symbols.

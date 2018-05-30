@@ -23,10 +23,10 @@
 using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
-using Yaapii.Xml.Xambly.Cursor;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Cursor;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// ADDIF directive.
@@ -41,7 +41,6 @@ namespace Yaapii.Xml.Xambly
         /// Adds new node, if it's absent.
         /// </summary>
         /// <param name="node">Name of node to add</param>
-        /// <exception cref="XmlContentException">If invalid input</exception>
         public AddIfDirective(string node)
         {
             _name = new ArgOf(node);

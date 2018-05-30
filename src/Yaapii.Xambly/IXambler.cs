@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Interface for Processor of Xambly directives (main entry point to the module)

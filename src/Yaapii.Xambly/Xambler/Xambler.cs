@@ -26,12 +26,12 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly;
-using Yaapii.Xml.Xambly.Error;
-using Yaapii.Xml.Xambly.Stack;
-using Yaapii.Xml.Xambly.Cursor;
+using Yaapii.Xambly;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Stack;
+using Yaapii.Xambly.Cursor;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Processor of Xambly directives, main entry point to the module.
@@ -190,9 +190,8 @@ namespace Yaapii.Xml.Xambly
         /// <summary>
         /// Convert to XML Document.
         /// </summary>
-        /// <param name="withHeader">Option to create the XML header in the XML document or not</param>
-        /// <returns>The xml.</returns>
         /// <param name="withHeader">Option to get the XML Document with or without header (version, encoding)</param>
+        /// <returns>The xml.</returns>
         public string Xml(bool withHeader = true)
         //public string Xml()
         {

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// Stack.
@@ -31,14 +31,12 @@ namespace Yaapii.Xml.Xambly
         /// Push cursor.
         /// </summary>
         /// <param name="cursor">Cursor to push</param>
-        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         void Push(ICursor cursor);
 
         /// <summary>
         /// Pop cursor.
         /// </summary>
         /// <returns>Cursor recently added</returns>
-        /// <exception cref="ImpossibleModificationException">If fails</exception>"
         ICursor Pop();
     }
 }

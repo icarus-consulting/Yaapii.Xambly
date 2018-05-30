@@ -27,7 +27,7 @@ using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     ///<summary>
     /// Creates a collection of directives, which can create a copy
@@ -117,10 +117,13 @@ namespace Yaapii.Xml.Xambly.Directive
         {
             var dirs = new Directives();
             var node = _node.Value();
-            dirs.Add(node.Name);
-            foreach (XmlAttribute attr in node.Attributes)
+            if (node.NodeType == XmlNodeType.Element)
             {
-                dirs.Attr(attr.Name, attr.Value);
+                dirs.Add(node.Name);
+                foreach (XmlAttribute attr in node.Attributes)
+                {
+                    dirs.Attr(attr.Name, attr.Value);
+                }
             }
 
             foreach (XmlNode child in node.ChildNodes)

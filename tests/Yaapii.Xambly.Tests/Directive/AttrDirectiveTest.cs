@@ -23,10 +23,10 @@
 using System.Xml;
 using Xunit;
 using Yaapii.Atoms.List;
-using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Xml.Xambly.Stack;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Stack;
 
-namespace Yaapii.Xml.Xambly.Directive.Tests
+namespace Yaapii.Xambly.Directive.Tests
 {
     public class AttrDirectiveTest
     {

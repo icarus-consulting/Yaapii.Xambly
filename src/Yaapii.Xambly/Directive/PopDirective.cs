@@ -23,7 +23,7 @@
 using System;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// POP directive.
