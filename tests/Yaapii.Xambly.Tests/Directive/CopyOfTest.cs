@@ -60,7 +60,7 @@ namespace Yaapii.Xambly.Tests.Directive
             ).Apply(dom);
 
             Assert.True(
-                new LengthOf(dom.SelectNodes("/dudes/jeff[@name = 'Jeffrey']")).Value()).Value() > 0
+                new LengthOf(dom.SelectNodes("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0
             );
         }
     }
