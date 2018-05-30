@@ -5,12 +5,11 @@
     <Authors>ICARUS Consulting GmbH</Authors>
     <Copyright>ICARUS Consulting GmbH</Copyright>
     <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</RepositoryUrl>
-    <DocumentationFile>artifacts\yaapii.xml.xambly.xml</DocumentationFile>
-    <PackageTags>
-      xml-editor, csharp, xml-documents, xpath, xml-builder
-    </PackageTags>
-    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
+    <DocumentationFile>artifacts\yaapii.xambly.xml</DocumentationFile>
+    <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder
+</PackageTags>
+    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
   
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
