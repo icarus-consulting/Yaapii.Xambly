@@ -24,7 +24,7 @@ using System;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Text;
 
-namespace Yaapii.Xml.Xambly.Arg
+namespace Yaapii.Xambly.Arg
 {
     /// <summary>
     /// A legal XML character.
@@ -37,7 +37,6 @@ namespace Yaapii.Xml.Xambly.Arg
         /// Validate char number and throw exception if it's not legal.
         /// </summary>
         /// <param name="chr"></param>
-        /// <exception cref="XmlContentException">If illegal</exception>
         public NotIllegal(char chr)
         {
             this._chr = chr;
@@ -63,7 +62,7 @@ namespace Yaapii.Xml.Xambly.Arg
         /// <param name="c">Char number</param>
         /// <param name="left">Left number</param>
         /// <param name="right">Right number</param>
-        /// <exception cref="XmlContentException">If illegal</exception>
+        /// <exception cref="System.Xml.XmlException">If illegal</exception>
         private void Range(char c, int left, int right)
         {
             if (c >= left && c <= right)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace Yaapii.Xml.Xambly.Error
+namespace Yaapii.Xambly.Error
 {
     internal class ThrowingErrorListener : BaseErrorListener, IAntlrErrorListener<int>
     {

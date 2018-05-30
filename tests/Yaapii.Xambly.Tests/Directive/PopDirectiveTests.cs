@@ -1,7 +1,8 @@
 ﻿using System.Xml;
 using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly.Directive.Tests
+namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class PopDirectiveTests
     {

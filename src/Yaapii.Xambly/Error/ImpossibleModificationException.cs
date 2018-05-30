@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly.Error
 {
     /// <summary>
     /// When further modification is impossible.

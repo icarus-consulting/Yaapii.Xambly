@@ -1,6 +1,6 @@
 ﻿using System;
 using Yaapii.Atoms.Text;
-namespace Yaapii.Xml.Xambly.Error
+namespace Yaapii.Xambly.Error
 {
     /// <summary>
     /// When parsing of directives is impossible.

@@ -24,7 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xambly.Tests
 {
     internal class FkCursor : ICursor
     {

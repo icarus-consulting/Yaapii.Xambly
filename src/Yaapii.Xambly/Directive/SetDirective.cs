@@ -22,9 +22,9 @@
 
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// SET directive.
@@ -39,7 +39,6 @@ namespace Yaapii.Xml.Xambly
         /// Sets text value of current node.
         /// </summary>
         /// <param name="val">Text value to set</param>
-        /// <exception cref="XmlContentException"> If invalid input</exception>
         public SetDirective(string val)
         {
             _value = new ArgOf(val);

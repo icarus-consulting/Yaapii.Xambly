@@ -25,9 +25,10 @@ using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// ATTR directive.

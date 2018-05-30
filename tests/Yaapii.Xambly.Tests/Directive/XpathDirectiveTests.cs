@@ -5,10 +5,10 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
-using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Xml.Xambly.Stack;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Stack;
 
-namespace Yaapii.Xml.Xambly.Directive.Tests
+namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class XpathDirectiveTests
     {

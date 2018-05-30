@@ -23,10 +23,10 @@
 using System.Collections.Generic;
 using System.Xml;
 using Yaapii.Atoms.Error;
-using Yaapii.Xml.Xambly.Cursor;
-using Yaapii.Xml.Xambly.Error;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// REMOVE directive.

@@ -22,9 +22,9 @@
 
 using System.Xml;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly.Error;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// Namespace directive.

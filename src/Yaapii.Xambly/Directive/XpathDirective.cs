@@ -22,14 +22,15 @@
 
 using System;
 using System.Xml;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 using Yaapii.Atoms.Text;
 using System.Collections.Generic;
-using Yaapii.Xml.Xambly.Cursor;
+using Yaapii.Xambly.Cursor;
 using Yaapii.Atoms.Enumerable;
 using System.Text.RegularExpressions;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly
 {
     /// <summary>
     /// XPATH directive.
@@ -148,13 +149,13 @@ namespace Yaapii.Xml.Xambly
             return arg.Replace("\"", "'");
         }
 
-        /// <summary>
-        /// Fetches only root node.
-        /// The root node is found if <paramref name="root"/> contains "*" or the root node name.
-        /// </summary>
-        /// <param name="root">Root node name</param>
-        /// <param name="dom">Document</param>
-        /// <returns>Found nodes</returns>
+        ///// <summary>
+        ///// Fetches only root node.
+        ///// The root node is found if <paramref name="root"/> contains "*" or the root node name.
+        ///// </summary>
+        ///// <param name="root">Root node name</param>
+        ///// <param name="dom">Document</param>
+        ///// <returns>Found nodes</returns>
         //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
         //{
         //    var rootElem = new XmlDocumentOf(dom).Value().DocumentElement;

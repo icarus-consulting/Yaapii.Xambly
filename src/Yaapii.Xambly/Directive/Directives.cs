@@ -25,9 +25,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Yaapii.Atoms.Text;
-using Yaapii.Xml.Xambly;
-using Yaapii.Xml.Xambly.Directive;
-using Yaapii.Xml.Xambly.Error;
+using Yaapii.Xambly;
+using Yaapii.Xambly.Directive;
+using Yaapii.Xambly.Error;
 using System.Collections;
 using Yaapii.Atoms;
 using System.Xml;
@@ -269,7 +269,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// </code>
     /// <para>
     ///    If a value provided contains illegal XML characters, a exception will be thrown.To avoid this, it is recommended to use
-    ///    <see cref="Yaapii.Xml.Xambly.Arg.Escaped"/>
+    ///    <see cref="Yaapii.Xambly.Arg.Escaped"/>
     /// </para>
     /// </summary>
     /// <typeparam name="Key">type of the key</typeparam>
@@ -324,7 +324,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// Set attribute.
     /// If a value provided contains illegal XML characters, a runtime
     /// exception will be thrown. To avoid this, it is recommended to use
-    /// <see cref="Yaapii.Xml.Xambly.Arg.Escaped"/>.
+    /// <see cref="Yaapii.Xambly.Arg.Escaped"/>.
     /// </summary>
     ///
     /// <param name="name">Name of the attribute</param>
@@ -355,7 +355,7 @@ public sealed class Directives : IEnumerable<IDirective>
     ///
     /// <para>If a value provided contains illegal XML characters, a runtime
     /// exception will be thrown. To avoid this, it is recommended to use
-    /// <see cref="Yaapii.Xml.Xambly.Arg.Escaped"/>
+    /// <see cref="Yaapii.Xambly.Arg.Escaped"/>
     /// </para>
     ///</summary>
     /// <param name="target">target PI name</param>
@@ -501,7 +501,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// Set CDATA section.
     ///
     /// <para>If a value provided contains illegal XML characters, an
-    /// exception will be thrown.To avoid this, it is recommended to use <see cref="Yaapii.Xml.Xambly.Arg.Escaped"/>.
+    /// exception will be thrown.To avoid this, it is recommended to use <see cref="Yaapii.Xambly.Arg.Escaped"/>.
     /// </para>
     /// </summary>
     /// <param name="text">Text to set</param>

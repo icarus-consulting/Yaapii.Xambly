@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 using Xunit;
-using Yaapii.Xml.Xambly.Arg;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xml.Xambly.Tests
+namespace Yaapii.Xambly.Tests
 {
     public class ArgOfTest
     {

@@ -27,7 +27,7 @@ using System.Xml;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 
-namespace Yaapii.Xml.Xambly.Directive
+namespace Yaapii.Xambly.Directive
 {
     ///<summary>
     /// Creates a collection of directives, which can create a copy

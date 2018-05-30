@@ -22,7 +22,7 @@
 
 using System;
 
-namespace Yaapii.Xml.Xambly
+namespace Yaapii.Xambly.Error
 {
     /// <summary>
     /// When syntax is broken.
