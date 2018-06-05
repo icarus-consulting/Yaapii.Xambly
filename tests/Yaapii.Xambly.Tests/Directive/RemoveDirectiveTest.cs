@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Cursor;
@@ -34,16 +35,17 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void RemoveCurrentNode() {
 
-            Assert.True(
+            Assert.Equal(
+                "<root />",
                 new Xambler(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                    new EnumerableOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foobar"),
                         new RemoveDirective()
                     )
                 ).Apply(
-                    new XmlDocument()
-                ).InnerXml == "<root></root>", "Remove node failed"
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting)
             );
         }
 
@@ -57,7 +59,7 @@ namespace Yaapii.Xambly.Directive.Tests
                             new RemoveDirective()
                         )
                     ).Apply(
-                        new XmlDocument()
+                        new XDocument()
                     );
                 }
             );
@@ -73,7 +75,7 @@ namespace Yaapii.Xambly.Directive.Tests
                             new RemoveDirective()
                         )
                     ).Apply(
-                        new XmlDocument()
+                        new XDocument()
                     );
                 }
             );
@@ -82,50 +84,60 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void RemoveDomNodesDirectly()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("root");
-            var first = dom.CreateElement("a");
-            root.AppendChild(first);
-            var second = dom.CreateElement("b");
-            root.AppendChild(second);
+            //var dom = new XmlDocument();
+            //var root = dom.CreateElement("root");
+            //var first = dom.CreateElement("a");
+            //root.AppendChild(first);
+            //var second = dom.CreateElement("b");
+            //root.AppendChild(second);
 
-            dom.AppendChild(root);
+            //dom.AppendChild(root);
+
+            var dom = new XDocument();
+            var root = new XElement("root");
+            var first = new XElement("a");
+            var second = new XElement("b");
+            root.Add(first);
+            root.Add(second);
+            dom.Add(root);
+
 
             new RemoveDirective().Exec(
                 dom,
-                new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(first)),
+                new DomCursor(new EnumerableOf<XNode>(first)),
                 new DomStack()
             );
 
             Assert.True(
-                dom.InnerXml == "<root><b /></root>", "Remove directive failed"
+                dom.ToString(SaveOptions.DisableFormatting) == "<root><b /></root>", "Remove directive failed"
             );
         }
 
         [Fact]
         public void CursorPointsToParents()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("root");
-            var first = dom.CreateElement("a");
-            var firstChild = dom.CreateElement("a_child");
-            first.AppendChild(firstChild);
-            root.AppendChild(first);
-            var second = dom.CreateElement("b");
-            var secondChild = dom.CreateElement("b_child");
-            second.AppendChild(secondChild);
-            root.AppendChild(second);
+            var dom = new XDocument();
+            var root = new XElement("root");
+            var first = new XElement("a");
+            var frstChild = new XElement("a_child");
+            first.Add(frstChild);
 
-            dom.AppendChild(root);
+            var second = new XElement("b");
+            var scndChild = new XElement("b_child");
+            second.Add(scndChild);
+
+            root.Add(first);
+            root.Add(second);
+            dom.Add(root);
 
             var cursor =
                 new RemoveDirective().Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XmlNode>(firstChild, secondChild)),
+                    new DomCursor(new EnumerableOf<XNode>(frstChild, scndChild)),
                     new DomStack()
                 );
             Assert.Equal(
-                new EnumerableOf<XmlNode>(first, second),
+                new EnumerableOf<XNode>(first, second),
                 cursor
             );
         }

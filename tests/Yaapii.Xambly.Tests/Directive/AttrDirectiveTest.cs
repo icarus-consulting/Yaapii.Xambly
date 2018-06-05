@@ -20,9 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
+using System.Xml.Linq;
 using Xunit;
-using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
 
@@ -33,7 +32,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsAttributeToCurrentNode()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
             Assert.True(
                     new Xambler(
                             new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
@@ -44,29 +43,28 @@ namespace Yaapii.Xambly.Directive.Tests
                                 )
                         ).Apply(
                             dom
-                        ).InnerXml == "<root bar=\"test\"><foo /></root>", "add attribute to current node failed");
+                        ).ToString(SaveOptions.DisableFormatting) == "<root bar=\"test\"><foo /></root>", "add attribute to current node failed");
         }
 
         [Fact]
         public void AddsAttributeDirectly()
         {
-
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("xxx");
-            var first = dom.CreateElement("a");
-            root.AppendChild(first);
-            var second = dom.CreateElement("b");
-            root.AppendChild(second);
-            dom.AppendChild(root);
+            var dom = new XDocument();
+            var root = new XElement("xxx");
+            var first = new XElement("a");
+            var second = new XElement("b");
+            root.Add(first);
+            root.Add(second);
+            dom.Add(root);
 
             new AttrDirective("x", "y").Exec(
                     dom,
-                    new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(second)),
+                    new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XNode>(second)),
                     new DomStack()
                 );
 
             Assert.True(
-                dom.InnerXml == "<xxx><a /><b x=\"y\" /></xxx>",
+                dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a /><b x=\"y\" /></xxx>",
                 "Directly add attribute failed"
                 );
 

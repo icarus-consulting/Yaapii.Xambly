@@ -21,8 +21,11 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -32,7 +35,7 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public class CdataDirective : IDirective
     {
-        private readonly IArg _value;
+        private readonly IArg value;
 
         /// <summary>
         /// CDATA directive.
@@ -41,7 +44,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public CdataDirective(string val)
         {
-            _value = new ArgOf(val);
+            this.value = new ArgOf(val);
         }
 
         /// <summary>
@@ -52,7 +55,7 @@ namespace Yaapii.Xambly.Directive
         {
             return new FormattedText(
                             $"CDATA {0}",
-                            this._value.Raw()
+                            this.value.Raw()
                         ).AsString();
         }
 
@@ -63,20 +66,22 @@ namespace Yaapii.Xambly.Directive
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            XmlDocument doc;
-            if(dom.OwnerDocument == null){
-                doc = (XmlDocument)dom;
-            } else {
-                doc = dom.OwnerDocument;
-            }
+            var doc = new XmlDocumentOf(dom).Value();
 
-            var val = this._value.Raw();
+            var val = this.value.Raw();
             foreach (var node in cursor)
             {
-                var cdata = doc.CreateCDataSection(val);
-                node.AppendChild(cdata);
+                var ctn = node as XContainer;
+
+                new FailPrecise(
+                    new FailNull(ctn),
+                    new ImpossibleModificationException("Cannot add CData to a node which is not of type XContainer")
+                ).Go();
+
+                var cdata = new XCData(val);
+                (node as XContainer).Add(cdata);
             }
 
             return cursor;

@@ -22,10 +22,9 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
-using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
-using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -38,7 +37,8 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsProcessingInstructionsToDom() 
         {
-            Assert.True(
+            Assert.Equal(
+                "<root><?ab boom €?><test><?foo some data €?></test></root>",
                 new Xambler(
                         new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new AddDirective("root"),
@@ -46,7 +46,7 @@ namespace Yaapii.Xambly.Directive.Tests
                                 new AddDirective("test"),
                                 new PiDirective("foo", "some data \u20ac")
                             )
-                    ).Dom().InnerXml == "<root><?ab boom €?><test><?foo some data €?></test></root>"
+                    ).Dom().ToString(SaveOptions.DisableFormatting)
             );
         }
 
@@ -65,13 +65,14 @@ namespace Yaapii.Xambly.Directive.Tests
             new PiDirective("x", "y").Exec(
                                         dom,
                                         new DomCursor(
-                                            new List<XmlNode>()
+                                            new List<XNode>()
                                         ),
                                         new DomStack()
                                     );
 
-            Assert.True(
-                dom.InnerXml == "<?x y?><xxx />"
+            Assert.Equal(
+                "<?x y?><xxx />",
+                dom.ToString(SaveOptions.DisableFormatting)
             );
         }
 
@@ -88,8 +89,9 @@ namespace Yaapii.Xambly.Directive.Tests
                             )
                         ).Dom();
 
-            Assert.True(
-                dom.InnerXml == "<?alpha beta €?><x4 />"
+            Assert.Equal(
+                "<?alpha beta €?><x4 />",
+                dom.ToString(SaveOptions.DisableFormatting)
             );
         }
     }

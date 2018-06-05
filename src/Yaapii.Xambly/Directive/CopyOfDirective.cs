@@ -24,7 +24,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 using Yaapii.Atoms;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Scalar;
 
 namespace Yaapii.Xambly.Directive
@@ -52,7 +54,7 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class CopyOfDirective : IEnumerable<IDirective>
     {
-        private readonly IScalar<XmlNode> _node;
+        private readonly IScalar<XNode> node;
 
 
         ///<summary>
@@ -78,7 +80,7 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="node"><see cref="XmlNode"/> to analyze</param>
         /// <returns>Collection of directives</returns>
-        public CopyOfDirective(XmlNode node) : this(new ScalarOf<XmlNode>(node))
+        public CopyOfDirective(XNode node) : this(new ScalarOf<XNode>(node))
         { }
 
         ///<summary>
@@ -102,11 +104,11 @@ namespace Yaapii.Xambly.Directive
         /// );
         /// </param>
         /// </summary>
-        /// <param name="node"><see cref="XmlNode"/> to analyze</param>
+        /// <param name="node"><see cref="XNode"/> to analyze</param>
         /// <returns>Collection of directives</returns>
-        private CopyOfDirective(IScalar<XmlNode> node)
+        private CopyOfDirective(IScalar<XNode> node)
         {
-            _node = node;
+            this.node = node;
         }
 
         /// <summary>
@@ -115,29 +117,43 @@ namespace Yaapii.Xambly.Directive
         /// <returns></returns>
         public IEnumerator<IDirective> GetEnumerator()
         {
+            //IEnumerable<IDirective> dirs = new EnumerableOf<IDirective>();// new Directives();
             var dirs = new Directives();
-            var node = _node.Value();
+            var node = this.node.Value();
             if (node.NodeType == XmlNodeType.Element)
             {
-                dirs.Add(node.Name);
-                foreach (XmlAttribute attr in node.Attributes)
+                var elmnt = node as XElement;
+                //dirs = new Joined<IDirective>(dirs, new AddDirective(elmnt.Name.LocalName));// dirs.Add( node.Name);
+                dirs
+                    .Add(elmnt.Name)
+                    .Set(elmnt.Value);
+                
+                foreach (XAttribute attr in elmnt.Attributes())
                 {
+                    //dirs = new Joined<IDirective>(dirs, new AttrDirective(attr.Name.LocalName, attr.Value));
                     dirs.Attr(attr.Name, attr.Value);
                 }
             }
 
-            foreach (XmlNode child in node.ChildNodes)
+            var ctn = node as XContainer;
+            //@TODO: Add failing for null
+
+            foreach (XElement child in ctn.Elements())
             {
                 switch (child.NodeType)
                 {
                     case XmlNodeType.Text:
                     case XmlNodeType.CDATA:
+                        //dirs = new Joined<IDirective>(dirs, new SetDirective(child.Value));
                         dirs.Set(child.Value);
                         break;
                     case XmlNodeType.Element:
+                        //dirs = new Joined<IDirective>(dirs,new CopyOfDirective(child));
+                        //dirs = new Joined<IDirective>(dirs, new UpDirective());
                         dirs.Append(new CopyOfDirective(child)).Up();
                         break;
                     case XmlNodeType.ProcessingInstruction:
+                        //dirs = new Joined<IDirective>(dirs, new PiDirective(child.Name.LocalName, child.Value));
                         dirs.Pi(child.Name, child.Value);
                         break;
                     case XmlNodeType.Attribute:
@@ -147,7 +163,7 @@ namespace Yaapii.Xambly.Directive
                     case XmlNodeType.DocumentType:
                         break;
                     default:
-                        throw new ArgumentException($"unsupported type {child.NodeType} of node {node.Name}");
+                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child.Name.LocalName}");
                 }
             }
 

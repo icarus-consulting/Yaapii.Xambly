@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,6 +16,14 @@
   <Target Name="PreBuild" AfterTargets="PreBuildEvent">
     <Exec Command="java -jar $(ProjectDir)/tools/antlr-4.6-complete.jar -Dlanguage=CSharp $(ProjectDir)\Antlr4\Xambly.g" />
   </Target>
+  
+  <ItemGroup>
+    <Compile Remove="Xambler\LowerXambler.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Xambler\LowerXambler.cs" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />

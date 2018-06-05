@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Cursor;
@@ -58,16 +59,16 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var parents = new HashSet<XmlNode>();
+            var parents = new HashSet<XNode>();
             foreach (var node in cursor)
             {
-                var parent = node.ParentNode;
+                var parent = node.Parent;
                 new FailPrecise(
                     new FailNull(parent),
                     new ImpossibleModificationException(
-                            new FormattedText("there is no parent node of '{0}' ({1}), can't go UP",node.Name,node.NodeType).AsString()
+                            new FormattedText("there is no parent node of '{0}' ({1}), can't go UP",node.ToString(SaveOptions.DisableFormatting),node.NodeType).AsString()
                         )).Go();
 
                 parents.Add(parent);

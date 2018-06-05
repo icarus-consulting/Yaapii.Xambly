@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
@@ -58,7 +59,7 @@ namespace Yaapii.Xambly
         /// <param name="cursor">cursor</param>
         /// <param name="stack">the stack</param>
         /// <returns></returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var lengthOfCursor = new Yaapii.Atoms.Enumerable.LengthOf(cursor).Value();
 
@@ -77,7 +78,7 @@ namespace Yaapii.Xambly
                     throw new ImpossibleModificationException(
                         new FormattedText(
                             "one current node '{0}' while strictly {1} expected",
-                            new Yaapii.Atoms.Enumerable.ItemAt<XmlNode>(cursor).Value().Name,
+                            new Yaapii.Atoms.Enumerable.ItemAt<XNode>(cursor).Value().ToString(SaveOptions.DisableFormatting),
                             _number
                         ).AsString());
                 }
@@ -114,13 +115,13 @@ namespace Yaapii.Xambly
         /// <summary> Node names as a string. </summary>
         /// <param name="nodes"> IEnumerable of nodes </param>
         /// <returns> Text presentation of them </returns>
-        private string Names(IEnumerable<XmlNode> nodes)
+        private string Names(IEnumerable<XNode> nodes)
         {
-            var nodeNames = new Mapped<XmlNode, string>(
+            var nodeNames = new Mapped<XNode, string>(
                 tNode => new FormattedText(
                     "{0}/{1}", 
-                    tNode.ParentNode?.Name + String.Empty,
-                    tNode.Name
+                    tNode.Parent?.Name + String.Empty,
+                    (tNode as XElement).Name
                 ).AsString(),
                 nodes
             );

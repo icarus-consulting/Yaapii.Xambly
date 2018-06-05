@@ -1,4 +1,6 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
@@ -11,7 +13,7 @@ namespace Yaapii.Xambly.Tests.Directive
         [Fact]
         public void CopiesExistingNode()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
             var content = 
                 new JoinedText(
                     "",
@@ -21,26 +23,27 @@ namespace Yaapii.Xambly.Tests.Directive
                     "<!-- some comment -->",
                     "<x><![CDATA[hey you]]></x>  </jeff>"
                 );
-            var xml = new XmlDocument();
-            xml.LoadXml(content.AsString());
+            var xml = XDocument.Parse(content.AsString());      
             new Xambler(
-                new Directives()
-                    .Add("dudes")
-                    .Append(new CopyOfDirective(xml.DocumentElement)
+                new Joined<IDirective>(
+                    new EnumerableOf<IDirective>(
+                        new AddDirective("dudes")
+                    ),
+                    new CopyOfDirective(xml.Root)
                 )
             ).Apply(dom);
 
             Assert.True(
-                new LengthOf(dom.SelectNodes("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0 &&
-                new LengthOf(dom.SelectNodes("/dudes/jeff[first and second]")).Value() > 0 &&
-                new LengthOf(dom.SelectNodes("/dudes/jeff/file[@a='x']/f[name='\u20ac']")).Value() > 0
+                new LengthOf(dom.XPathSelectElements("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0 &&
+                new LengthOf(dom.XPathSelectElements("/dudes/jeff[first and second]")).Value() > 0 &&
+                new LengthOf(dom.XPathSelectElements("/dudes/jeff/file[@a='x']/f[name='\u20ac']")).Value() > 0
             );
         }
 
         [Fact]
         public void CopyOfXmlDocument()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
             var content =
                 new JoinedText(
                     "",
@@ -50,17 +53,18 @@ namespace Yaapii.Xambly.Tests.Directive
                     "<!-- some comment -->",
                     "<x><![CDATA[hey you]]></x>  </jeff>"
                 );
-            var xml = new XmlDocument();
-            xml.LoadXml(content.AsString());
+            var xml = XDocument.Parse(content.AsString());
             new Xambler(
-                new Directives()
-                    .Add("dudes")
-                    .Append(new CopyOfDirective(xml)
+                new Joined<IDirective>(
+                     new EnumerableOf<IDirective>(
+                        new AddDirective("dudes")
+                    ),
+                    new CopyOfDirective(xml.Root)
                 )
             ).Apply(dom);
 
             Assert.True(
-                new LengthOf(dom.SelectNodes("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0
+                new LengthOf(dom.XPathSelectElements("/dudes/jeff[@name = 'Jeffrey']")).Value() > 0
             );
         }
     }

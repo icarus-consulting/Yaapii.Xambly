@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -20,22 +21,25 @@ namespace Yaapii.Xambly.Directive.Tests
         [InlineData("/root/bar")]
         public void FindsNodesWithXpathExpression(string testXPath)
         {
-            var dom = new XmlDocument();
-
+            var dom = new XDocument();
             new Xambler(
-                new Directives(
-                    "ADD 'root'; ADD 'foo'; ATTR 'bar', '1'; UP; ADD 'bar';"
+               new EnumerableOf<IDirective>(
+                        new AddDirective("root"),
+                        new AddDirective("foo"),
+                        new AttrDirective("bar", "1"),
+                        new UpDirective(),
+                        new AddDirective("bar")
                 )
             ).Apply(dom);
+
             new Xambler(
-                new Directives(
-                    "XPATH '//*[@bar=1]'; ADD 'test';"
-                )
+                new XpathDirective("//*[@bar=1]"),
+                new AddDirective("test")
             ).Apply(dom);
 
             Assert.True(
                 null != FromXPath(
-                    dom.InnerXml.ToString(),
+                    dom.ToString(SaveOptions.DisableFormatting),
                     testXPath
                 )
             );
@@ -47,15 +51,18 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void IgnoresEmptySearches()
         {
-            var dom = new XmlDocument();
-            dom.AppendChild(dom.CreateElement("top"));
+            var dom =
+                new XDocument(
+                    new XElement("top")
+                );
 
             new Xambler(
-                new Directives(
-                    "XPATH '/nothing'; XPATH '/top'; STRICT '1'; ADD 'hey';"
-                )
+                    new XpathDirective("/nothing"),
+                    new XpathDirective("/top"),
+                    new StrictDirective(1),
+                    new AddDirective("hey")
             ).Apply(dom);
-            Assert.NotNull(FromXPath(dom.InnerXml.ToString(), "/top/hey"));
+            Assert.NotNull(FromXPath(dom.ToString(SaveOptions.DisableFormatting), "/top/hey"));
         }
 
         /// <summary>
@@ -64,13 +71,23 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsNodesByXpathDirectly()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("xxx");
-            var first = dom.CreateElement("a");
-            root.AppendChild(first);
-            var second = dom.CreateElement("b");
-            root.AppendChild(second);
-            dom.AppendChild(root);
+            //var dom = new XmlDocument();
+            //var root = dom.CreateElement("xxx");
+            //var first = dom.CreateElement("a");
+            //root.AppendChild(first);
+            //var second = dom.CreateElement("b");
+            //root.AppendChild(second);
+            //dom.AppendChild(root);
+
+            var dom = new XDocument();
+            var root = new XElement("xxx");
+            var first = new XElement("a");
+            var second = new XElement("b");
+            root.Add(first);
+            root.Add(second);
+            dom.Add(root);
+
+
             Assert.Contains(
                 root,
                 new XpathDirective(
@@ -78,7 +95,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XmlNode>(first)
+                        new Atoms.Enumerable.EnumerableOf<XNode>(first)
                     ),
                     new DomStack()
                 )
@@ -91,14 +108,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsNodesInEmptyDom()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             Assert.Empty(
                 new XpathDirective(
                     "/some-root").Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XmlNode>()
+                        new Atoms.Enumerable.EnumerableOf<XNode>()
                     ),
                     new DomStack()
                 )
@@ -108,10 +125,12 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithDoubleQuotes()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             new Xambler(
-                new Directives().Add("Tags").Add("Tag").Set("Transient")
+                new AddDirective("Tags"),
+                new AddDirective("Tag"),
+                new SetDirective("Transient")
             ).Apply(dom);
             
 
@@ -120,7 +139,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "//Tag[contains(.,'Transient')]").Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XmlNode>(dom)
+                        new Atoms.Enumerable.EnumerableOf<XNode>(dom)
                     ),
                     new DomStack()
                 )
@@ -133,29 +152,31 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsRootInClonedNode()
         {
-            var dom = new XmlDocument();
-            dom.AppendChild(
-                dom.CreateElement(
-                    "high"));
-            var clone = dom.CloneNode(true);
+            var dom = 
+                new XDocument(
+                    new XElement("high")
+                );
+
+            var clone = new XDocument(dom);
             new Xambler(
-                new Directives(
-                    "XPATH '/*'; STRICT '1'; ADD 'boom-5';"
-                )
+                new XpathDirective("/*"),
+                new StrictDirective(1),
+                new AddDirective("boom-5")
             ).Apply(clone);
+
             Assert.NotNull(
-                FromXPath(clone.InnerXml.ToString(), "/high/boom-5")
+                FromXPath(clone.ToString(SaveOptions.DisableFormatting), "/high/boom-5")
             );
         }
 
         [Fact]
         public void NavigatesFromRoot()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("root");
-            var first = dom.CreateElement("child");
-            root.AppendChild(first);
-            dom.AppendChild(root);
+            var dom = new XDocument();
+            var root = new XElement("root");
+            var first = new XElement("child");
+            root.Add(first);
+            dom.Add(root);
 
             Assert.Contains(
                 first,
@@ -163,7 +184,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "/root/child"
                 ).Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XmlNode>(first)),
+                    new DomCursor(new EnumerableOf<XNode>(first)),
                     new DomStack()
                 )
             );
@@ -172,13 +193,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void NavigatesFromRootWithStrangerCursor()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("root");
-            var first = dom.CreateElement("child");
-            root.AppendChild(first);
-            dom.AppendChild(root);
+            var dom = new XDocument();
+            var root = new XElement("root");
+            var first = new XElement("child");
+            root.Add(first);
+            dom.Add(root);
+
             // this element doesn't belongs to the dom!
-            var strangerCursor = dom.CreateElement("deleted");
+            var strangerCursor = new XElement("deleted");
 
             Assert.Contains(
                 first,
@@ -186,7 +208,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "/root/child"
                 ).Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XmlNode>(strangerCursor)),
+                    new DomCursor(new EnumerableOf<XNode>(strangerCursor)),
                     new DomStack()
                 )
             );

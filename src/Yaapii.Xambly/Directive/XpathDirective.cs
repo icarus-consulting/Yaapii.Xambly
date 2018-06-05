@@ -21,13 +21,15 @@
 // SOFTWARE.
 
 using System;
-using System.Xml;
-using Yaapii.Xambly.Arg;
-using Yaapii.Atoms.Text;
 using System.Collections.Generic;
-using Yaapii.Xambly.Cursor;
-using Yaapii.Atoms.Enumerable;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Scalar;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly
@@ -81,9 +83,9 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            IEnumerable<XmlNode> targets;
+            IEnumerable<XNode> targets;
             string query = SingleQuoted(this._expr.Raw());
 
             if (AbsoluteXPath(query))
@@ -92,8 +94,8 @@ namespace Yaapii.Xambly
                     this.Traditional(
                         query,
                         dom,
-                        new EnumerableOf<XmlNode>(
-                            new XmlDocumentOf(dom).Value().DocumentElement
+                        new EnumerableOf<XNode>(
+                            new XmlDocumentOf(dom).Value().Document
                         )
                     );
             }
@@ -114,26 +116,32 @@ namespace Yaapii.Xambly
         /// <param name="current">Nodes we're currently at</param>
         /// <returns>Found nodes</returns>
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
-        private IEnumerable<XmlNode> Traditional(string query, XmlNode dom, IEnumerable<XmlNode> current)
+        private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current)
         {
-            var targets = new HashSet<XmlNode>();
-            foreach(XmlNode node in this.Roots(dom, current))
+            var targets = new HashSet<XNode>();
+            foreach(XNode node in Roots(dom, current))
             {
-                XmlNodeList list;
+                IEnumerable<XElement> list;
                 try
                 {
-                    list = node.SelectNodes(query);
+                    list = node.XPathSelectElements(query);
                 }
                 catch(Exception ex)
                 {
                     throw new ImpossibleModificationException(
                         new FormattedText("invalid XPath expr '{0}' ({1})", query, ex.Message).AsString(), ex);
                 }
-                int len = list.Count;
-                for (int idx = 0; idx < len;++idx)
-                {
-                    targets.Add(list.Item(idx));
-                }
+
+                new Each<XElement>(
+                    elmnt => targets.Add(elmnt),
+                    list
+                ).Invoke();
+
+                //int len = list.Count;
+                //for (int idx = 0; idx < len;++idx)
+                //{
+                //    targets.Add(list.Item(idx));
+                //}
             }
 
             return targets;
@@ -179,22 +187,22 @@ namespace Yaapii.Xambly
         /// <param name="dom">Document</param>
         /// <param name="nodes">Current nodes</param>
         /// <returns>Root nodes to start searching from</returns>
-        private IEnumerable<XmlNode> Roots(XmlNode dom, IEnumerable<XmlNode> nodes)
+        private IEnumerable<XNode> Roots(XNode dom, IEnumerable<XNode> nodes)
         {
-            IEnumerable<XmlNode> roots = nodes;
+            IEnumerable<XNode> roots = nodes;
 
             // Return document root if there are no nodes.
             if (new LengthOf(nodes).Value() == 0)
             {
-                roots = new EnumerableOf<XmlNode>(
+                roots = new EnumerableOf<XNode>(
                     new XmlDocumentOf(
                         dom
-                    ).Value().DocumentElement);
+                    ).Value().Document);
             }
             
             // DocumentElement may be null. Then remove it from the list.
             roots = 
-                new Filtered<XmlNode>(
+                new Filtered<XNode>(
                     (node) => node != null,
                     roots
                 );

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
-using System.Xml.XPath;
-using System.Collections;
-using System.Collections.Concurrent;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -45,19 +41,20 @@ namespace Yaapii.Xambly.Directive
         /// <param name="cursor">Elements to change the text for</param>
         /// <param name="stack"></param>
         /// <returns></returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         { 
             XPathNavigator nav = dom.CreateNavigator();
-            Dictionary<XmlNode, string> values = new Dictionary<XmlNode, string>(0);
+            Dictionary<XElement, string> values = new Dictionary<XElement, string>(0);
 
-            foreach (XmlNode node in cursor)
+            foreach (XNode node in cursor)
             {
-                values.Add(node, nav.Evaluate(_expr.Raw()).ToString());   
+                var elmnt = node as XElement;
+                values.Add(elmnt, nav.Evaluate(_expr.Raw()).ToString());   
             }
 
-            foreach (KeyValuePair<XmlNode, string> pair in values)
+            foreach (KeyValuePair<XElement, string> pair in values)
             {
-                (pair.Key).InnerText = pair.Value;
+                (pair.Key).Value = pair.Value;
             }
             return cursor;
         }

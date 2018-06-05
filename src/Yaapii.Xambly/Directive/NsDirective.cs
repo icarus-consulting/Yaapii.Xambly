@@ -20,8 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
@@ -32,7 +34,12 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public class NsDirective : IDirective
     {
-        private readonly IArg _namespace;
+        private readonly IArg nsp;
+
+        public NsDirective(string nsp): this(new ArgOf(nsp))
+        {
+
+        }
 
         /// <summary>
         /// Namespace directive.
@@ -41,7 +48,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="nsp"></param>
         public NsDirective(IArg nsp)
         {
-            _namespace = nsp;
+            this.nsp = nsp;
         }
 
         /// <summary>
@@ -52,7 +59,7 @@ namespace Yaapii.Xambly.Directive
         {
             return new FormattedText(
                             "NS {0}",
-                            this._namespace
+                            this.nsp
                         ).AsString();
         }
 
@@ -63,15 +70,33 @@ namespace Yaapii.Xambly.Directive
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             try
             {
-                var attr = new AttrDirective(
-                                    "xmlns",
-                                    this._namespace.Raw()
-                                );
-                return attr.Exec(dom, cursor, stack);
+                XElement elmnt = null;
+                if(dom is XDocument)
+                {
+                    elmnt = (dom as XDocument).Root;
+                } else
+                {
+                    elmnt = dom as XElement;
+                }
+
+
+                new FailWhen(
+                        !(dom is XContainer)
+                    ).Go();
+
+                //var node = dom as XContainer;
+                XNamespace xnsp = this.nsp.Raw();
+                elmnt.Name = xnsp + elmnt.Name.LocalName;
+                
+                //foreach (var element in node.Elements())
+                //{
+                //    element.Name = xnsp + element.Name.LocalName;
+                //}
+                return cursor;
             }
             catch (XmlContentException ex)
             {

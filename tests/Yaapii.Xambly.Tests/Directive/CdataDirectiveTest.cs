@@ -21,7 +21,9 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -29,17 +31,16 @@ namespace Yaapii.Xambly.Directive.Tests
     {
         [Fact]
         public void AddsCdataSectionToCurrentNode() {
-            var dom = new XmlDocument();
-            Assert.True(
+            var dom = new XDocument();
+            Assert.Equal(
+                    "<root><foo><![CDATA[Hello World]]></foo></root>",
                     new Xambler(
-                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
-                                    new AddDirective("root"),
-                                    new AddDirective("foo"),
-                                    new CdataDirective("Hello World")
-                                )
-                        ).Apply(
-                            dom
-                ).InnerXml == "<root><foo><![CDATA[Hello World]]></foo></root>", "add cdata to current node failed");
+                        new EnumerableOf<IDirective>(
+                                new AddDirective("root"),
+                                new AddDirective("foo"),
+                                new CdataDirective("Hello World")
+                            )
+                    ).Apply(dom).ToString(SaveOptions.DisableFormatting));
         }
     }
 }

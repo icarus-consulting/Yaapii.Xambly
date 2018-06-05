@@ -1,6 +1,7 @@
 ﻿using System;
 using Xunit;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Tests
 {
@@ -9,12 +10,14 @@ namespace Yaapii.Xambly.Tests
         [Fact]
         public void GetsDocFromNode()
         {
-            var doc = new XmlDocument();
-            var node = doc.CreateElement("test");
-            doc.AppendChild(node);
+            var doc = new XDocument();
+            //var node = doc.CreateElement("test");
+            var child = new XElement("child");
+            var node = new XElement("test", child);
+            doc.Add(node);
            
             Assert.True(
-                new XmlDocumentOf(node).Value().ChildNodes.Item(0) == node);
+                new XmlDocumentOf(child).Value().FirstNode == node);
         }
     }
 }

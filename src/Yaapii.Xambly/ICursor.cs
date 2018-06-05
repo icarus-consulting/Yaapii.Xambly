@@ -22,11 +22,12 @@
 
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly
 {
     /// <summary>
     /// Cursor.
     /// </summary>
-    public interface ICursor : IEnumerable<XmlNode> { }
+    public interface ICursor : IEnumerable<XNode> { }
 }

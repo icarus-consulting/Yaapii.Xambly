@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 
@@ -60,13 +62,18 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var val = _value.Raw();
 
             foreach (var node in cursor)
             {
-                node.InnerText = val;
+                new FailWhen(
+                        !(node is XElement)
+                    ).Go();
+
+                (node as XElement).Value = val;
+                //node.InnerText = val;
             }
 
             return cursor;

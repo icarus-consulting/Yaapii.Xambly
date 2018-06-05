@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
-using Yaapii.Atoms.List;
+using System.Xml.Linq;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 
@@ -33,8 +33,8 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public class PiDirective : IDirective
     {
-        private readonly IArg _target;
-        private readonly IArg _data;
+        private readonly IArg target;
+        private readonly IArg data;
 
         /// <summary>
         /// PI directive.
@@ -44,8 +44,8 @@ namespace Yaapii.Xambly.Directive
         /// <param name="data">Data</param>
         public PiDirective(string target, string data)
         {
-            _target = new ArgOf(target);
-            _data = new ArgOf(data);
+            this.target = new ArgOf(target);
+            this.data = new ArgOf(data);
         }
 
         /// <summary>
@@ -56,8 +56,8 @@ namespace Yaapii.Xambly.Directive
         {
             return new FormattedText(
                 "PI {0} {1}",
-                this._target.Raw(),
-                this._data.Raw()
+                this.target.Raw(),
+                this.data.Raw()
             ).AsString();
         }
 
@@ -68,27 +68,17 @@ namespace Yaapii.Xambly.Directive
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            XmlDocument doc;
-            if (dom.OwnerDocument == null)
-            {
-                doc = (XmlDocument)dom;
-            }
-            else
-            {
-                doc = dom.OwnerDocument;
-            }
-
-            var instr = doc.CreateProcessingInstruction(this._target.Raw(), this._data.Raw());
-
+            var doc = new XmlDocumentOf(dom).Value();
+            var pi = new XProcessingInstruction(this.target.Raw(), this.data.Raw());
             // if cursor list is empty
-            if(new Yaapii.Atoms.Enumerable.LengthOf(cursor).Value() == 0){
-                dom.InsertBefore(instr,doc.DocumentElement);
+            if(new LengthOf(cursor).Value() == 0){
+                doc.Root.AddBeforeSelf(pi);
             } else {
                 foreach (var node in cursor)
                 {
-                    node.AppendChild(instr);
+                    (node as XContainer).Add(pi);
                 }
             }
 

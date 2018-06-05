@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -140,8 +141,8 @@ namespace Yaapii.Xambly.Directive.Tests
         [InlineData("/root/third")]
         public void AddsMapOfValues(string testXPath)
         {
-            var dom = new XmlDocument();
-            dom.AppendChild(dom.CreateElement("root"));
+            var dom = new XDocument(new XElement("root"));
+            //dom.AppendChild(dom.CreateElement("root"));
             var xml =
                 new Xambler(
                     new Directives()
@@ -152,7 +153,7 @@ namespace Yaapii.Xambly.Directive.Tests
                             { "second", "two" }
                         })
                     .Add("third")
-                ).Apply(dom).InnerXml;
+                ).Apply(dom).ToString(SaveOptions.DisableFormatting);
 
             Assert.True(FromXPath(xml, testXPath) != null);
         }
@@ -173,19 +174,23 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void PerformsFullScaleModifications()
         {
-            Assert.True(
+            Assert.Equal(
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><p>€ \\</p></body></html>",
                 new Xambler(
                     new Directives(
                         new Directives()
-                            .Add("html").Attr("xmlns", "http://www.w3.org/1999/xhtml")
+                            .Add("html")
+                            .Append(new EnumerableOf<IDirective>(new NsDirective("http://www.w3.org/1999/xhtml")))
+                            //.Attr("xmlns","http://www.w3.org/1999/xhtml")
                             .Add("body")
                             .Add("p")
                             .Set("\u20ac \\")
                             .ToString()
                     )
                 ).Apply(
-                    new XmlDocument()
-                ).InnerXml == "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><p>€ \\</p></body></html>");
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting)
+            );
         }
 
         //NOT FOR NOW - CopyTo missing atm
@@ -338,7 +343,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "XPATH '/root/something[contains(.,\"Teststring\")]'; UP; " +
                     "ADD 'yummydirective';");
 
-            new Xambler(dirs).Apply(new XmlDocument());
+            new Xambler(dirs).Apply(new XDocument());
 
             Assert.True(
                 new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
@@ -350,8 +355,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void NavigatesFromRootAfterDeletedNode()
         {
-            var xml = new XmlDocument();
-            xml.Load(new InputOf("<root><child name='Jerome'><property name='test'/></child></root>").Stream());
+            var xml = XDocument.Load(new InputOf("<root><child name='Jerome'><property name='test'/></child></root>").Stream());
             var xambler =
                 new Xambler(
                     new Directives()
@@ -364,7 +368,7 @@ namespace Yaapii.Xambly.Directive.Tests
 
             Assert.Equal(
                 "<root><child name=\"Jerome\"><property name=\"test2\" /></child></root>",
-                xambler.OuterXml
+                xambler.ToString(SaveOptions.DisableFormatting)
             );
         }
 
@@ -373,7 +377,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
-                    var xml = new XmlDocument();
+                    var xml = new XDocument();
                     var xambler =
                         new Xambler(
                             new Directives()

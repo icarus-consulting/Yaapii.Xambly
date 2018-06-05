@@ -32,6 +32,8 @@ using System.Collections;
 using Yaapii.Atoms;
 using System.Xml;
 using Yaapii.Atoms.Scalar;
+using System.Xml.Linq;
+using Yaapii.Xambly.Arg;
 
 ///
 /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
@@ -225,7 +227,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// </summary>
     /// <param name="node">Node to add</param>
     /// <returns>the updated list of directives</returns>
-    public Directives CopyOf(XmlNode node)
+    public Directives CopyOf(XNode node)
     {
         try
         {

@@ -21,11 +21,11 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
-using Yaapii.Atoms.List;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
-using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -34,21 +34,20 @@ namespace Yaapii.Xambly.Directive.Tests
     {
         [Fact]
         public void SetsNsAttr() {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("f");
-            dom.AppendChild(root);
-
+            var root = new XElement("f");
+            var dom = new XDocument(root);
+           
             new NsDirective(
                 new ArgOf("somens")
             ).Exec(
                 dom,
                 new DomCursor(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(root)
+                    new EnumerableOf<XNode>(root)
                 ),
                 new DomStack()
             );
 
-            Assert.True(dom.InnerXml == "<f xmlns=\"somens\" />");
+            Assert.Equal("<f xmlns=\"somens\" />",dom.ToString(SaveOptions.DisableFormatting));
         }
     }
 }

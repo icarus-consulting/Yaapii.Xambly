@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Linq;
-using Yaapii.Atoms.List;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
@@ -64,21 +64,35 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
+            var targets = new List<XElement>();
             string label = this._name.Raw();
-            //var prefix = new ItemAt<string>(
-            //                    new SplitText(label, ":")
-            //                ).Value();
-
-            XmlDocument doc = new XmlDocumentOf(dom).Value();
             
             foreach(var node in cursor)
             {
-                var ns = Namespace(node);
-                var element = doc.CreateElement(label,ns);
-                node.AppendChild(element);
+                //var ns = Namespace(node);
+                XElement element;
+                //XName name;
+                //if(ns != null)
+                //{
+                //    name = ns + label;
+                //}else
+                //{
+                //    name = label;
+                //}
+
+                new FailPrecise(
+                    new FailWhen(
+                            !(node is XContainer)
+                        ),
+                    new ArgumentException($"Can't add child to node which is not of type 'XContainer'")
+                ).Go();
+
+
+                element = new XElement(label);
+                (node as XContainer).Add(element);
+ 
                 targets.Add(element);
             }
 
@@ -90,26 +104,14 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        private string Namespace(XmlNode node)
+        private XNamespace Namespace(XNode node)
         {
-            var ns = node.NamespaceURI;
-            var attrNs = "";
-            if (node.Attributes != null)
+            XNamespace ns = null;
+            if(node is XElement)
             {
-                foreach (XmlAttribute attr in node.Attributes)
-                {
-                    if (attr.Name.StartsWith("xmlns:"))
-                    {
-                        attrNs = attr.Value;
-                        break;
-                    }
-                }
+                var elmnt = node as XElement;
+                ns = elmnt.GetDefaultNamespace();
             }
-            if (string.IsNullOrEmpty(ns))
-            {
-                ns = attrNs;
-            }
-
             return ns;
         }
     }
