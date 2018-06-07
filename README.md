@@ -1,6 +1,6 @@
 # Yaapii.Xambly
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ujp18c6psl8um73a?svg=true)](https://ci.appveyor.com/project/icarus-consulting/yaapii-xambly)
+[![Build status](https://ci.appveyor.com/api/projects/status/ujp18c6psl8um73a/branch/master?svg=true)](https://ci.appveyor.com/project/icarus-consulting/yaapii-xambly/branch/master)
 
 Port of [Xembly Library](https://github.com/yegor256/Xembly) from Yegor Bugayenko.
 
