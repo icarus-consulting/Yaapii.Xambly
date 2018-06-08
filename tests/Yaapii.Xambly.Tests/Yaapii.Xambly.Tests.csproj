@@ -6,12 +6,10 @@
 
   <ItemGroup>
     <Compile Remove="Xambler\LowerXamblerTests.cs" />
-    <Compile Remove="Xambler\XamblerTest.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Xambler\LowerXamblerTests.cs" />
-    <None Include="Xambler\XamblerTest.cs" />
   </ItemGroup>
 
   <ItemGroup>
