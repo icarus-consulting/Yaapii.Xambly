@@ -34,7 +34,10 @@ namespace Yaapii.Xambly.Directive.Tests
     {
         [Fact]
         public void SetsNsAttr() {
-            var root = new XElement("f");
+            var root = 
+                new XElement("f",
+                    new XElement("g")
+                );
             var dom = new XDocument(root);
            
             new NsDirective(
@@ -47,7 +50,37 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomStack()
             );
 
-            Assert.Equal("<f xmlns=\"somens\" />",dom.ToString(SaveOptions.DisableFormatting));
+            Assert.Equal("<f xmlns=\"somens\"><g /></f>",dom.ToString(SaveOptions.DisableFormatting));
+        }
+
+        [Fact]
+        public void SetsNamsespaceForHtml()
+        {
+            //var root = new XElement("html",
+            //                new XElement("head")
+            //                //new XElement("body")
+            //            );
+            var dom = new XDocument();
+
+            new Xambler(
+                new AddDirective("html"),
+                new NsDirective("http://www.w3.org/1999/xhtml"),
+                new AddDirective("head"),
+                new UpDirective(),
+                new AddDirective("body")
+            ).Apply(dom);
+
+
+            //new NsDirective("http://www.w3.org/1999/xhtml")
+            //    .Exec(
+            //        dom,
+            //        new DomCursor(
+            //            new EnumerableOf<XNode>(root)
+            //        ),
+            //        new DomStack()
+            //);
+
+            Assert.Equal("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head /><body /></html>", dom.ToString(SaveOptions.DisableFormatting));
         }
     }
 }

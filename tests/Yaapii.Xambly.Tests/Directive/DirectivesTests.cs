@@ -174,21 +174,21 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void PerformsFullScaleModifications()
         {
+            var dom = new XDocument();
             Assert.Equal(
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><p>€ \\</p></body></html>",
                 new Xambler(
                     new Directives(
                         new Directives()
                             .Add("html")
-                            .Append(new EnumerableOf<IDirective>(new NsDirective("http://www.w3.org/1999/xhtml")))
-                            //.Attr("xmlns","http://www.w3.org/1999/xhtml")
+                            .Ns("http://www.w3.org/1999/xhtml")
                             .Add("body")
                             .Add("p")
                             .Set("\u20ac \\")
                             .ToString()
                     )
                 ).Apply(
-                    new XDocument()
+                    dom
                 ).ToString(SaveOptions.DisableFormatting)
             );
         }
@@ -297,8 +297,8 @@ namespace Yaapii.Xambly.Directive.Tests
                 new Xambler(
                     new Directives()
                         .Add("bbb")
-                        .Attr("xmlns:x", "http://www.w3.org/1999/xhtml")
-                        .Add("x:node").Set("HELLO WORLD!")
+                        .Ns("x", "http://www.w3.org/1999/xhtml")
+                        .Add("node").Set("HELLO WORLD!")
                 ).Xml();
 
             Assert.NotNull(FromXPath(xml, "//x:node"));

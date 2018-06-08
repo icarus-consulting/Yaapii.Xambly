@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Xml.Linq;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
@@ -35,8 +37,20 @@ namespace Yaapii.Xambly.Directive
     public class NsDirective : IDirective
     {
         private readonly IArg nsp;
+        private readonly IArg prefix;
 
-        public NsDirective(string nsp): this(new ArgOf(nsp))
+
+        public NsDirective(string prefix, string nsp) : this(new ArgOf(prefix),new ArgOf(nsp))
+        {
+
+        }
+
+        public NsDirective(string nsp): this(new ArgOf(""), new ArgOf(nsp))
+        {
+
+        }
+
+        public NsDirective(IArg nsp) : this(new ArgOf(""),nsp)
         {
 
         }
@@ -46,8 +60,9 @@ namespace Yaapii.Xambly.Directive
         /// Sets namespace of all current nodes
         /// </summary>
         /// <param name="nsp"></param>
-        public NsDirective(IArg nsp)
+        public NsDirective(IArg prefix,IArg nsp)
         {
+            this.prefix = prefix;
             this.nsp = nsp;
         }
 
@@ -74,28 +89,35 @@ namespace Yaapii.Xambly.Directive
         {
             try
             {
-                XElement elmnt = null;
+                XElement element = null;
                 if(dom is XDocument)
                 {
-                    elmnt = (dom as XDocument).Root;
+                    element = (dom as XDocument).Root;
                 } else
                 {
-                    elmnt = dom as XElement;
+                    element = dom as XElement;
                 }
 
+                new FailPrecise(
+                    new FailNull(element),
+                    new ArgumentException($"Node is not of type 'XElement'")
+                ).Go();
 
-                new FailWhen(
-                        !(dom is XContainer)
-                    ).Go();
-
-                //var node = dom as XContainer;
                 XNamespace xnsp = this.nsp.Raw();
-                elmnt.Name = xnsp + elmnt.Name.LocalName;
-                
-                //foreach (var element in node.Elements())
+
+
+                //XNamespace xnsp;
+                //if (string.IsNullOrEmpty(this.prefix.Raw()))
                 //{
-                //    element.Name = xnsp + element.Name.LocalName;
+                //    XNamespace nsp = this.nsp.Raw();
                 //}
+                //else
+                //{
+                //    var attr = new XAttribute(XNamespace.Xmlns + this.prefix.Raw(), this.nsp.Raw());
+                //}
+
+                ApplyNamespace(element, xnsp);
+
                 return cursor;
             }
             catch (XmlContentException ex)
@@ -103,5 +125,15 @@ namespace Yaapii.Xambly.Directive
                 throw new IllegalArgumentException("can't set xmlns",ex);
             }
         }
+
+        private void ApplyNamespace(XElement xelem, XNamespace xmlns)
+        {
+            if (xelem.Name.NamespaceName == string.Empty)
+                xelem.Name = xmlns + xelem.Name.LocalName;
+            foreach (var e in xelem.Elements())
+                ApplyNamespace(e, xmlns);
+
+        }
+
     }
 }

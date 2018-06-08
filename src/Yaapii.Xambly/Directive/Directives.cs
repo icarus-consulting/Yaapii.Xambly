@@ -351,6 +351,41 @@ public sealed class Directives : IEnumerable<IDirective>
         return this;
     }
 
+    public Directives Ns(string prefix, string uri)
+    {
+        try
+        {
+            this._all.Add(new NsDirective(prefix,uri));
+        }
+        catch (XmlContentException ex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to understand XML content, NS({0}:{1})",
+                    prefix,uri).AsString(),
+                ex
+            );
+        }
+        return this;
+    }
+
+    public Directives Ns(string nsp)
+    {
+        try
+        {
+            this._all.Add(new NsDirective(nsp));
+        }
+        catch (XmlContentException ex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to understand XML content, NS({0})",
+                    nsp).AsString(),
+                ex
+            );
+        }
+        return this;
+    }
 
     ///<summary>
     /// Add processing instruction.

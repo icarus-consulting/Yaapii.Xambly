@@ -71,28 +71,19 @@ namespace Yaapii.Xambly
             
             foreach(var node in cursor)
             {
-                //var ns = Namespace(node);
-                XElement element;
-                //XName name;
-                //if(ns != null)
-                //{
-                //    name = ns + label;
-                //}else
-                //{
-                //    name = label;
-                //}
-
+                var parent = node as XContainer;
                 new FailPrecise(
-                    new FailWhen(
-                            !(node is XContainer)
-                        ),
-                    new ArgumentException($"Can't add child to node which is not of type 'XContainer'")
+                     new FailNull(parent),
+                     new ArgumentException($"Can't add child to node which is not of type 'XContainer'")
                 ).Go();
 
+                var ns = Namespace(node);
 
-                element = new XElement(label);
-                (node as XContainer).Add(element);
- 
+                XElement element;
+
+                element = ns != null ? new XElement(ns + label) : new XElement(label);
+
+                parent.Add(element);
                 targets.Add(element);
             }
 
@@ -110,7 +101,7 @@ namespace Yaapii.Xambly
             if(node is XElement)
             {
                 var elmnt = node as XElement;
-                ns = elmnt.GetDefaultNamespace();
+                ns = elmnt.Name.Namespace;
             }
             return ns;
         }
