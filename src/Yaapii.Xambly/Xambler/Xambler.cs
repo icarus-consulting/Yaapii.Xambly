@@ -199,10 +199,9 @@ namespace Yaapii.Xambly
         /// <param name="withHeader">Option to get the XML Document with or without header (version, encoding)</param>
         /// <returns>The xml.</returns>
         public string Xml(bool withHeader = true)
-        //public string Xml()
         {
             var settings = new XmlWriterSettings();
-            settings.ConformanceLevel = withHeader ? ConformanceLevel.Document : ConformanceLevel.Fragment;
+            settings.OmitXmlDeclaration = !withHeader;
 
             using (var stringWriter = new StringWriter())
             using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
