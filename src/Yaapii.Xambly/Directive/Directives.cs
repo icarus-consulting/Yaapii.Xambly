@@ -139,7 +139,7 @@ public sealed class Directives : IEnumerable<IDirective>
             if (width > Directives.MARGIN)
             {
                 width = 0;
-                
+
             }
             ++idx;
         }
@@ -351,26 +351,28 @@ public sealed class Directives : IEnumerable<IDirective>
         return this;
     }
 
-    public Directives Ns(string prefix, string uri)
+    private Directives Ns(string prefix, string uri)
     {
+        throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
         try
         {
-            this._all.Add(new NsDirective(prefix,uri));
+            this._all.Add(new NsDirective(prefix, uri));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, NS({0}:{1})",
-                    prefix,uri).AsString(),
+                    prefix, uri).AsString(),
                 ex
             );
         }
         return this;
     }
 
-    public Directives Ns(string nsp)
+    private Directives Ns(string nsp)
     {
+        throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
         try
         {
             this._all.Add(new NsDirective(nsp));

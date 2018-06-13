@@ -32,14 +32,15 @@ namespace Yaapii.Xambly.Directive.Tests
 {
     public class NsDirectiveTest
     {
-        [Fact]
-        public void SetsNsAttr() {
-            var root = 
+        [Fact(Skip = "true")]
+        public void SetsNsAttr()
+        {
+            var root =
                 new XElement("f",
                     new XElement("g")
                 );
             var dom = new XDocument(root);
-           
+
             new NsDirective(
                 new ArgOf("somens")
             ).Exec(
@@ -50,11 +51,11 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomStack()
             );
 
-            Assert.Equal("<f xmlns=\"somens\"><g /></f>",dom.ToString(SaveOptions.DisableFormatting));
+            Assert.Equal("<f xmlns=\"somens\"><g /></f>", dom.ToString(SaveOptions.DisableFormatting));
         }
 
-        [Fact]
-        public void SetsNamsespaceForHtml()
+        [Fact(Skip = "true")]
+        public void SetsNamespaceForHtml()
         {
             //var root = new XElement("html",
             //                new XElement("head")

@@ -22,7 +22,6 @@
 
 using System;
 using System.Xml.Linq;
-using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
@@ -39,21 +38,14 @@ namespace Yaapii.Xambly.Directive
         private readonly IArg nsp;
         private readonly IArg prefix;
 
-
         public NsDirective(string prefix, string nsp) : this(new ArgOf(prefix),new ArgOf(nsp))
-        {
-
-        }
+        { }
 
         public NsDirective(string nsp): this(new ArgOf(""), new ArgOf(nsp))
-        {
-
-        }
+        { }
 
         public NsDirective(IArg nsp) : this(new ArgOf(""),nsp)
-        {
-
-        }
+        { }
 
         /// <summary>
         /// Namespace directive.
@@ -87,6 +79,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
+            throw new ImpossibleModificationException("Modifying namespaces is not supported at the moment.");
             try
             {
                 XElement element = null;
@@ -104,17 +97,6 @@ namespace Yaapii.Xambly.Directive
                 ).Go();
 
                 XNamespace xnsp = this.nsp.Raw();
-
-
-                //XNamespace xnsp;
-                //if (string.IsNullOrEmpty(this.prefix.Raw()))
-                //{
-                //    XNamespace nsp = this.nsp.Raw();
-                //}
-                //else
-                //{
-                //    var attr = new XAttribute(XNamespace.Xmlns + this.prefix.Raw(), this.nsp.Raw());
-                //}
 
                 ApplyNamespace(element, xnsp);
 
