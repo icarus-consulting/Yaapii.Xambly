@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 using System;
-using System.Xml;
+using System.Xml.Linq;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
@@ -81,7 +81,7 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var key = _name.Value().Raw();
             var value = _value.Value().Raw();
@@ -90,11 +90,11 @@ namespace Yaapii.Xambly
             {
                 try
                 {
-                    ((XmlElement)node).SetAttribute(key, value);
+                    ((XElement)node).SetAttributeValue(key, value);
                 }
                 catch (InvalidCastException ex)
                 {
-                    throw new ImpossibleModificationException($"Unable to set attribute to node '{node.Name}'. Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.", ex);
+                    throw new ImpossibleModificationException($"Unable to set attribute to node '{node.ToString(SaveOptions.DisableFormatting)}'. Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.", ex);
                 }
             }
 

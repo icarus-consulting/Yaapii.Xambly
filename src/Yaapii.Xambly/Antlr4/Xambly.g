@@ -144,6 +144,15 @@ directive returns [IDirective ret]
         }
     }
     |
+	'NS' argument
+    {
+        try {
+            $ret = new NsDirective($argument.ret.ToString());
+        } catch (XmlException ex) {
+            throw new ParsingException(ex);
+        }
+    }
+	|
     'PUSH'
     {
         $ret = new PushDirective();

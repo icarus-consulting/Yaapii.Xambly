@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
+using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
@@ -38,31 +38,31 @@ namespace Yaapii.Xambly.Directive.Tests
                         new AddDirective("item"),
                         new SetDirective("foobar")
                     )).Apply(
-                        new XmlDocument()
-                        ).InnerXml == "<root><item>foobar</item></root>", "Set content for node failed");
+                        new XDocument()
+                        ).ToString(SaveOptions.DisableFormatting) == "<root><item>foobar</item></root>", "Set content for node failed");
         }
 
         [Fact]
         public void SetTextDirectlyIntoDomNodes()
         {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("xxx");
-            var first = dom.CreateElement("a");
-            root.AppendChild(first);
-            var second = dom.CreateElement("b");
-            root.AppendChild(second);
-            dom.AppendChild(root);
+            var dom = new XDocument();
+            var root = new XElement("xxx");
+            var first = new XElement("a");
+            var second = new XElement("b");
+            root.Add(first);
+            root.Add(second);
+            dom.Add(root);
 
             new SetDirective("alpha")
                     .Exec(
                         dom,
                         new DomCursor(
-                                new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(first, second)
+                                new Yaapii.Atoms.Enumerable.EnumerableOf<XNode>(first, second)
                                 ),
                         new DomStack()
                     );
 
-            Assert.True(dom.InnerXml == "<xxx><a>alpha</a><b>alpha</b></xxx>", "Set content for nodes failed");
+            Assert.True(dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a>alpha</a><b>alpha</b></xxx>", "Set content for nodes failed");
 
         }
     }

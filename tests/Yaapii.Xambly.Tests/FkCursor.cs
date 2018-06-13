@@ -23,16 +23,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Tests
 {
     internal class FkCursor : ICursor
     {
-        private readonly List<XmlNode> _src = new List<XmlNode>();
+        private readonly List<XNode> _src = new List<XNode>();
         public FkCursor()
         { }
 
-        public IEnumerator<XmlNode> GetEnumerator()
+        public IEnumerator<XNode> GetEnumerator()
         {
             return _src.GetEnumerator();
         }

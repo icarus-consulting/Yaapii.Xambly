@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.List;
 
@@ -36,7 +37,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                                 new AddDirective("root"),
                                 new AddDirective("item")
-                            )).Dom().InnerXml == "<root><item /></root>","Add Directive failed");
+                            )).Dom().ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");
         }
 
         [Fact]
@@ -47,7 +48,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
                             new AddDirective("root"),
                             new AddDirective("item")
-                        )).Apply(new XmlDocument()).InnerXml == "<root><item /></root>","Add Directive failed");
+                        )).Apply(new XDocument()).ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");
         }
     }
 }

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Error;
 
@@ -31,7 +32,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void JumpsToParentsWhenTheyExist()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             Assert.True(
                 new Xambler(
@@ -40,7 +41,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new AddDirective("bar"),
                     new UpDirective(),
                     new SetDirective("Hello World")
-                ).Apply(dom).InnerXml == "<root><foo>Hello World</foo></root>", "Up directive failed");
+                ).Apply(dom).ToString(SaveOptions.DisableFormatting) == "<root><foo>Hello World</foo></root>", "Up directive failed");
         }
 
         [Fact]
@@ -54,7 +55,7 @@ namespace Yaapii.Xambly.Directive.Tests
                                     new UpDirective(),
                                     new UpDirective(),
                                     new UpDirective()
-                                )).Apply(new XmlDocument());
+                                )).Apply(new XDocument());
             });
         }
     }

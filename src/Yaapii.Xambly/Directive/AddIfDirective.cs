@@ -21,10 +21,12 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly
 {
@@ -34,7 +36,7 @@ namespace Yaapii.Xambly
     /// </summary>
     public class AddIfDirective : IDirective
     {
-        private readonly IArg _name;
+        private readonly IArg name;
 
         /// <summary>
         /// ADDIF directive.
@@ -43,7 +45,7 @@ namespace Yaapii.Xambly
         /// <param name="node">Name of node to add</param>
         public AddIfDirective(string node)
         {
-            _name = new ArgOf(node);
+            this.name = new ArgOf(node);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace Yaapii.Xambly
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("ADDIF {0}", _name.Raw()).AsString();
+            return new FormattedText("ADDIF {0}", name.Raw()).AsString();
         }
 
         /// <summary>
@@ -62,36 +64,36 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XmlNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var targets = new List<XmlNode>();
-            var label = _name.Raw().ToLower();
+            var targets = new List<XNode>();
+            var label = name.Raw().ToLower();
             foreach (var node in cursor)
             {
-                var kids = node.ChildNodes;
-                XmlNode target = null;
-                var len = kids.Count;
-                for (int i = 0; i < len; i++)
+                var ctn = node as XContainer;
+
+                new FailPrecise(
+                    new FailNull(ctn),
+                    new ImpossibleModificationException("")
+                ).Go();
+
+                var kids = ctn.Elements();
+                XNode target = null;
+
+                foreach (var kid in ctn.Elements())
                 {
-                    if(kids[i].Name.ToLower() == label)
+                    if (kid.Name.LocalName.ToLower() == label)
                     {
-                        target = kids[i];
+                        target = kid;
                         break;
                     }
                 }
 
                 if(target == null){
-                    XmlDocument doc = null;
-                    if(dom.OwnerDocument == null)
-                    {
-                        doc = (XmlDocument)dom;
-                    } else
-                    {
-                        doc = dom.OwnerDocument;
-                    }
+                    XDocument doc = new XmlDocumentOf(dom).Value();
 
-                    target = doc.CreateElement(this._name.Raw());
-                    node.AppendChild(target);
+                    target = new XElement(this.name.Raw());
+                    ctn.Add(target);
                 }
 
                 targets.Add(target);

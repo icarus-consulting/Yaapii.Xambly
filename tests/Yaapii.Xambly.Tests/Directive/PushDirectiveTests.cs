@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -8,7 +9,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void PushesAndPops()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
             var innerXml = new Xambler(
                         new AddDirective("root"),
                         new PushDirective(),
@@ -16,7 +17,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new AddDirective("bar"),
                         new PopDirective(),
                         new SetDirective("Hello World")
-                    ).Apply(dom).InnerXml;
+                    ).Apply(dom).ToString(SaveOptions.DisableFormatting);
 
             Assert.True(innerXml == "<root>Hello World</root>", "Push/Pop directive failed");
         }
@@ -24,7 +25,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void PushesAndPopsFalse()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
             var innerXml = new Xambler(
                         new AddDirective("root"),
                         new AddDirective("foo"),
@@ -36,7 +37,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new PopDirective(),
                         new PopDirective(),
                         new SetDirective("Hello World")
-                    ).Apply(dom).InnerXml;
+                    ).Apply(dom).ToString(SaveOptions.DisableFormatting);
 
             Assert.False(innerXml == "<root>Hello World</root>", "Push/pop directive failed not but had to");
         }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Xambly.Error;
@@ -12,23 +13,32 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ChecksNumberOfCurrentNodes()
         {
-            var dom = new XmlDocument();
+            var dom = 
+                new XDocument(
+                    new XElement("root",
+                        new XElement("foo",
+                            new XElement("bar",
+                                new XElement("boom")
+                            )
+                        )
+                    )
+                );
             new Xambler(
-                new Directives(
-                    "ADD 'root'; ADD 'foo'; ADD 'bar'; ADD 'boom'; XPATH '//*'; STRICT '4';"
-                )).Apply(dom);
+                    new XpathDirective("//*"),
+                    new StrictDirective(4)
+                ).Apply(dom);
 
             Assert.True(
                 null != FromXPath(
-                    dom.InnerXml.ToString(), "/root/foo") &&
+                    dom.ToString(SaveOptions.DisableFormatting), "/root/foo") &&
                 null != FromXPath(
-                    dom.InnerXml.ToString(), "/root/foo/bar/boom"));
+                    dom.ToString(SaveOptions.DisableFormatting), "/root/foo/bar/boom"));
         }
 
         [Fact]
         public void FailsWhenNumberOfCurrentNodesIsTooBig()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             Assert.Throws(
                 new ImpossibleModificationException("").GetType(), () =>
@@ -47,7 +57,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FailsWhenNumberOfCurrentNodesIsZero()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
@@ -64,7 +74,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FailsWhenNumberOfCurrentNodesIsTooSmall()
         {
-            var dom = new XmlDocument();
+            var dom = new XDocument();
 
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {

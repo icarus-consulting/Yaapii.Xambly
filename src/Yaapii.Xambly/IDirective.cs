@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly
 {
@@ -39,6 +40,6 @@ namespace Yaapii.Xambly
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
         /// <returns>New current nodes</returns>
-        ICursor Exec(XmlNode dom, ICursor cursor, IStack stack);
+        ICursor Exec(XNode dom, ICursor cursor, IStack stack);
     }
 }

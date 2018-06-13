@@ -15,9 +15,12 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly;
 using Yaapii.Xambly.Error;
@@ -52,7 +55,7 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <returns>Lowered Document/Node</returns>
         /// <param name="dom">DOM document/node</param>
-        public XmlNode Apply(XmlNode dom)
+        public XmlNode Apply(XNode dom)
         {
             return ApplyLowered(dom);
         }
@@ -61,7 +64,7 @@ namespace Yaapii.Xambly
         /// Apply all lowered changes to an empty DOM, redirect all exceptions to a IllegalStateException.
         /// </summary>
         /// <returns>The quietly.</returns>
-        public XmlNode ApplyQuietly(XmlNode dom)
+        public XmlNode ApplyQuietly(XNode dom)
         {
             try
             {
@@ -81,14 +84,14 @@ namespace Yaapii.Xambly
 
         /// <summary> Apply all changes to an empty DOM and lowers content. </summary>
         /// <returns> The DOM with lowerd names </returns>
-        public XmlDocument Dom()
+        public XDocument Dom()
         {
             return LoweredDom();
         }
 
         /// <summary> Apply all changes to an empty DOM, redirect all exceptions to a IllegalStateException. </summary>
         /// <returns> The quietly. </returns>
-        public XmlDocument DomQuietly()
+        public XDocument DomQuietly()
         {
             try
             {
@@ -141,77 +144,83 @@ namespace Yaapii.Xambly
             }
         }
 
-        private XmlNode ApplyLowered(XmlNode dom, bool quietly = false)
+        private XNode ApplyLowered(XNode dom, bool quietly = false)
         {
-            var doc = dom.NodeType == XmlNodeType.Document ? dom as XmlDocument : new XmlDocument().AppendChild(dom).OwnerDocument;
+            //XDocument doc;
+            //if(dom.NodeType == XmlNodeType.Document)
+            //{
+            //    doc = dom as XDocument;
+            //} else {
+            //    doc = new XDocument(dom);
+            //    doc.Add(dom)            }
+            var doc = dom.NodeType == XmlNodeType.Document ? dom as XDocument : new XDocument(dom);
             doc = LoweredDocument(doc);
 
-            return quietly ? _origin.ApplyQuietly(doc.DocumentElement) : _origin.Apply(doc.DocumentElement);
+            return quietly ? _origin.ApplyQuietly(doc) : _origin.Apply(doc);
         }
 
-        private void LoweredElements(XmlNodeList children, XmlNode newParentNode, XmlDocument newDocument)
+        private void LoweredElements(IEnumerable<XElement> children, XElement newParentNode, XDocument newDocument)
         {
-            var nodes = children.OfType<XmlNode>();
+            //var nodes = children.OfType<XmlNode>();
 
-            foreach (var tNode in nodes)
+            foreach (var node in children)
             {
-                XmlNode newNode;
+                var el = new XElement(node.Name);
+                el.Value = node.Value.ToLower();
+                new Each<XAttribute>(
+                        attr => el.Add(new XAttribute(attr.Name.LocalName.ToLower(), attr.Value.ToLower())),
+                        node.Attributes()
+                    ).Invoke();
 
-                if (tNode.NodeType != XmlNodeType.Element)
-                {
-                    newNode = newDocument.CreateNode(tNode.NodeType, tNode.Prefix, tNode.LocalName, tNode.NamespaceURI);
-                }
-                else
-                {
-                    var newEle = newDocument.CreateElement(tNode.Prefix, tNode.LocalName.ToLower(), tNode.NamespaceURI);
-                    newNode = newEle;
+                //if (node.NodeType != XmlNodeType.Element)
+                //{
+                //    newNode = newDocument.CreateNode(tNode.NodeType, tNode.Prefix, tNode.LocalName, tNode.NamespaceURI);
+                //}
+                //else
+                //{
+                //    var newEle = newDocument.CreateElement(tNode.Prefix, tNode.LocalName.ToLower(), tNode.NamespaceURI);
+                //    newNode = newEle;
 
-                    // Lower Attributes
-                    tNode
-                        .Attributes
-                        .OfType<XmlNode>()
-                        .ToList()
-                        .ForEach(tAttribute => newEle.SetAttribute(tAttribute.Name.ToLower(), tAttribute.Value));
-                }
+                //    // Lower Attributes
+                //    tNode
+                //        .Attributes
+                //        .OfType<XmlNode>()
+                //        .ToList()
+                //        .ForEach(tAttribute => newEle.SetAttribute(tAttribute.Name.ToLower(), tAttribute.Value));
+                //}
 
-                newNode.InnerText = tNode.Value;
-                newParentNode.AppendChild(newNode);
+                //newNode.InnerText = tNode.Value;
+                newParentNode.Add(el);
 
-                LoweredElements(tNode.ChildNodes, newNode, newDocument);
+                LoweredElements(node.Elements(), el, newDocument);
             }
         }
 
-        private void LoweredValues(XmlNodeList children)
+        private void LoweredValues(IEnumerable<XElement> children)
         {
-            var childrenList = children.OfType<XmlNode>();
 
-            foreach (var tChild in childrenList)
+            foreach (var child in children)
             {
-                if (!String.IsNullOrEmpty(tChild.Value))
-                {
-                    tChild.Value = tChild.Value.ToLower();
-                }
+                child.Value = child.Value.ToLower();
 
-                if (tChild.NodeType == XmlNodeType.Element)
-                {
-                    (tChild as XmlElement)
-                    .Attributes.OfType<XmlAttribute>()
-                    .ToList()
-                    .ForEach(tAttribute => tAttribute.Value = tAttribute.Value.ToLower());
-                }
+                new Each<XAttribute>(
+                        attr => attr.Value = attr.Value.ToLower(),
+                        child.Attributes()
 
-                if (tChild.HasChildNodes)
+                    ).Invoke();
+
+                if (child.HasElements)
                 {
-                    LoweredValues(tChild.ChildNodes);
+                    LoweredValues(child.Elements());
                 }
             }
         }
 
-        private XmlDocument LoweredDocument(XmlDocument result)
+        private XDocument LoweredDocument(XDocument result)
         {
             if (_lowerValues)
             {
-                LoweredValues(result.ChildNodes);
+                LoweredValues(result.Elements());
             }
 
             if (_lowerNodeNames)
@@ -222,7 +231,7 @@ namespace Yaapii.Xambly
             return result;
         }
 
-        private XmlDocument LoweredDom(bool quietly = false)
+        private XDocument LoweredDom(bool quietly = false)
         {
             var result = quietly ? _origin.DomQuietly() : _origin.Dom();
 
@@ -244,24 +253,25 @@ namespace Yaapii.Xambly
             }
         }
 
-        private XmlDocument NameLoweredXmlDocument(XmlDocument xmlDocument)
+        private XDocument NameLoweredXmlDocument(XDocument xmlDocument)
         {
-            var result = new XmlDocument();
+            var result = new XDocument();
 
-            if (xmlDocument.FirstChild?.NodeType == XmlNodeType.XmlDeclaration)
+            if (xmlDocument.FirstNode?.NodeType == XmlNodeType.XmlDeclaration)
             {
-                var declaration = result.FirstChild as XmlDeclaration;
-                var newdecla = result.CreateXmlDeclaration(declaration.Version, declaration.Encoding, declaration.Standalone);
-                result.AppendChild(declaration);
+                var declaration = result.Declaration;
+                //var newdecla = new XDeclaration(declaration.Version,declaration.Encoding,declaration.Standalone);// result.CreateXmlDeclaration(declaration.Version, declaration.Encoding, declaration.Standalone);
+                result.Declaration = declaration;
             }
 
             var docType = xmlDocument.DocumentType;
             if (docType != null)
             {
-                result.CreateDocumentType(docType.Name, docType.PublicId, docType.SystemId, docType.InternalSubset);
+                result.AddFirst(xmlDocument.DocumentType);
+                //result.CreateDocumentType(docType.Name, docType.PublicId, docType.SystemId, docType.InternalSubset);
             }
 
-            LoweredElements(xmlDocument.ChildNodes, result, result);
+            LoweredElements(xmlDocument.Elements(), result.Root, result);
 
             return result;
         }

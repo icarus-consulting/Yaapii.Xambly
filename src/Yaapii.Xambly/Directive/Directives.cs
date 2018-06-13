@@ -32,6 +32,8 @@ using System.Collections;
 using Yaapii.Atoms;
 using System.Xml;
 using Yaapii.Atoms.Scalar;
+using System.Xml.Linq;
+using Yaapii.Xambly.Arg;
 
 ///
 /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
@@ -137,7 +139,7 @@ public sealed class Directives : IEnumerable<IDirective>
             if (width > Directives.MARGIN)
             {
                 width = 0;
-                
+
             }
             ++idx;
         }
@@ -225,7 +227,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// </summary>
     /// <param name="node">Node to add</param>
     /// <returns>the updated list of directives</returns>
-    public Directives CopyOf(XmlNode node)
+    public Directives CopyOf(XNode node)
     {
         try
         {
@@ -349,6 +351,43 @@ public sealed class Directives : IEnumerable<IDirective>
         return this;
     }
 
+    private Directives Ns(string prefix, string uri)
+    {
+        throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
+        try
+        {
+            this._all.Add(new NsDirective(prefix, uri));
+        }
+        catch (XmlContentException ex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to understand XML content, NS({0}:{1})",
+                    prefix, uri).AsString(),
+                ex
+            );
+        }
+        return this;
+    }
+
+    private Directives Ns(string nsp)
+    {
+        throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
+        try
+        {
+            this._all.Add(new NsDirective(nsp));
+        }
+        catch (XmlContentException ex)
+        {
+            throw new IllegalArgumentException(
+                new FormattedText(
+                    "failed to understand XML content, NS({0})",
+                    nsp).AsString(),
+                ex
+            );
+        }
+        return this;
+    }
 
     ///<summary>
     /// Add processing instruction.

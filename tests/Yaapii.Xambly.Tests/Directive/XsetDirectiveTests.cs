@@ -23,6 +23,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Xambly.Cursor;
@@ -37,21 +38,21 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             try
             {
-                XmlDocument doc = new XmlDocument();
-                XmlElement root = doc.CreateElement("xxx");
-                XmlElement first = doc.CreateElement("first");
+                XDocument doc = new XDocument();
+                XElement root = new XElement("xxx");
+                XElement first = new XElement("first");
 
-                first.InnerText = "15";
-                root.AppendChild(first);
-                XmlElement second = doc.CreateElement("second");
-                second.InnerText = "13";
-                root.AppendChild(second);
+                first.Value = "15";
+                root.Add(first);
+                XElement second = new XElement("second");
+                second.Value = "13";
+                root.Add(second);
 
-                doc.AppendChild(root);
-                doc.Save("XsetDirectiveTests.xml");
+                doc.Add(root);
+                //doc.Save("XsetDirectiveTests.xml");
 
                 new XsetDirective("sum(/xxx/*/text()) + 6").Exec(
-                doc, new DomCursor(new List<XmlNode>() { first }),
+                doc, new DomCursor(new List<XNode>() { first }),
                 new DomStack());
                 doc.Save("XsetDirectiveTests.xml");
 

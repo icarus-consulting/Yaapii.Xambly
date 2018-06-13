@@ -30,6 +30,8 @@ using Yaapii.Xambly;
 using Yaapii.Xambly.Error;
 using Yaapii.Xambly.Stack;
 using Yaapii.Xambly.Cursor;
+using System.Xml.Linq;
+using Yaapii.Atoms.Enumerable;
 
 namespace Yaapii.Xambly
 {
@@ -92,7 +94,7 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <returns>The quietly.</returns>
         /// <param name="dom">DOM.</param>
-        public XmlNode ApplyQuietly(XmlNode dom)
+        public XNode ApplyQuietly(XNode dom)
         {
             try
             {
@@ -111,9 +113,13 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <returns>Same document/node.</returns>
         /// <param name="dom">DOM document/node</param>
-        public XmlNode Apply(XmlNode dom)
+        public XNode Apply(XNode dom)
         {
-            ICursor cursor = new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(dom));
+            ICursor cursor = 
+                new DomCursor(
+                    new Yaapii.Atoms.Enumerable.EnumerableOf<XNode>(dom)
+                );
+
             int pos = 1;
 
             IStack stack = new DomStack();
@@ -143,7 +149,7 @@ namespace Yaapii.Xambly
         /// Apply all changes to an empty DOM, redirect all exceptions to a IllegalStateException.
         /// </summary>
         /// <returns>The quietly.</returns>
-        public XmlDocument DomQuietly()
+        public XDocument DomQuietly()
         {
             try
             {
@@ -157,16 +163,16 @@ namespace Yaapii.Xambly
             }
         }
 
-        /// <summary>
-        /// Apply all changes to an empty DOM.
-        /// </summary>
-        /// <returns>The DOM</returns>
-        public XmlDocument Dom()
-        {
-            var dom = new XmlDocument();
-            this.Apply(dom);
-            return dom;
-        }
+        ///// <summary>
+        ///// Apply all changes to an empty DOM.
+        ///// </summary>
+        ///// <returns>The DOM</returns>
+        //public XDocument Dom()
+        //{
+        //    var dom = new XDocument();
+        //    this.Apply(dom.FirstNode);
+        //    return dom;
+        //}
 
         /// <summary>
         /// Convert to XML Document, redirect all Exceptions to IllegalStateException.
@@ -193,10 +199,9 @@ namespace Yaapii.Xambly
         /// <param name="withHeader">Option to get the XML Document with or without header (version, encoding)</param>
         /// <returns>The xml.</returns>
         public string Xml(bool withHeader = true)
-        //public string Xml()
         {
             var settings = new XmlWriterSettings();
-            settings.ConformanceLevel = withHeader ? ConformanceLevel.Document : ConformanceLevel.Fragment;
+            settings.OmitXmlDeclaration = !withHeader;
 
             using (var stringWriter = new StringWriter())
             using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
@@ -235,6 +240,13 @@ namespace Yaapii.Xambly
                 }
             }
             return output.ToString();
+        }
+
+        public XDocument Dom()
+        {
+            var dom = new XDocument();
+            var result = this.Apply(dom);
+            return dom;
         }
     }
 }

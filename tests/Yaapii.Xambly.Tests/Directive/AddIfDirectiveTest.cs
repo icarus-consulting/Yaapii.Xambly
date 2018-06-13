@@ -21,7 +21,9 @@
 // SOFTWARE.
 
 using System.Xml;
+using System.Xml.Linq;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
@@ -33,40 +35,45 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddNodesToCurrentNode() {
 
-            Assert.True(
+            Assert.Equal(
+                "<root><foo /><bar /></root>",
                 new Xambler(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                    new EnumerableOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foo"),
                         new UpDirective(),
                         new AddIfDirective("bar"),
                         new UpDirective(),
                         new AddIfDirective("bar")
-                    )).Apply(new XmlDocument())
-                        .InnerXml == "<root><foo /><bar /></root>",
-                        "Same directive added multiple times");
+                    )
+                ).Apply(
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting)
+            );
         }
 
         [Fact]
         public void AddDomNodesDirectly() {
-            var dom = new XmlDocument();
-            var root = dom.CreateElement("root");
-            root.AppendChild(dom.CreateElement("a"));
-            root.AppendChild(dom.CreateTextNode("hello"));
-            root.AppendChild(dom.CreateComment("some comment"));
-            root.AppendChild(dom.CreateCDataSection("CDATA"));
-            root.AppendChild(dom.CreateProcessingInstruction("a12","22"));
-            dom.AppendChild(root);
-
+            var dom = new XDocument();
+            var root =
+                new XElement("root",
+                    new XElement("a"),
+                    new XText("hello"),
+                    new XComment("some comment"),
+                    new XCData("CDATA"),
+                    new XProcessingInstruction("a12", "22")
+                );
+            dom.Add(root);
             new AddIfDirective("b").Exec(
                 dom,
-                new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XmlNode>(root)),
+                new DomCursor(new EnumerableOf<XNode>(root)),
                 new DomStack()
             );
 
-            Assert.True(
-                dom.InnerXml == "<root><a />hello<!--some comment--><![CDATA[CDATA]]><?a12 22?><b /></root>",
-                "Add dom node directly failed");
+            Assert.Equal(
+                "<root><a />hello<!--some comment--><![CDATA[CDATA]]><?a12 22?><b /></root>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
         }
     }
 }

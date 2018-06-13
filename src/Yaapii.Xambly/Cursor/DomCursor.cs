@@ -23,6 +23,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Cursor
 {
@@ -31,24 +32,24 @@ namespace Yaapii.Xambly.Cursor
     /// </summary>
     public class DomCursor : ICursor
     {
-        private readonly IEnumerable<XmlNode> _nodes;
+        private readonly IEnumerable<XNode> nodes;
 
         /// <summary>
         /// Cursor at DOM.
         /// </summary>
         /// <param name="nodes">Nodes to encapsulate</param>
-        public DomCursor(IEnumerable<XmlNode> nodes)
+        public DomCursor(IEnumerable<XNode> nodes)
         {
-            _nodes = nodes;
+            this.nodes = nodes;
         }
 
         /// <summary>
         /// The enumerator.
         /// </summary>
         /// <returns>Enumerator</returns>
-        public IEnumerator<XmlNode> GetEnumerator()
+        public IEnumerator<XNode> GetEnumerator()
         {
-            return this._nodes.GetEnumerator();
+            return this.nodes.GetEnumerator();
         }
 
         /// <summary>
