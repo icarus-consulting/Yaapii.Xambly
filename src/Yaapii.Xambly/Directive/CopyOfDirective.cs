@@ -23,6 +23,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms;
@@ -117,20 +119,14 @@ namespace Yaapii.Xambly.Directive
         /// <returns></returns>
         public IEnumerator<IDirective> GetEnumerator()
         {
-            //IEnumerable<IDirective> dirs = new EnumerableOf<IDirective>();// new Directives();
             var dirs = new Directives();
             var node = this.node.Value();
             if (node.NodeType == XmlNodeType.Element)
             {
                 var elmnt = node as XElement;
-                //dirs = new Joined<IDirective>(dirs, new AddDirective(elmnt.Name.LocalName));// dirs.Add( node.Name);
-                dirs
-                    .Add(elmnt.Name)
-                    .Set(elmnt.Value);
-                
+                dirs.Add(elmnt.Name);
                 foreach (XAttribute attr in elmnt.Attributes())
                 {
-                    //dirs = new Joined<IDirective>(dirs, new AttrDirective(attr.Name.LocalName, attr.Value));
                     dirs.Attr(attr.Name, attr.Value);
                 }
             }
@@ -138,23 +134,21 @@ namespace Yaapii.Xambly.Directive
             var ctn = node as XContainer;
             //@TODO: Add failing for null
 
-            foreach (XElement child in ctn.Elements())
+            foreach (XNode child in ctn.Nodes())
             {
                 switch (child.NodeType)
                 {
                     case XmlNodeType.Text:
+                        dirs.Set((child as XText).Value);
+                        break;
                     case XmlNodeType.CDATA:
-                        //dirs = new Joined<IDirective>(dirs, new SetDirective(child.Value));
-                        dirs.Set(child.Value);
+                        dirs.Set((child as XCData).Value);
                         break;
                     case XmlNodeType.Element:
-                        //dirs = new Joined<IDirective>(dirs,new CopyOfDirective(child));
-                        //dirs = new Joined<IDirective>(dirs, new UpDirective());
                         dirs.Append(new CopyOfDirective(child)).Up();
                         break;
                     case XmlNodeType.ProcessingInstruction:
-                        //dirs = new Joined<IDirective>(dirs, new PiDirective(child.Name.LocalName, child.Value));
-                        dirs.Pi(child.Name, child.Value);
+                        dirs.Pi((child as XProcessingInstruction).Target, (child as XProcessingInstruction).Data);
                         break;
                     case XmlNodeType.Attribute:
                     case XmlNodeType.Comment:
@@ -163,7 +157,7 @@ namespace Yaapii.Xambly.Directive
                     case XmlNodeType.DocumentType:
                         break;
                     default:
-                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child.Name.LocalName}");
+                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child.ToString()}");
                 }
             }
 
