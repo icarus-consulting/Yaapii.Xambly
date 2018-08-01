@@ -71,14 +71,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsNodesByXpathDirectly()
         {
-            //var dom = new XmlDocument();
-            //var root = dom.CreateElement("xxx");
-            //var first = dom.CreateElement("a");
-            //root.AppendChild(first);
-            //var second = dom.CreateElement("b");
-            //root.AppendChild(second);
-            //dom.AppendChild(root);
-
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -86,7 +78,6 @@ namespace Yaapii.Xambly.Directive.Tests
             root.Add(first);
             root.Add(second);
             dom.Add(root);
-
 
             Assert.Contains(
                 root,
@@ -130,13 +121,37 @@ namespace Yaapii.Xambly.Directive.Tests
             new Xambler(
                 new AddDirective("Tags"),
                 new AddDirective("Tag"),
-                new SetDirective("Transient")
+                new SetDirective("Tran\"sient")
             ).Apply(dom);
             
 
             Assert.NotEmpty(
                 new XpathDirective(
-                    "//Tag[contains(.,'Transient')]").Exec(
+                    "//Tag[contains(.,'Tran\"sient')]").Exec(
+                    dom,
+                    new DomCursor(
+                        new Atoms.Enumerable.EnumerableOf<XNode>(dom)
+                    ),
+                    new DomStack()
+                )
+            );
+        }
+
+        [Fact]
+        public void WorksWithSingleQuotes()
+        {
+            var dom = new XDocument();
+
+            new Xambler(
+                new AddDirective("Tags"),
+                new AddDirective("Tag"),
+                new SetDirective("Tran'sient")
+            ).Apply(dom);
+
+
+            Assert.NotEmpty(
+                new XpathDirective(
+                    "//Tag[contains(.,\"Tran'sient\")]").Exec(
                     dom,
                     new DomCursor(
                         new Atoms.Enumerable.EnumerableOf<XNode>(dom)
