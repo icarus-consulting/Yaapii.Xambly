@@ -86,7 +86,7 @@ namespace Yaapii.Xambly
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             IEnumerable<XNode> targets;
-            string query = SingleQuoted(this._expr.Raw());
+            string query = this._expr.Raw();
 
             if (AbsoluteXPath(query))
             {
@@ -136,12 +136,6 @@ namespace Yaapii.Xambly
                     elmnt => targets.Add(elmnt),
                     list
                 ).Invoke();
-
-                //int len = list.Count;
-                //for (int idx = 0; idx < len;++idx)
-                //{
-                //    targets.Add(list.Item(idx));
-                //}
             }
 
             return targets;
@@ -150,11 +144,6 @@ namespace Yaapii.Xambly
         private bool AbsoluteXPath(string query)
         {
             return new Regex(ABSOLUTE_XPATH_REGEX).IsMatch(query);
-        }
-
-        private string SingleQuoted(string arg)
-        {
-            return arg.Replace("\"", "'");
         }
 
         ///// <summary>
