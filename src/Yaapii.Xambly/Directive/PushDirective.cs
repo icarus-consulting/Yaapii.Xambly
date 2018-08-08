@@ -22,7 +22,7 @@
 
 using System.Xml.Linq;
 
-namespace Yaapii.Xambly
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// PUSH directive.

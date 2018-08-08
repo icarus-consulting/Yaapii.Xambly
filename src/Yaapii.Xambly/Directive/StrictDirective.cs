@@ -16,14 +16,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// STRICT directive.
