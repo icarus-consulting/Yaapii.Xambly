@@ -34,20 +34,26 @@ namespace Yaapii.Xambly.Arg
     /// </summary>
     public class Unescaped : IText
     {
-        private readonly IScalar<string> _src;
+        private readonly IScalar<string> source;
 
         /// <summary>
         /// Un-escape all XML symbols.
         /// </summary>
         /// <param name="src">The XML text</param>
-        public Unescaped(IArg src) : this(new ScalarOf<string>(() => src.AsString()))
+        public Unescaped(IArg src) : this(
+            new ScalarOf<string>(() =>
+                src.AsString()
+            )
+        )
         { }
 
         /// <summary>
         /// Un-escape all XML symbols.
         /// </summary>
         /// <param name="src">The XML text</param>
-        public Unescaped(string src) : this(new ScalarOf<string>(src))
+        public Unescaped(string src) : this(
+            new ScalarOf<string>(src)
+        )
         { }
 
         /// <summary>
@@ -57,7 +63,7 @@ namespace Yaapii.Xambly.Arg
 
         private Unescaped(IScalar<string> src)
         {
-            this._src = src;
+            this.source = src;
         }
 
         /// <summary>
@@ -68,16 +74,11 @@ namespace Yaapii.Xambly.Arg
         /// <exception cref="XmlException">If fails</exception>
         public string AsString()
         {
-            var str = _src.Value();
+            var str = source.Value();
             var chars = str.ToCharArray();
-            if (chars.Length < 2)
-                throw new ArgumentOutOfRangeException(
-                    "Internal error, argument can't be shorter than 2 chars");
-
-            int len = chars.Length - 1; //cut off trailing "
             var output = new StringBuilder(str.Length);
 
-            for (int idx = 1; idx < len; idx++) //1 -> cut off leading "
+            for (int idx = 0; idx < chars.Length; idx++)
             {
                 if (chars[idx] == '&')
                 {
@@ -94,7 +95,12 @@ namespace Yaapii.Xambly.Arg
                     output.Append(
                         new Symbol(
                             new SubText(
-                                sbuf.ToString(), 0, sbuf.Length - 1)).Value());
+                                sbuf.ToString(),
+                                0,
+                                sbuf.Length - 1
+                            )
+                        ).Value()
+                    );
                 }
                 else
                 {
