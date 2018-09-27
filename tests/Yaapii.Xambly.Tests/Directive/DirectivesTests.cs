@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
@@ -9,11 +8,8 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
-using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
-using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -107,7 +103,10 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsOnBrokenGrammar()
         {
             Assert.Throws<SyntaxException>(() =>
-                new Directives("not a xambly at all"));
+                new Atoms.Enumerable.LengthOf(    
+                    new Directives("not a xambly at all")
+                ).Value()
+            );
         }
 
         /// <summary>
@@ -117,7 +116,10 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsOnBrokenXmlContent()
         {
             Assert.Throws<SyntaxException>(() =>
-                new Directives("ADD '\u001b';"));
+                new Atoms.Enumerable.LengthOf(
+                    new Directives("ADD '\u001b';")
+                ).Value()
+            );
         }
 
 
@@ -128,7 +130,10 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsOnBrokenEscapedXmlContent()
         {
             Assert.Throws<SyntaxException>(() =>
-                new Directives("ADD '&#27;';"));
+                new Atoms.Enumerable.LengthOf(
+                    new Directives("ADD '&#27;';")
+                ).Value()
+            );
 
         }
 
@@ -343,12 +348,14 @@ namespace Yaapii.Xambly.Directive.Tests
                 new Directives(
                     "ADD 'root'; ADD 'something'; SET 'Teststring';" +
                     "XPATH '/root/something[contains(.,\"Teststring\")]'; UP; " +
-                    "ADD 'yummydirective';");
-
+                    "ADD 'yummydirective';"
+                );
             new Xambler(dirs).Apply(new XDocument());
 
-            Assert.True(
-                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
+            Assert.Equal(
+                6,
+                new Atoms.Enumerable.LengthOf(dirs).Value()
+            );
         }
 
         /// <summary>
