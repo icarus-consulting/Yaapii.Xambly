@@ -22,18 +22,16 @@
 
 using Antlr4.Runtime;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly;
 using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Error;
-using System.Collections;
-using Yaapii.Atoms;
-using System.Xml;
-using Yaapii.Atoms.Scalar;
-using System.Xml.Linq;
-using Yaapii.Xambly.Arg;
 
 ///
 /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
@@ -74,47 +72,92 @@ using Yaapii.Xambly.Arg;
 ///
 public sealed class Directives : IEnumerable<IDirective>
 {
-
     // Right margin.
     private const int MARGIN = 80;
-
     // List of directives.
-    private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
+    private readonly IScalar<ICollection<IDirective>> all;
 
     /// <summary>
     /// ctor.
     /// </summary>
-    public Directives() : this(new List<IDirective>())
+    public Directives() : this(
+        new List<IDirective>()
+    )
     { }
 
     /// <summary>
     /// ctor.
     /// </summary>
     /// <param name="text">Xambly script</param>
-    public Directives(IText text) : this(text.AsString())
+    public Directives(IText text) : this(
+        text.AsString()
+    )
     { }
 
     /// <summary>
     /// ctor.
     /// </summary>
     /// <param name="text">Xambly script</param>
-    public Directives(String text) : this(Directives.Parse(text))
+    public Directives(string text) : this(
+        new StickyScalar<ICollection<IDirective>>(() =>
+        {
+            var input = new AntlrInputStream(text);
+            XamblyLexer lexer = new XamblyLexer(input);
+            lexer.AddErrorListener(new ThrowingErrorListener());
+
+            var tokens = new CommonTokenStream(lexer);
+            XamblyParser parser = new XamblyParser(tokens);
+            parser.AddErrorListener(new ThrowingErrorListener());
+
+            try
+            {
+                return
+                    new ThreadsafeCollection<IDirective>(
+                        new Object(),
+                        parser.directives().ret
+                    );
+            }
+            catch (RecognitionException ex)
+            {
+                throw new SyntaxException(text, ex);
+            }
+            catch (ParsingException ex)
+            {
+                throw new SyntaxException(text, ex);
+            }
+        })
+    )
     { }
 
     /// <summary>
     /// ctor.
     /// </summary>
     public Directives(params IDirective[] dirs) : this(
-        new List<IDirective>(dirs))
+        new List<IDirective>(dirs)
+    )
     { }
 
     /// <summary>
     /// ctor
     /// </summary>
     /// <param name="dirs">directives</param>
-    public Directives(IEnumerable<IDirective> dirs)
+    public Directives(IEnumerable<IDirective> dirs) : this(
+        new StickyScalar<ICollection<IDirective>>(() =>
+            new ThreadsafeCollection<IDirective>(
+                new Object(),
+                dirs
+            )
+        )
+    )
+    { }
+
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="directives">directives</param>
+    private Directives(IScalar<ICollection<IDirective>> directives)
     {
-        this.Append(dirs);
+        this.all = directives;
     }
 
     /// <summary>
@@ -126,7 +169,7 @@ public sealed class Directives : IEnumerable<IDirective>
         StringBuilder text = new StringBuilder(0);
         int width = 0;
         int idx = 0;
-        foreach (IDirective dir in this._all)
+        foreach (IDirective dir in this.all.Value())
         {
             if (idx > 0 && width == 0)
             {
@@ -154,7 +197,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns></returns>
     public IEnumerator<IDirective> GetEnumerator()
     {
-        return this._all.GetEnumerator();
+        return this.all.Value().GetEnumerator();
     }
 
     /// <summary>
@@ -170,11 +213,11 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <param name="dirs">Directives to append</param>
     public Directives Append(IEnumerable<IDirective> dirs)
     {
-        lock (this._all) //By ICARUS - needed? Threadsafeness - we think this must be done as one transaction to not compromise the directive-set which is added
+        lock (this.all) //By ICARUS - needed? Threadsafeness - we think this must be done as one transaction to not compromise the directive-set which is added
         {
             foreach (IDirective dir in dirs)
             {
-                this._all.Add(dir);
+                this.all.Value().Add(dir);
             }
         }
 
@@ -190,14 +233,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new AddDirective(name.ToString()));
+            this.all.Value().Add(new AddDirective(name.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, ADD({0})",
-                    name).AsString(),
+                    name
+                ).AsString(),
                 ex
             );
         }
@@ -232,7 +276,7 @@ public sealed class Directives : IEnumerable<IDirective>
         try
         {
             new Each<IDirective>(
-                dir => this._all.Add(dir),
+                dir => this.all.Value().Add(dir),
                 new CopyOfDirective(node)
             ).Invoke();
         }
@@ -282,7 +326,8 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         foreach (KeyValuePair<Key, Value> entry in nodes)
         {
-            this.Add(entry.Key.ToString())
+            this
+                .Add(entry.Key.ToString())
                 .Set(entry.Value.ToString())
                 .Up();
         }
@@ -298,14 +343,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new AddIfDirective(name.ToString()));
+            this.all.Value().Add(new AddIfDirective(name.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, ADDIF({0})",
-                    name).AsString(),
+                    name
+                ).AsString(),
                 ex
             );
         }
@@ -318,7 +364,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Remove()
     {
-        this._all.Add(new RemoveDirective());
+        this.all.Value().Add(new RemoveDirective());
         return this;
     }
 
@@ -337,14 +383,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new AttrDirective(name.ToString(), value.ToString()));
+            this.all.Value().Add(new AttrDirective(name.ToString(), value.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, ATTR({0}, {1})",
-                    name, value).AsString(),
+                    name, value
+                ).AsString(),
                 ex
             );
         }
@@ -356,14 +403,15 @@ public sealed class Directives : IEnumerable<IDirective>
         throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
         try
         {
-            this._all.Add(new NsDirective(prefix, uri));
+            this.all.Value().Add(new NsDirective(prefix, uri));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, NS({0}:{1})",
-                    prefix, uri).AsString(),
+                    prefix, uri
+                ).AsString(),
                 ex
             );
         }
@@ -375,14 +423,15 @@ public sealed class Directives : IEnumerable<IDirective>
         throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
         try
         {
-            this._all.Add(new NsDirective(nsp));
+            this.all.Value().Add(new NsDirective(nsp));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, NS({0})",
-                    nsp).AsString(),
+                    nsp
+                ).AsString(),
                 ex
             );
         }
@@ -405,14 +454,17 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new PiDirective(target.ToString(), data.ToString()));
+            this.all.Value().Add(
+                new PiDirective(target.ToString(), data.ToString())
+            );
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, PI({0}, {1})",
-                    target, data).AsString(),
+                    target, data
+                ).AsString(),
                 ex
             );
         }
@@ -433,14 +485,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new SetDirective(text.ToString()));
+            this.all.Value().Add(new SetDirective(text.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, SET({0})",
-                    text).AsString(),
+                    text
+                ).AsString(),
                 ex
             );
         }
@@ -457,14 +510,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new XsetDirective(text.ToString()));
+            this.all.Value().Add(new XsetDirective(text.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, XSET({0})",
-                    text).AsString(),
+                    text
+                ).AsString(),
                 ex
             );
         }
@@ -477,7 +531,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Up()
     {
-        this._all.Add(new UpDirective());
+        this.all.Value().Add(new UpDirective());
         return this;
     }
 
@@ -491,14 +545,15 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new XpathDirective(path.ToString()));
+            this.all.Value().Add(new XpathDirective(path.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, XPATH({0})",
-                    path).AsString(),
+                    path
+                ).AsString(),
                 ex
             );
         }
@@ -512,7 +567,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>Thi object</returns>
     public Directives Strict(int number)
     {
-        this._all.Add(new StrictDirective(number));
+        this.all.Value().Add(new StrictDirective(number));
         return this;
     }
 
@@ -522,7 +577,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Push()
     {
-        this._all.Add(new PushDirective());
+        this.all.Value().Add(new PushDirective());
         return this;
     }
 
@@ -532,7 +587,7 @@ public sealed class Directives : IEnumerable<IDirective>
     /// <returns>This object</returns>
     public Directives Pop()
     {
-        this._all.Add(new PopDirective());
+        this.all.Value().Add(new PopDirective());
         return this;
     }
 
@@ -550,46 +605,18 @@ public sealed class Directives : IEnumerable<IDirective>
     {
         try
         {
-            this._all.Add(new CdataDirective(text.ToString()));
+            this.all.Value().Add(new CdataDirective(text.ToString()));
         }
         catch (XmlContentException ex)
         {
             throw new IllegalArgumentException(
                 new FormattedText(
                     "failed to understand XML content, CDATA({0})",
-                    text).AsString(),
+                    text
+                ).AsString(),
                 ex
             );
         }
         return this;
-    }
-
-    /// <summary>
-    /// Parse script.
-    /// </summary>
-    /// <param name="script">Script to parse</param>
-    /// <returns>Collection of directives</returns>
-    private static ICollection<IDirective> Parse(String script)
-    {
-        var input = new AntlrInputStream(script);
-        XamblyLexer lexer = new XamblyLexer(input);
-        lexer.AddErrorListener(new ThrowingErrorListener());
-
-        var tokens = new CommonTokenStream(lexer);
-        XamblyParser parser = new XamblyParser(tokens);
-        parser.AddErrorListener(new ThrowingErrorListener());
-
-        try
-        {
-            return parser.directives().ret;
-        }
-        catch (RecognitionException ex)
-        {
-            throw new SyntaxException(script, ex);
-        }
-        catch (ParsingException ex)
-        {
-            throw new SyntaxException(script, ex);
-        }
     }
 }
