@@ -1,5 +1,8 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 
 namespace System.Collections.Generic
@@ -14,68 +17,84 @@ namespace System.Collections.Generic
         /// <summary>
         /// List to protect
         /// </summary>
-        private readonly List<T> items;
+        private readonly IScalar<List<T>> items;
 
         /// <summary>
         /// Lock object
         /// </summary>
-        private readonly object sync;
+        private readonly IScalar<object> sync;
 
         /// <summary>
         /// ctor
         /// </summary>
-        public ThreadsafeCollection()
-        {
-            this.items = new List<T>();
-            this.sync = new Object();
-        }
+        public ThreadsafeCollection() : this(
+            new Object(),
+            new EnumerableOf<T>()
+        )
+        { }
 
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="syncRoot"></param>
-        public ThreadsafeCollection(object syncRoot)
-        {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-
-            this.items = new List<T>();
-            this.sync = syncRoot;
-        }
+        /// <param name="sync"></param>
+        public ThreadsafeCollection(object sync) : this(
+            new StickyScalar<object>(() =>
+            {
+                new FailNull(
+                    sync,
+                    "Syncronizing object is null"
+                ).Go();
+                return sync;
+            }),
+            new EnumerableOf<T>()
+        )
+        { }
 
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="syncRoot">root object to sync</param>
+        /// <param name="sync">object to sync</param>
         /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object syncRoot, IEnumerable<T> list)
-        {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            this.items = new List<T>(list);
-            this.sync = syncRoot;
-        }
+        public ThreadsafeCollection(object sync, params T[] list) : this(
+            sync,
+            new EnumerableOf<T>(list)
+        )
+        { }
 
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="syncRoot">root object to sync</param>
+        /// <param name="sync">object to sync</param>
         /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object syncRoot, params T[] list)
+        public ThreadsafeCollection(object sync, IEnumerable<T> list) : this(
+            new StickyScalar<object>(() =>
+            {
+                new FailNull(
+                    sync,
+                    "Syncronizing object is null"
+                ).Go();
+                return sync;
+            }),
+            new StickyScalar<List<T>>(() =>
+            {
+                new FailNull(
+                    list,
+                    "List is null"
+                ).Go();
+                return new List<T>(list);
+            })
+            )
+        { }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="sync">object to sync</param>
+        /// <param name="items">list to instantiate from</param>
+        private ThreadsafeCollection(IScalar<object> sync, IScalar<List<T>> items)
         {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            this.items = new List<T>(list.Length);
-            for (int i = 0; i < list.Length; i++)
-                this.items.Add(list[i]);
-
-            this.sync = syncRoot;
+            this.items = items;
+            this.sync = sync;
         }
 
         /// <summary>
@@ -83,7 +102,7 @@ namespace System.Collections.Generic
         /// </summary>
         public int Count
         {
-            get { lock (this.sync) { return this.items.Count; } }
+            get { lock (this.sync) { return this.items.Value().Count; } }
         }
 
         /// <summary>
@@ -91,7 +110,7 @@ namespace System.Collections.Generic
         /// </summary>
         protected List<T> Items
         {
-            get { return this.items; }
+            get { return this.items.Value(); }
         }
 
         /// <summary>
@@ -113,14 +132,14 @@ namespace System.Collections.Generic
             {
                 lock (this.sync)
                 {
-                    return this.items[index];
+                    return this.items.Value()[index];
                 }
             }
             set
             {
                 lock (this.sync)
                 {
-                    if (index < 0 || index >= this.items.Count)
+                    if (index < 0 || index >= this.items.Value().Count)
                         throw new ArgumentOutOfRangeException("index", index, $"value {index} must be in range of {this.Items.Count}");
 
                     this.SetItem(index, value);
@@ -136,7 +155,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                int index = this.items.Count;
+                int index = this.items.Value().Count;
                 this.InsertItem(index, item);
             }
         }
@@ -161,7 +180,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                this.items.CopyTo(array, index);
+                this.items.Value().CopyTo(array, index);
             }
         }
 
@@ -174,7 +193,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                return this.items.Contains(item);
+                return this.items.Value().Contains(item);
             }
         }
 
@@ -186,7 +205,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                return this.items.GetEnumerator();
+                return this.items.Value().GetEnumerator();
             }
         }
 
@@ -212,9 +231,9 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                if (index < 0 || index > this.items.Count)
+                if (index < 0 || index > this.items.Value().Count)
                     throw new ArgumentOutOfRangeException(
-                        "index", index, 
+                        "index", index,
                         new FormattedText(
                             "value {0} must be in range of {1}", index, this.Items.Count).AsString());
 
@@ -229,11 +248,11 @@ namespace System.Collections.Generic
         /// <returns>the index</returns>
         int InternalIndexOf(T item)
         {
-            int count = items.Count;
+            int count = items.Value().Count;
 
             for (int i = 0; i < count; i++)
             {
-                if (object.Equals(items[i], item))
+                if (object.Equals(items.Value()[i], item))
                 {
                     return i;
                 }
@@ -267,7 +286,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                if (index < 0 || index >= this.items.Count)
+                if (index < 0 || index >= this.items.Value().Count)
                     throw new ArgumentOutOfRangeException("index", index, $"value {index} must be in range of {this.Items.Count}");
 
 
@@ -280,7 +299,7 @@ namespace System.Collections.Generic
         /// </summary>
         protected virtual void ClearItems()
         {
-            this.items.Clear();
+            this.items.Value().Clear();
         }
 
         /// <summary>
@@ -290,7 +309,7 @@ namespace System.Collections.Generic
         /// <param name="item">item to insert</param>
         protected virtual void InsertItem(int index, T item)
         {
-            this.items.Insert(index, item);
+            this.items.Value().Insert(index, item);
         }
 
         /// <summary>
@@ -299,7 +318,7 @@ namespace System.Collections.Generic
         /// <param name="index">index to remove at</param>
         protected virtual void RemoveItem(int index)
         {
-            this.items.RemoveAt(index);
+            this.items.Value().RemoveAt(index);
         }
 
         /// <summary>
@@ -309,7 +328,7 @@ namespace System.Collections.Generic
         /// <param name="item">replacement item</param>
         protected virtual void SetItem(int index, T item)
         {
-            this.items[index] = item;
+            this.items.Value()[index] = item;
         }
 
         /// <summary>
@@ -326,7 +345,7 @@ namespace System.Collections.Generic
         /// <returns>the enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IList)this.items).GetEnumerator();
+            return this.items.Value().GetEnumerator();
         }
 
         /// <summary>
@@ -354,7 +373,7 @@ namespace System.Collections.Generic
         {
             lock (this.sync)
             {
-                ((IList)this.items).CopyTo(array, index);
+                ((IList)this.items.Value()).CopyTo(array, index);
             }
         }
 
@@ -466,12 +485,14 @@ namespace System.Collections.Generic
             }
             else if (!(value is T))
             {
-                throw 
+                throw
                     new ArgumentException(
                         new FormattedText(
-                            "object is of type {0} but collection is of {1}", 
-                            value.GetType().FullName, 
-                            typeof(T).FullName).AsString());
+                            "object is of type {0} but collection is of {1}",
+                            value.GetType().FullName,
+                            typeof(T).FullName
+                        ).AsString()
+                    );
             }
         }
     }
