@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\Development\work\Yaapii.Xambly\src\Yaapii.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
+// Generated from C:\Users\csa\Source\Git\Yaapii.Xambly\src\Yaapii.Xambly\\Antlr4\Xambly.g by ANTLR 4.6
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -110,14 +110,14 @@ public partial class XamblyLexer : Lexer {
 		switch (actionIndex) {
 		case 0: 
 		        try {
-		            this.Text = new Unescaped(this.Text).AsString();
+		            this.Text = new Unescaped(this.Text.Substring(1, this.Text.Length - 2)).AsString();
 		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }
 		     break;
 		case 1: 
 		        try {
-		            this.Text = new Unescaped(this.Text).AsString();
+		            this.Text = new Unescaped(this.Text.Substring(1, this.Text.Length - 2)).AsString();
 		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }
