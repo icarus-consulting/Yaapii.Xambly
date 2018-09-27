@@ -116,8 +116,11 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ThrowsOnBrokenXmlContent()
         {
-            Assert.Throws<SyntaxException>(() =>
-                new Directives("ADD '\u001b';"));
+            Assert.Throws<XmlException>(() =>
+            {
+                var dom = new XDocument(new XElement("root"));
+                new Xambler(new Directives("ADD '\u001b';")).Apply(dom);
+            });
         }
 
 
@@ -142,7 +145,6 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsMapOfValues(string testXPath)
         {
             var dom = new XDocument(new XElement("root"));
-            //dom.AppendChild(dom.CreateElement("root"));
             var xml =
                 new Xambler(
                     new Directives()
