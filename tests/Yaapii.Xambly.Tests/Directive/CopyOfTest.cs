@@ -66,5 +66,27 @@ namespace Yaapii.Xambly.Tests.Directive
                 nav.SelectSingleNode("/target/body/accessibility/readonly").Value == "false"
             );
         }
+
+        [Fact]
+        public void WorksWithEmptySpacesAfterNodeEnding()
+        {
+            var dom = new XDocument();
+            var content =
+                new TextOf("<state><item>nothing</item>   </state>");
+            var xml = XDocument.Parse(content.AsString());
+            new Xambler(
+                new Joined<IDirective>(
+                     new EnumerableOf<IDirective>(
+                        new AddDirective("root")
+                    ),
+                    new CopyOfDirective(xml.FirstNode)
+                )
+            ).Apply(dom);
+
+            Assert.Equal(
+                "<root><state><item>nothing</item></state></root>",
+                dom.FirstNode.ToString()
+            );
+        }
     }
 }
