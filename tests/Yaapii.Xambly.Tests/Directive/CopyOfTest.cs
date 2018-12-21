@@ -72,7 +72,7 @@ namespace Yaapii.Xambly.Tests.Directive
         {
             var dom = new XDocument();
             var content =
-                new TextOf("<state><item>nothing</item>   </state>");
+                new TextOf("<state><item>success</item>   </state>");
             var xml = XDocument.Parse(content.AsString());
             new Xambler(
                 new Joined<IDirective>(
@@ -83,9 +83,10 @@ namespace Yaapii.Xambly.Tests.Directive
                 )
             ).Apply(dom);
 
+            var nav = dom.CreateNavigator();
             Assert.Equal(
-                "<root><state><item>nothing</item></state></root>",
-                dom.FirstNode.ToString()
+                "success",
+                nav.SelectSingleNode("/root/state/item").Value
             );
         }
     }
