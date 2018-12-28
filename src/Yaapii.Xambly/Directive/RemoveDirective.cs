@@ -27,7 +27,7 @@ using Yaapii.Atoms.Error;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// REMOVE directive.
