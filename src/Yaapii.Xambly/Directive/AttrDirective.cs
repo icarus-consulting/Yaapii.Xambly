@@ -28,7 +28,7 @@ using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// ATTR directive.
