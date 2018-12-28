@@ -79,7 +79,7 @@ namespace Yaapii.Xambly
         private const int MARGIN = 80;
 
         // List of directives.
-        private readonly ICollection<IDirective> _all = new ThreadsafeCollection<IDirective>();
+        private readonly ICollection<IDirective> all = new ThreadsafeCollection<IDirective>();
 
         /// <summary>
         /// ctor.
@@ -126,7 +126,7 @@ namespace Yaapii.Xambly
             StringBuilder text = new StringBuilder(0);
             int width = 0;
             int idx = 0;
-            foreach (IDirective dir in this._all)
+            foreach (IDirective dir in this.all)
             {
                 if (idx > 0 && width == 0)
                 {
@@ -154,7 +154,7 @@ namespace Yaapii.Xambly
         /// <returns></returns>
         public IEnumerator<IDirective> GetEnumerator()
         {
-            return this._all.GetEnumerator();
+            return this.all.GetEnumerator();
         }
 
         /// <summary>
@@ -170,11 +170,11 @@ namespace Yaapii.Xambly
         /// <param name="dirs">Directives to append</param>
         public Directives Append(IEnumerable<IDirective> dirs)
         {
-            lock (this._all) //By ICARUS - needed? Threadsafeness - we think this must be done as one transaction to not compromise the directive-set which is added
+            lock (this.all) //By ICARUS - needed? Threadsafeness - we think this must be done as one transaction to not compromise the directive-set which is added
             {
                 foreach (IDirective dir in dirs)
                 {
-                    this._all.Add(dir);
+                    this.all.Add(dir);
                 }
             }
 
@@ -190,7 +190,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new AddDirective(name.ToString()));
+                this.all.Add(new AddDirective(name.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -232,7 +232,7 @@ namespace Yaapii.Xambly
             try
             {
                 new Each<IDirective>(
-                    dir => this._all.Add(dir),
+                    dir => this.all.Add(dir),
                     new CopyOfDirective(node)
                 ).Invoke();
             }
@@ -298,7 +298,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new AddIfDirective(name.ToString()));
+                this.all.Add(new AddIfDirective(name.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -318,7 +318,7 @@ namespace Yaapii.Xambly
         /// <returns>This object</returns>
         public Directives Remove()
         {
-            this._all.Add(new RemoveDirective());
+            this.all.Add(new RemoveDirective());
             return this;
         }
 
@@ -337,7 +337,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new AttrDirective(name.ToString(), value.ToString()));
+                this.all.Add(new AttrDirective(name.ToString(), value.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -356,7 +356,7 @@ namespace Yaapii.Xambly
             throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
             try
             {
-                this._all.Add(new NsDirective(prefix, uri));
+                this.all.Add(new NsDirective(prefix, uri));
             }
             catch (XmlContentException ex)
             {
@@ -375,7 +375,7 @@ namespace Yaapii.Xambly
             throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
             try
             {
-                this._all.Add(new NsDirective(nsp));
+                this.all.Add(new NsDirective(nsp));
             }
             catch (XmlContentException ex)
             {
@@ -405,7 +405,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new PiDirective(target.ToString(), data.ToString()));
+                this.all.Add(new PiDirective(target.ToString(), data.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -433,7 +433,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new SetDirective(text.ToString()));
+                this.all.Add(new SetDirective(text.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -457,7 +457,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new XsetDirective(text.ToString()));
+                this.all.Add(new XsetDirective(text.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -477,7 +477,7 @@ namespace Yaapii.Xambly
         /// <returns>This object</returns>
         public Directives Up()
         {
-            this._all.Add(new UpDirective());
+            this.all.Add(new UpDirective());
             return this;
         }
 
@@ -491,7 +491,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new XpathDirective(path.ToString()));
+                this.all.Add(new XpathDirective(path.ToString()));
             }
             catch (XmlContentException ex)
             {
@@ -512,7 +512,7 @@ namespace Yaapii.Xambly
         /// <returns>Thi object</returns>
         public Directives Strict(int number)
         {
-            this._all.Add(new StrictDirective(number));
+            this.all.Add(new StrictDirective(number));
             return this;
         }
 
@@ -522,7 +522,7 @@ namespace Yaapii.Xambly
         /// <returns>This object</returns>
         public Directives Push()
         {
-            this._all.Add(new PushDirective());
+            this.all.Add(new PushDirective());
             return this;
         }
 
@@ -532,7 +532,7 @@ namespace Yaapii.Xambly
         /// <returns>This object</returns>
         public Directives Pop()
         {
-            this._all.Add(new PopDirective());
+            this.all.Add(new PopDirective());
             return this;
         }
 
@@ -550,7 +550,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                this._all.Add(new CdataDirective(text.ToString()));
+                this.all.Add(new CdataDirective(text.ToString()));
             }
             catch (XmlContentException ex)
             {

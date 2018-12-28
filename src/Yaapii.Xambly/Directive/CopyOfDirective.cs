@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Scalar;
 
 namespace Yaapii.Xambly.Directive
