@@ -110,14 +110,14 @@ public partial class XamblyLexer : Lexer {
 		switch (actionIndex) {
 		case 0: 
 		        try {
-		            this.Text = new Unescaped(this.Text).AsString();
+		            this.Text = new Unescaped(this.Text.Trim('"')).AsString();
 		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }
 		     break;
 		case 1: 
 		        try {
-		            this.Text = new Unescaped(this.Text).AsString();
+		            this.Text = new Unescaped(this.Text.Trim('\'')).AsString();
 		        } catch (XmlException ex) {
 		            throw new ParsingException(ex);
 		        }

@@ -30,17 +30,21 @@ namespace Yaapii.Xambly.Arg.Tests
         [Fact]
         public void Unescapes()
         {
-            var escaped = "\"test € привет &amp; &lt;&gt;&apos;&quot;\\\"";
+            var escaped = "test € привет &amp; &lt;&gt;&apos;&quot;\\";
             var unescaped = "test \u20ac привет & <>'\"\\";
 
-            Assert.Equal(new Unescaped(escaped).AsString(), unescaped);
+            Assert.Equal(
+                unescaped,
+                new Unescaped(escaped).AsString()
+            );
         }
 
         [Fact]
         public void CantUnescapeInvalidXMLChars()
         {
-            Assert.Throws<XmlException>(
-                () => new Unescaped("&#27;&#0000;").AsString());
+            Assert.Throws<XmlException>(() =>
+                new Unescaped("&#27;&#0000;").AsString()
+            );
         }
     }
 }
