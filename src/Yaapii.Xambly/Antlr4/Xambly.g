@@ -193,7 +193,7 @@ TEXT
     '"' (~'"')* '"'
     {
         try {
-            this.Text = new Unescaped(this.Text.Substring(1, this.Text.Length - 2)).AsString();
+            this.Text = new Unescaped(this.Text.Trim('"')).AsString();
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }
@@ -202,7 +202,7 @@ TEXT
     '\'' (~'\'')* '\''
     {
         try {
-            this.Text = new Unescaped(this.Text.Substring(1, this.Text.Length - 2)).AsString();
+            this.Text = new Unescaped(this.Text.Trim('\'')).AsString();
         } catch (XmlException ex) {
             throw new ParsingException(ex);
         }

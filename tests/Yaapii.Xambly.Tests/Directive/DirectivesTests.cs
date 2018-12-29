@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
@@ -9,11 +8,8 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
-using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
-using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -377,7 +373,7 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void UsefulInfoAtAddingAttributeToDocumentNode()
+        public void RejectsAddingToDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
