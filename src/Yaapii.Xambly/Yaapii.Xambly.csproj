@@ -19,7 +19,7 @@
   
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="Yaapii.Atoms" Version="0.20.0" />
+    <PackageReference Include="Yaapii.Atoms" Version="0.21.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
   </ItemGroup>
