@@ -34,23 +34,28 @@ using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly
 {
-
-    ///
+    /// <summary>
     /// Collection of <see cref="IDirective"/>s, instantiable from <see cref="String"/>.
     ///
-    /// <para>For example, to fetch directives from a string and apply to the
+    /// <para>
+    /// For example, to fetch directives from a string and apply to the
     /// DOM document:
-    ///
+    /// </para>
+    /// 
+    /// <para>
     /// <code> 
-    /// 
     /// dom = &lt;some xmldocument&gt;
-    /// 
     /// new Xambler(
     ///   new Directives("XPATH 'root'; ADD 'employee';")
-    /// ).Apply(dom);</code>
+    /// ).Apply(dom);
+    /// </code>
     /// </para>
-    /// <para>{@link Directives} can be used as a builder of Xambly script:
+    /// 
+    /// <para>
+    /// <see cref="Directives"/> can be used as a builder of Xambly script:
+    /// </para>
     ///
+    ///<para>
     /// <code> Document dom = DocumentBuilderFactory.newInstance()
     ///   .newDocumentBuilder().newDocument();
     /// dom.appendChild(dom.createElement("root"));
@@ -64,48 +69,47 @@ namespace Yaapii.Xambly
     ///     .xpath("employee[&#64;id='100']")
     ///     .strict(1)
     ///     .remove()
-    /// ).apply(dom);</code>
-    ///
+    /// ).apply(dom);
+    /// </code>
     /// </para>
+    /// 
     /// <para>
     /// The class is mutable and thread-safe.
     /// author: ICARUS Consulting GmbH
     /// </para>
-    ///
+    /// </summary>
     public sealed class Directives : IEnumerable<IDirective>
     {
-
         // Right margin.
         private const int MARGIN = 80;
-
         // List of directives.
         private readonly IScalar<ICollection<IDirective>> all;
 
         /// <summary>
-        /// ctor.
+        /// Collection of <see cref="IDirective"/>.
         /// </summary>
         public Directives() : this(
-        new List<IDirective>()
-    )
-        { }
-
-        /// <summary>
-        /// ctor.
-        /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(IText text) : this(
-            text.AsString()
+            new List<IDirective>()
         )
         { }
 
         /// <summary>
-        /// ctor.
+        /// Collection of <see cref="IDirective"/>.
         /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(string text) : this(
+        /// <param name="xambly">Xambly script</param>
+        public Directives(string xambly) : this(
+            new TextOf(xambly)
+        )
+        { }
+
+        /// <summary>
+        /// Collection of <see cref="IDirective"/>.
+        /// </summary>
+        /// <param name="xambly">Xambly script</param>
+        public Directives(IText xambly) : this(
             new StickyScalar<ICollection<IDirective>>(() =>
             {
-                var input = new AntlrInputStream(text);
+                var input = new AntlrInputStream(xambly.AsString());
                 XamblyLexer lexer = new XamblyLexer(input);
                 lexer.AddErrorListener(new ThrowingErrorListener());
 
@@ -123,40 +127,37 @@ namespace Yaapii.Xambly
                 }
                 catch (RecognitionException ex)
                 {
-                    throw new SyntaxException(text, ex);
+                    throw new SyntaxException(xambly.AsString(), ex);
                 }
                 catch (ParsingException ex)
                 {
-                    throw new SyntaxException(text, ex);
+                    throw new SyntaxException(xambly.AsString(), ex);
                 }
             })
         )
         { }
 
         /// <summary>
-        /// ctor.
+        /// Collection of <see cref="IDirective"/>.
         /// </summary>
-        public Directives(params IDirective[] dirs) : this(
-            new List<IDirective>(dirs)
+        public Directives(params IDirective[] directives) : this(
+            new List<IDirective>(directives)
         )
         { }
 
         /// <summary>
-        /// ctor
+        /// Collection of <see cref="IDirective"/>.
         /// </summary>
-        /// <param name="dirs">directives</param>
-        public Directives(IEnumerable<IDirective> dirs) : this(
+        /// <param name="directives">directives</param>
+        public Directives(IEnumerable<IDirective> directives) : this(
             new StickyScalar<ICollection<IDirective>>(() =>
-                new ThreadsafeCollection<IDirective>(
-                    new Object(),
-                    dirs
-                )
+                new ThreadsafeCollection<IDirective>(directives)
             )
         )
         { }
 
         /// <summary>
-        /// ctor
+        /// Collection of <see cref="IDirective"/>.
         /// </summary>
         /// <param name="directives">directives</param>
         private Directives(IScalar<ICollection<IDirective>> directives)
