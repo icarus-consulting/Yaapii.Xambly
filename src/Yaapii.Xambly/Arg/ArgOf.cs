@@ -29,20 +29,16 @@ namespace Yaapii.Xambly.Arg
     /// </summary>
     public class ArgOf : IArg
     {
-        private readonly string _value;
+        private readonly string value;
 
         /// <summary>
         /// Argument properly escaped.
         /// </summary>
-        /// <param name="val">Value of it</param>
+        /// <param name="value">Value of it</param>
         /// <exception cref="NotIllegal">If fails</exception>
-        public ArgOf(string val)
+        public ArgOf(string value)
         {
-            foreach (char chr in val.ToCharArray())
-            {
-                new NotIllegal(chr).Value();
-            }
-            this._value = val;
+            this.value = value;
         }
 
         /// <summary>
@@ -51,13 +47,14 @@ namespace Yaapii.Xambly.Arg
         /// <returns>String</returns>
         public string AsString()
         {
-            var escaped = new Escaped(this._value).AsString();
+            Validate();
+            var escaped = new Escaped(this.value).AsString();
             return
-                new StringBuilder(this._value.Length + 2 + escaped.Length)
-                        .Append('"')
-                        .Append(escaped)
-                        .Append('"')
-                        .ToString();
+                new StringBuilder(this.value.Length + 2 + escaped.Length)
+                    .Append('"')
+                    .Append(escaped)
+                    .Append('"')
+                    .ToString();
         }
 
         /// <summary>
@@ -75,7 +72,19 @@ namespace Yaapii.Xambly.Arg
         /// <returns>Value</returns>
         public string Raw()
         {
-            return this._value;
+            Validate();
+            return this.value;
+        }
+
+        /// <summary>
+        /// Validates the value by checking for illegal characters
+        /// </summary>
+        private void Validate()
+        {
+            foreach (char chr in this.value.ToCharArray())
+            {
+                new NotIllegal(chr).Value();
+            }
         }
     }
 }

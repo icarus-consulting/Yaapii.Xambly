@@ -23,8 +23,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms;
@@ -134,15 +132,30 @@ namespace Yaapii.Xambly.Directive
             var ctn = node as XContainer;
             //@TODO: Add failing for null
 
+            var containsElement =
+                new Contains<XmlNodeType>(
+                    new Mapped<XNode, XmlNodeType>(
+                        xnode => xnode.NodeType,
+                        ctn.Nodes()
+                    ),
+                    XmlNodeType.Element
+                ).Value();
+                    
             foreach (XNode child in ctn.Nodes())
             {
                 switch (child.NodeType)
                 {
                     case XmlNodeType.Text:
-                        dirs.Set((child as XText).Value);
+                        if (!containsElement)
+                        {
+                            dirs.Set((child as XText).Value);
+                        }
                         break;
                     case XmlNodeType.CDATA:
-                        dirs.Set((child as XCData).Value);
+                        if (!containsElement)
+                        {
+                            dirs.Set((child as XCData).Value);
+                        }
                         break;
                     case XmlNodeType.Element:
                         dirs.Append(new CopyOfDirective(child)).Up();
