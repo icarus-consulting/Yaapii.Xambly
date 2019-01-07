@@ -18,76 +18,78 @@ namespace System.Collections.Generic
         /// List to protect
         /// </summary>
         private readonly IScalar<List<T>> items;
-
         /// <summary>
         /// Lock object
         /// </summary>
         private readonly IScalar<object> sync;
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
         public ThreadsafeCollection() : this(
-            new Object(),
+            new object(),
             new EnumerableOf<T>()
         )
         { }
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
-        /// <param name="sync"></param>
+        /// <param name="sync">object to sync</param>
         public ThreadsafeCollection(object sync) : this(
-            new StickyScalar<object>(() =>
-            {
-                new FailNull(
-                    sync,
-                    "Syncronizing object is null"
-                ).Go();
-                return sync;
-            }),
+            sync,
             new EnumerableOf<T>()
         )
         { }
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
-        /// <param name="sync">object to sync</param>
-        /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object sync, params T[] list) : this(
-            sync,
-            new EnumerableOf<T>(list)
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(IEnumerable<T> items) : this(
+            new object(),
+            items
         )
         { }
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
         /// <param name="sync">object to sync</param>
-        /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object sync, IEnumerable<T> list) : this(
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(object sync, params T[] items) : this(
+            sync,
+            new EnumerableOf<T>(items)
+        )
+        { }
+
+        /// <summary>
+        /// A collection which is threadsafe.
+        /// </summary>
+        /// <param name="sync">object to sync</param>
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(object sync, IEnumerable<T> items) : this(
             new StickyScalar<object>(() =>
             {
                 new FailNull(
                     sync,
-                    "Syncronizing object is null"
+                    new ArgumentNullException("Syncronizing object is null")
                 ).Go();
                 return sync;
             }),
             new StickyScalar<List<T>>(() =>
             {
                 new FailNull(
-                    list,
-                    "List is null"
+                    items,
+                    new ArgumentNullException("List is null")
                 ).Go();
-                return new List<T>(list);
+                return new List<T>(items);
             })
             )
         { }
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
         /// <param name="sync">object to sync</param>
         /// <param name="items">list to instantiate from</param>
