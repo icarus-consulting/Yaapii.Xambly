@@ -1,5 +1,7 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 
 namespace System.Collections.Generic
@@ -19,63 +21,81 @@ namespace System.Collections.Generic
         /// <summary>
         /// Lock object
         /// </summary>
-        private readonly object sync;
+        private readonly IScalar<object> sync;
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
-        public ThreadsafeCollection()
-        {
-            this.items = new List<T>();
-            this.sync = new Object();
-        }
+        public ThreadsafeCollection() : this(
+            new object(),
+            new List<T>()
+        )
+        { }
 
         /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="syncRoot"></param>
-        public ThreadsafeCollection(object syncRoot)
-        {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-
-            this.items = new List<T>();
-            this.sync = syncRoot;
-        }
-
-        /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
         /// </summary>
         /// <param name="syncRoot">root object to sync</param>
-        /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object syncRoot, IEnumerable<T> list)
-        {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            this.items = new List<T>(list);
-            this.sync = syncRoot;
-        }
+        public ThreadsafeCollection(object syncRoot) : this(
+            syncRoot,
+            new List<T>()
+        )
+        { }
 
         /// <summary>
-        /// ctor
+        /// A collection which is threadsafe.
+        /// </summary>
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(IEnumerable<T> items) : this(
+            new object(),
+            items
+        )
+        { }
+
+        /// <summary>
+        /// A collection which is threadsafe.
         /// </summary>
         /// <param name="syncRoot">root object to sync</param>
-        /// <param name="list">list to instantiate from</param>
-        public ThreadsafeCollection(object syncRoot, params T[] list)
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(object syncRoot, IEnumerable<T> items) : this(
+            syncRoot,
+            new List<T>(items)
+        )
+        { }
+
+        /// <summary>
+        /// A collection which is threadsafe.
+        /// </summary>
+        /// <param name="syncRoot">root object to sync</param>
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(object syncRoot, params T[] items) : this(
+            syncRoot,
+            new List<T>(items)
+        )
+        { }
+
+        /// <summary>
+        /// A collection which is threadsafe.
+        /// </summary>
+        /// <param name="syncRoot">root object to sync</param>
+        /// <param name="items">list to instantiate from</param>
+        public ThreadsafeCollection(object syncRoot, List<T> items) : this(
+            new StickyScalar<object>(() =>
+            {
+                new FailNull(
+                    syncRoot,
+                    new ArgumentNullException("syncRoot")
+                ).Go();
+                return syncRoot;
+            }),
+            items
+        )
+        { }
+
+        private ThreadsafeCollection(IScalar<object> syncRoot, List<T> itmes)
         {
-            if (syncRoot == null)
-                throw new ArgumentNullException("syncRoot");
-            if (list == null)
-                throw new ArgumentNullException("list");
-
-            this.items = new List<T>(list.Length);
-            for (int i = 0; i < list.Length; i++)
-                this.items.Add(list[i]);
-
             this.sync = syncRoot;
+            this.items = itmes;
         }
 
         /// <summary>
@@ -83,7 +103,7 @@ namespace System.Collections.Generic
         /// </summary>
         public int Count
         {
-            get { lock (this.sync) { return this.items.Count; } }
+            get { lock (this.sync.Value()) { return this.items.Count; } }
         }
 
         /// <summary>
@@ -99,7 +119,7 @@ namespace System.Collections.Generic
         /// </summary>
         public object SyncRoot
         {
-            get { return this.sync; }
+            get { return this.sync.Value(); }
         }
 
         /// <summary>
@@ -111,14 +131,14 @@ namespace System.Collections.Generic
         {
             get
             {
-                lock (this.sync)
+                lock (this.sync.Value())
                 {
                     return this.items[index];
                 }
             }
             set
             {
-                lock (this.sync)
+                lock (this.sync.Value())
                 {
                     if (index < 0 || index >= this.items.Count)
                         throw new ArgumentOutOfRangeException("index", index, $"value {index} must be in range of {this.Items.Count}");
@@ -134,7 +154,7 @@ namespace System.Collections.Generic
         /// <param name="item"></param>
         public void Add(T item)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 int index = this.items.Count;
                 this.InsertItem(index, item);
@@ -146,7 +166,7 @@ namespace System.Collections.Generic
         /// </summary>
         public void Clear()
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 this.ClearItems();
             }
@@ -159,7 +179,7 @@ namespace System.Collections.Generic
         /// <param name="index">index to start with</param>
         public void CopyTo(T[] array, int index)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 this.items.CopyTo(array, index);
             }
@@ -172,7 +192,7 @@ namespace System.Collections.Generic
         /// <returns></returns>
         public bool Contains(T item)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 return this.items.Contains(item);
             }
@@ -184,7 +204,7 @@ namespace System.Collections.Generic
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 return this.items.GetEnumerator();
             }
@@ -197,7 +217,7 @@ namespace System.Collections.Generic
         /// <returns>the index</returns>
         public int IndexOf(T item)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 return this.InternalIndexOf(item);
             }
@@ -210,11 +230,11 @@ namespace System.Collections.Generic
         /// <param name="item">the item to insert</param>
         public void Insert(int index, T item)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 if (index < 0 || index > this.items.Count)
                     throw new ArgumentOutOfRangeException(
-                        "index", index, 
+                        "index", index,
                         new FormattedText(
                             "value {0} must be in range of {1}", index, this.Items.Count).AsString());
 
@@ -248,7 +268,7 @@ namespace System.Collections.Generic
         /// <returns>true if success, false if item wasnt found</returns>
         public bool Remove(T item)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 int index = this.InternalIndexOf(item);
                 if (index < 0)
@@ -265,7 +285,7 @@ namespace System.Collections.Generic
         /// <param name="index">the index</param>
         public void RemoveAt(int index)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 if (index < 0 || index >= this.items.Count)
                     throw new ArgumentOutOfRangeException("index", index, $"value {index} must be in range of {this.Items.Count}");
@@ -342,7 +362,7 @@ namespace System.Collections.Generic
         /// </summary>
         object ICollection.SyncRoot
         {
-            get { return this.sync; }
+            get { return this.sync.Value(); }
         }
 
         /// <summary>
@@ -352,7 +372,7 @@ namespace System.Collections.Generic
         /// <param name="index">index to start at</param>
         void ICollection.CopyTo(Array array, int index)
         {
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 ((IList)this.items).CopyTo(array, index);
             }
@@ -401,7 +421,7 @@ namespace System.Collections.Generic
         {
             VerifyValueType(value);
 
-            lock (this.sync)
+            lock (this.sync.Value())
             {
                 this.Add((T)value);
                 return this.Count - 1;
@@ -466,11 +486,11 @@ namespace System.Collections.Generic
             }
             else if (!(value is T))
             {
-                throw 
+                throw
                     new ArgumentException(
                         new FormattedText(
-                            "object is of type {0} but collection is of {1}", 
-                            value.GetType().FullName, 
+                            "object is of type {0} but collection is of {1}",
+                            value.GetType().FullName,
                             typeof(T).FullName).AsString());
             }
         }
