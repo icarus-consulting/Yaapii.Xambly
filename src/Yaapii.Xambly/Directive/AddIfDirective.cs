@@ -28,7 +28,7 @@ using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly
+namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// ADDIF directive.

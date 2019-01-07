@@ -103,7 +103,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsOnBrokenGrammar()
         {
             Assert.Throws<SyntaxException>(() =>
-                new Atoms.Enumerable.LengthOf(    
+                new Atoms.Enumerable.LengthOf(
                     new Directives("not a xambly at all")
                 ).Value()
             );
@@ -115,11 +115,11 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ThrowsOnBrokenXmlContent()
         {
-            Assert.Throws<SyntaxException>(() =>
-                new Atoms.Enumerable.LengthOf(
-                    new Directives("ADD '\u001b';")
-                ).Value()
-            );
+            Assert.Throws<XmlException>(() =>
+            {
+                var dom = new XDocument(new XElement("root"));
+                new Xambler(new Directives("ADD '\u001b';")).Apply(dom);
+            });
         }
 
 
@@ -147,7 +147,6 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsMapOfValues(string testXPath)
         {
             var dom = new XDocument(new XElement("root"));
-            //dom.AppendChild(dom.CreateElement("root"));
             var xml =
                 new Xambler(
                     new Directives()
@@ -382,21 +381,20 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void UsefulInfoAtAddingAttributeToDocumentNode()
+        public void RejectsAddingToDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                {
-                    var xml = new XDocument();
-                    var xambler =
-                        new Xambler(
-                            new Directives()
-                                .Add("root")
-                                .Add("child")
-                                .Xpath("/")
-                                .Attr("some", "attribute")
-                        ).Apply(xml);
-                }
-            );
+            {
+                var xml = new XDocument();
+                var xambler =
+                    new Xambler(
+                        new Directives()
+                            .Add("root")
+                            .Add("child")
+                            .Xpath("/")
+                            .Attr("some", "attribute")
+                    ).Apply(xml);
+            });
         }
 
         /// <summary>

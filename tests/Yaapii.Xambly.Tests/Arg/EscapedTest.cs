@@ -44,7 +44,8 @@ namespace Yaapii.Xambly.Arg.Tests
             foreach (String text in texts)
             {
                 Assert.Equal(
-                    new Unescaped(new ArgOf(text).AsString()).AsString(),
+                    //new Unescaped(new ArgOf(text).AsString()).AsString(),
+                    new Unescaped(new Escaped(text).AsString()).AsString(),
                     text);
             }
         }
