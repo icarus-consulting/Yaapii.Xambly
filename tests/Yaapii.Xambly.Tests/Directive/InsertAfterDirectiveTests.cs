@@ -20,32 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Antlr4.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.IO;
 
-namespace Yaapii.Xambly.Error
+namespace Yaapii.Xambly.Tests.Directive
 {
-    internal class ThrowingErrorListener : BaseErrorListener, IAntlrErrorListener<int>
+    public sealed class InsertAfterDirectiveTests
     {
-        public static ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
-
-        //public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
-        //    int line, int charPositionInLine, string msg, RecognitionException e)
-        //{
-        //    throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
-        //}
-
-        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-        {
-            throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
-        }
-
-        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
-        {
-            throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
-        }
     }
 }

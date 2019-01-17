@@ -20,32 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Antlr4.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly.Error
+namespace Yaapii.Xambly.Directive.Tests
 {
-    internal class ThrowingErrorListener : BaseErrorListener, IAntlrErrorListener<int>
+    public sealed class InsertBeforeDirectiveTests
     {
-        public static ThrowingErrorListener INSTANCE = new ThrowingErrorListener();
-
-        //public override void SyntaxError(TextWriter output, IRecognizer recognizer, IToken offendingSymbol, 
-        //    int line, int charPositionInLine, string msg, RecognitionException e)
-        //{
-        //    throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
-        //}
-
-        public void SyntaxError(TextWriter output, IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+        [Fact]
+        public void InsertsBeforeCurrentNodes()
         {
-            throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
+            Assert.True(
+                new Xambler(
+                    new AddDirective("root"),
+                    new AddDirective("item"),
+                    new InsertBeforeDirective("before")
+                ).Dom().ToString(SaveOptions.DisableFormatting) == "<root><before /><item /></root>", "InsertBefore Directive failed");
         }
 
-        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+        [Fact]
+        public void RejectsInsertBeforeRootNode()
         {
-            throw new SyntaxException("line " + line + ":" + charPositionInLine + " " + msg, e);
+            Assert.Throws<ImpossibleModificationException>(() =>
+                new Xambler(
+                    new AddDirective("root"),
+                    new InsertBeforeDirective("before")
+                ).Dom()
+            );
         }
     }
 }
