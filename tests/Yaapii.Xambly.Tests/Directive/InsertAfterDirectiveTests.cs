@@ -20,13 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly.Tests.Directive
+namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class InsertAfterDirectiveTests
     {
+        [Fact]
+        public void InsertsAfterCurrentNodes()
+        {
+            Assert.Equal(
+                "<root><item /><after /><item-2 /></root>",
+                new Xambler(
+                    new AddDirective("root"),
+                    new AddDirective("item"),
+                    new UpDirective(),
+                    new AddDirective("item-2"),
+                    new XpathDirective("/root/item"),
+                    new InsertAfterDirective("after")
+                ).Dom().ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void RejectsInsertAfterRootNode()
+        {
+            Assert.Throws<ImpossibleModificationException>(() =>
+                new Xambler(
+                    new AddDirective("root"),
+                    new InsertAfterDirective("before")
+                ).Dom()
+            );
+        }
     }
 }
+
