@@ -21,44 +21,31 @@
 // SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
-using Yaapii.Atoms;
-using Yaapii.Atoms.Scalar;
+using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
-using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Cursor;
 
 namespace Yaapii.Xambly.Directive
 {
     /// <summary>
-    /// ATTR directive.
+    /// ADD directive.
+    /// Adds new node to all current nodes.
     /// </summary>
-    public sealed class AttrDirective : IDirective
+    public sealed class InsertBeforeDirective : IDirective
     {
-        private readonly IScalar<IArg> _name;
-        private readonly IScalar<IArg> _value;
+        private readonly IArg name;
 
         /// <summary>
-        /// ATTR directive.
+        /// ADD directive.
+        /// Adds new node to all current nodes.
         /// </summary>
-        /// <param name="name">Attribute name</param>
-        /// <param name="value">Text value to set</param>
-        public AttrDirective(string name, string value)
-            : this(
-                  new ScalarOf<IArg>(() => new ArgOf(name)),
-                  new ScalarOf<IArg>(() => new ArgOf(value))
-                  )
-        { }
-
-        /// <summary>
-        /// ATTR directive.
-        /// </summary>
-        /// <param name="name">Attribute name</param>
-        /// <param name="value">Text value to set</param>
-        public AttrDirective(IScalar<IArg> name, IScalar<IArg> value)
+        /// <param name="node">Name of node to add</param>
+        public InsertBeforeDirective(string node)
         {
-            _name = name;
-            _value = value;
+            this.name = new ArgOf(node);
         }
 
         /// <summary>
@@ -67,11 +54,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText(
-                            "ATTR '{0}', '{1}'",
-                            this._name.Value().Raw(),
-                            this._value.Value().Raw()
-                        ).AsString();
+            return new FormattedText("INSERTBEFORE {0}", this.name).AsString();
         }
 
         /// <summary>
@@ -83,22 +66,49 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var key = _name.Value().Raw();
-            var value = _value.Value().Raw();
+            var targets = new List<XElement>();
+            string label = this.name.Raw();
 
             foreach (var node in cursor)
             {
-                try
-                {
-                    ((XElement)node).SetAttributeValue(key, value);
-                }
-                catch (InvalidCastException ex)
-                {
-                    throw new ImpossibleModificationException($"Unable to set attribute to node '{node.ToString(SaveOptions.DisableFormatting)}'. Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.", ex);
-                }
+                var container = node as XContainer;
+                new FailPrecise(
+                     new FailNull(container),
+                     new ArgumentException($"Can't insert element before node which is not of type 'XContainer'")
+                ).Go();
+
+                new FailPrecise(
+                    new FailWhen(node.Document.FirstNode == node),
+                    new ArgumentException($"Can't insert element before root node")
+                ).Go();
+
+                var ns = Namespace(node);
+
+                XElement element;
+
+                element = ns != null ? new XElement(ns + label) : new XElement(label);
+
+                container.AddBeforeSelf(element);
+                targets.Add(element);
             }
 
-            return cursor;
+            return new DomCursor(targets);
+        }
+
+        /// <summary>
+        /// Checks for namespace in node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private XNamespace Namespace(XNode node)
+        {
+            XNamespace ns = null;
+            if (node is XElement)
+            {
+                var elmnt = node as XElement;
+                ns = elmnt.Name.Namespace;
+            }
+            return ns;
         }
     }
 }

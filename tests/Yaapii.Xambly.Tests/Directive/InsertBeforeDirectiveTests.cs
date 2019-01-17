@@ -20,27 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly.Error
+namespace Yaapii.Xambly.Directive.Tests
 {
-    /// <summary>
-    /// When state is illegal.
-    /// </summary>
-    public sealed class IllegalStateException : Exception
+    public sealed class InsertBeforeDirectiveTests
     {
-        /// <summary>
-        /// When state is illegal.
-        /// </summary>
-        public IllegalStateException() : base()
-        { }
+        [Fact]
+        public void InsertsBeforeCurrentNodes()
+        {
+            Assert.True(
+                new Xambler(
+                    new AddDirective("root"),
+                    new AddDirective("item"),
+                    new InsertBeforeDirective("before")
+                ).Dom().ToString(SaveOptions.DisableFormatting) == "<root><before /><item /></root>", "InsertBefore Directive failed");
+        }
 
-        /// <summary>
-        /// When state is illegal.
-        /// </summary>
-        /// <param name="cause">Cause of it</param>
-        /// <param name="innerException">Original exception</param>
-        public IllegalStateException(string cause, Exception innerException) : base(cause, innerException)
-        { }
+        [Fact]
+        public void RejectsInsertBeforeRootNode()
+        {
+            Assert.Throws<ImpossibleModificationException>(() =>
+                new Xambler(
+                    new AddDirective("root"),
+                    new InsertBeforeDirective("before")
+                ).Dom()
+            );
+        }
     }
 }

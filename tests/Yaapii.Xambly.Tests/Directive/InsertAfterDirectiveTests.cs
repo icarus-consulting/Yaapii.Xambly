@@ -20,27 +20,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Xambly.Error;
 
-namespace Yaapii.Xambly.Error
+namespace Yaapii.Xambly.Directive.Tests
 {
-    /// <summary>
-    /// When state is illegal.
-    /// </summary>
-    public sealed class IllegalStateException : Exception
+    public sealed class InsertAfterDirectiveTests
     {
-        /// <summary>
-        /// When state is illegal.
-        /// </summary>
-        public IllegalStateException() : base()
-        { }
+        [Fact]
+        public void InsertsAfterCurrentNodes()
+        {
+            Assert.Equal(
+                "<root><item /><after /><item-2 /></root>",
+                new Xambler(
+                    new AddDirective("root"),
+                    new AddDirective("item"),
+                    new UpDirective(),
+                    new AddDirective("item-2"),
+                    new XpathDirective("/root/item"),
+                    new InsertAfterDirective("after")
+                ).Dom().ToString(SaveOptions.DisableFormatting)
+            );
+        }
 
-        /// <summary>
-        /// When state is illegal.
-        /// </summary>
-        /// <param name="cause">Cause of it</param>
-        /// <param name="innerException">Original exception</param>
-        public IllegalStateException(string cause, Exception innerException) : base(cause, innerException)
-        { }
+        [Fact]
+        public void RejectsInsertAfterRootNode()
+        {
+            Assert.Throws<ImpossibleModificationException>(() =>
+                new Xambler(
+                    new AddDirective("root"),
+                    new InsertAfterDirective("before")
+                ).Dom()
+            );
+        }
     }
 }
+

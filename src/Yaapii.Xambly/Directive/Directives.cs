@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2017 ICARUS Consulting GmbH
+// Copyright(c) 2019 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -313,6 +313,52 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
+        /// Insert node before current nodes.
+        /// </summary>
+        /// <param name="name">Name of the node to add</param>
+        /// <returns>This object</returns>
+        public Directives InsertBefore(Object name)
+        {
+            try
+            {
+                this.all.Add(new InsertBeforeDirective(name.ToString()));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new FormattedText(
+                        "failed to understand XML content, INSERTBEFORE({0})",
+                        name).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Insert node before current nodes.
+        /// </summary>
+        /// <param name="name">Name of the node to add</param>
+        /// <returns>This object</returns>
+        public Directives InsertAfter(Object name)
+        {
+            try
+            {
+                this.all.Add(new InsertAfterDirective(name.ToString()));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new FormattedText(
+                        "failed to understand XML content, INSERTAFTER({0})",
+                        name).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Remove all current nodes and move cursor to their parents.
         /// </summary>
         /// <returns>This object</returns>
@@ -345,44 +391,6 @@ namespace Yaapii.Xambly
                     new FormattedText(
                         "failed to understand XML content, ATTR({0}, {1})",
                         name, value).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string prefix, string uri)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(prefix, uri));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new FormattedText(
-                        "failed to understand XML content, NS({0}:{1})",
-                        prefix, uri).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string nsp)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(nsp));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new FormattedText(
-                        "failed to understand XML content, NS({0})",
-                        nsp).AsString(),
                     ex
                 );
             }
@@ -591,6 +599,44 @@ namespace Yaapii.Xambly
             {
                 throw new SyntaxException(script, ex);
             }
+        }
+
+        private Directives Ns(string prefix, string uri)
+        {
+            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
+            try
+            {
+                this.all.Add(new NsDirective(prefix, uri));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new FormattedText(
+                        "failed to understand XML content, NS({0}:{1})",
+                        prefix, uri).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        private Directives Ns(string nsp)
+        {
+            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
+            try
+            {
+                this.all.Add(new NsDirective(nsp));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new FormattedText(
+                        "failed to understand XML content, NS({0})",
+                        nsp).AsString(),
+                    ex
+                );
+            }
+            return this;
         }
     }
 }
