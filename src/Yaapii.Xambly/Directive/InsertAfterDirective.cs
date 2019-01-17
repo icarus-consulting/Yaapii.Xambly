@@ -77,6 +77,11 @@ namespace Yaapii.Xambly.Directive
                      new ArgumentException($"Can't insert element after node which is not of type 'XContainer'")
                 ).Go();
 
+                new FailPrecise(
+                    new FailWhen(node.Document.FirstNode == node),
+                    new ArgumentException($"Can't insert element after root node")
+                ).Go();
+
                 var ns = Namespace(node);
 
                 XElement element;
