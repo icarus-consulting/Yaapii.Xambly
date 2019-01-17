@@ -18,7 +18,7 @@
 <!-- Describe the current behavior or link to a open issue -->
 
 ### What is the new behavior?
-<!-- Descripbbe the new behavior -->
+<!-- Describe the new behavior -->
 
 ### Does this PR introduce a breaking change? (check one with "x")
 - [ ] Yes
