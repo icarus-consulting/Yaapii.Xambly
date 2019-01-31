@@ -144,7 +144,7 @@ Task("Release")
             TargetCommitish   = "master"
     });
           
-    var nugetFiles = string.Join(";", GetFiles("./artifacts/**/*.nupkg").Select(f => f.FullPath) );
+    var nugetFiles = string.Join(",", GetFiles("./artifacts/**/*.nupkg").Select(f => f.FullPath) );
 
     GitReleaseManagerAddAssets(
         username,
@@ -154,6 +154,8 @@ Task("Release")
         version,
         nugetFiles
       );
+
+	  GitReleaseManagerPublish(githubToken, owner, repository, version);
   });
 
 Task("Default")
