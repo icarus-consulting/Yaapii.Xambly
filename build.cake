@@ -155,7 +155,7 @@ Task("Release")
         nugetFiles
       );
 
-	  GitReleaseManagerPublish(githubToken, owner, repository, version);
+	  GitReleaseManagerPublish(username, password, owner, repository, version);
   });
 
 Task("Default")
