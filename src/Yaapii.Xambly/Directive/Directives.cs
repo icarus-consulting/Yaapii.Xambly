@@ -90,20 +90,6 @@ namespace Yaapii.Xambly
         /// <summary>
         /// ctor.
         /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(IText text) : this(text.AsString())
-        { }
-
-        /// <summary>
-        /// ctor.
-        /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(String text) : this(Directives.Parse(text))
-        { }
-
-        /// <summary>
-        /// ctor.
-        /// </summary>
         public Directives(params IDirective[] dirs) : this(
             new List<IDirective>(dirs))
         { }
@@ -570,35 +556,6 @@ namespace Yaapii.Xambly
                 );
             }
             return this;
-        }
-
-        /// <summary>
-        /// Parse script.
-        /// </summary>
-        /// <param name="script">Script to parse</param>
-        /// <returns>Collection of directives</returns>
-        private static ICollection<IDirective> Parse(String script)
-        {
-            var input = new AntlrInputStream(script);
-            XamblyLexer lexer = new XamblyLexer(input);
-            lexer.AddErrorListener(new ThrowingErrorListener());
-
-            var tokens = new CommonTokenStream(lexer);
-            XamblyParser parser = new XamblyParser(tokens);
-            parser.AddErrorListener(new ThrowingErrorListener());
-
-            try
-            {
-                return parser.directives().ret;
-            }
-            catch (RecognitionException ex)
-            {
-                throw new SyntaxException(script, ex);
-            }
-            catch (ParsingException ex)
-            {
-                throw new SyntaxException(script, ex);
-            }
         }
 
         private Directives Ns(string prefix, string uri)

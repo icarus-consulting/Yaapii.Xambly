@@ -55,34 +55,13 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The text</returns>
         public string AsString()
         {
-            var output = new StringBuilder(src.AsString().Length);
-            foreach (char chr in src.AsString().ToCharArray())
-            {
-                if (chr < ' ')
-                {
-                    output
-                        .Append("&#")
-                        .Append((int)chr)
-                        .Append(';');
-                }
-                else if (chr == '&')
-                {
-                    output.Append("&amp;");
-                }
-                else if (chr == '<')
-                {
-                    output.Append("&lt;");
-                }
-                else if (chr == '>')
-                {
-                    output.Append("&gt;");
-                }
-                else
-                {
-                    output.Append(chr);
-                }
-            }
-            return output.ToString();
+            Validate();
+            return
+                new StringBuilder(this.src.AsString().Length + 2 + this.src.AsString().Length)
+                    .Append('"')
+                    .Append(this.src.AsString())
+                    .Append('"')
+                    .ToString();
         }
 
         /// <summary>
@@ -93,6 +72,18 @@ namespace Yaapii.Xambly.Arg
         public bool Equals(IText other)
         {
             return other.AsString().Equals(this.AsString());
+        }
+
+
+        /// <summary>
+        /// Validates the value by checking for illegal characters
+        /// </summary>
+        private void Validate()
+        {
+            foreach (char chr in this.src.AsString().ToCharArray())
+            {
+                new NotIllegal(chr).Value();
+            }
         }
     }
 }
