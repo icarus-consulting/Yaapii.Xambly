@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
 using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -39,11 +41,52 @@ namespace Yaapii.Xambly.Directive.Tests
                                     new AddDirective("root"),
                                     new AddDirective("foo"),
                                     new UpDirective(),
-                                    new AttrDirective("bar","test")
+                                    new AttrDirective("bar", "test")
                                 )
                         ).Apply(
                             dom
                         ).ToString(SaveOptions.DisableFormatting) == "<root bar=\"test\"><foo /></root>", "add attribute to current node failed");
+        }
+
+        [Theory]
+        [InlineData("&")]
+        [InlineData("<")]
+        [InlineData(">")]
+        [InlineData("\"")]
+        [InlineData("'")]
+        [InlineData("9")]
+        public void RejectsInvalidNameChars(string chr)
+        {
+            Assert.Throws<ImpossibleModificationException>(() =>
+                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new AddDirective("root"),
+                        new AddDirective("item"),
+                        new AttrDirective(chr, "beep")
+                    )
+                ).Apply(
+                    new XDocument()
+                )
+            );
+        }
+
+        [Theory]
+        [InlineData("&", "&amp;")]
+        [InlineData("<", "&lt;")]
+        [InlineData(">", "&gt;")]
+        [InlineData("\"", "&quot;")]
+        public void EscapesInvalidValueChars(string chr, string result)
+        {
+            Assert.Equal(
+                $"<root><item attr=\"{result}\" /></root>",
+                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new AddDirective("root"),
+                        new AddDirective("item"),
+                        new AttrDirective("attr", chr)
+                    )
+                ).Apply(
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting)
+            );
         }
 
         [Fact]

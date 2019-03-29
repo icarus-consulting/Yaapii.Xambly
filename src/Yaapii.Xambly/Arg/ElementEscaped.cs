@@ -29,24 +29,24 @@ namespace Yaapii.Xambly.Arg
     /// <summary>
     /// XML content with escaped representation of all unprintable XML symbols.
     /// </summary>
-    public class Escaped : IText
+    public class ElementEscaped : IText
     {
-        private readonly IText _src;
+        private readonly IText src;
 
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
         /// <param name="src">Raw text</param>
-        public Escaped(string src) : this(new TextOf(src))
+        public ElementEscaped(string src) : this(new TextOf(src))
         { }
 
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
         /// <param name="src">Raw text</param>
-        public Escaped(IText src)
+        public ElementEscaped(IText src)
         {
-            _src = src;
+            this.src = src;
         }
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The text</returns>
         public string AsString()
         {
-            var output = new StringBuilder(_src.AsString().Length);
-            foreach (char chr in _src.AsString().ToCharArray())
+            var output = new StringBuilder(src.AsString().Length);
+            foreach (char chr in src.AsString().ToCharArray())
             {
                 if (chr < ' ')
                 {
@@ -65,17 +65,9 @@ namespace Yaapii.Xambly.Arg
                         .Append((int)chr)
                         .Append(';');
                 }
-                else if (chr == '"')
-                {
-                    output.Append("&quot;");
-                }
                 else if (chr == '&')
                 {
                     output.Append("&amp;");
-                }
-                else if (chr == '\'')
-                {
-                    output.Append("&apos;");
                 }
                 else if (chr == '<')
                 {

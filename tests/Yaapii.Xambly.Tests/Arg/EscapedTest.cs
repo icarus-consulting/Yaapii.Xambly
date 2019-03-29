@@ -45,7 +45,7 @@ namespace Yaapii.Xambly.Arg.Tests
             {
                 Assert.Equal(
                     //new Unescaped(new ArgOf(text).AsString()).AsString(),
-                    new Unescaped(new Escaped(text).AsString()).AsString(),
+                    new Unescaped(new ElementEscaped(text).AsString()).AsString(),
                     text);
             }
         }
@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Arg.Tests
         public void CantEscapeInvalidXMLChars()
         {
             Assert.Throws<XmlException>(
-                () => new ArgOf("\u001b\u0000").AsString());
+                () => new AttributeArg("\u001b\u0000").AsString());
         }
     }
 }

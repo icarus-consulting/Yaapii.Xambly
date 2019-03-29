@@ -31,7 +31,7 @@ namespace Yaapii.Xambly.Tests
         public void Ctor()
         {
             var raw = "test \u20ac привет & <>'\"\\";
-            Assert.True(new ArgOf(raw).Raw() == raw);
+            Assert.True(new AttributeArg(raw).Raw() == raw);
         }
 
         [Fact]
@@ -39,8 +39,8 @@ namespace Yaapii.Xambly.Tests
         {
             var raw = "test \u20ac привет & <>'\"\\";
             Assert.Equal(
-                new ArgOf(raw).AsString(),
-                "\"" + new Escaped(raw).AsString() + "\"");
+                new AttributeArg(raw).AsString(),
+                "\"" + new ElementEscaped(raw).AsString() + "\"");
         }
     }
 }

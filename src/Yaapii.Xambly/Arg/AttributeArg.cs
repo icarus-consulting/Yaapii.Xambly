@@ -27,7 +27,7 @@ namespace Yaapii.Xambly.Arg
     /// <summary>
     /// Argument properly escaped.
     /// </summary>
-    public class ArgOf : IArg
+    public class AttributeArg : IArg
     {
         private readonly string value;
 
@@ -36,7 +36,7 @@ namespace Yaapii.Xambly.Arg
         /// </summary>
         /// <param name="value">Value of it</param>
         /// <exception cref="NotIllegal">If fails</exception>
-        public ArgOf(string value)
+        public AttributeArg(string value)
         {
             this.value = value;
         }
@@ -48,11 +48,10 @@ namespace Yaapii.Xambly.Arg
         public string AsString()
         {
             Validate();
-            var escaped = new Escaped(this.value).AsString();
             return
-                new StringBuilder(this.value.Length + 2 + escaped.Length)
+                new StringBuilder(this.value.Length + 2 + this.value.Length)
                     .Append('"')
-                    .Append(escaped)
+                    .Append(this.value)
                     .Append('"')
                     .ToString();
         }

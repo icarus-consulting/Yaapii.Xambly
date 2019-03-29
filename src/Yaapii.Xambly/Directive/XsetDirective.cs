@@ -44,7 +44,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public XsetDirective(string val)
         {
-            _expr = new ArgOf(val);
+            _expr = new AttributeArg(val);
         }
 
         /// <summary>
