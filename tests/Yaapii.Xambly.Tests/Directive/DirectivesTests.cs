@@ -89,46 +89,6 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         /// <summary>
-        /// Directives can parse Xambly grammar
-        /// </summary>
-        [Fact]
-        public void ParsesIncomingGrammar()
-        {
-            IEnumerable<IDirective> dirs =
-               new Directives(
-                   "ADD 'yummy directive';"
-           );
-
-            Assert.True(
-                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
-        }
-
-        /// <summary>
-        /// Directives takes Xambly grammar as IText
-        /// </summary>
-        [Fact]
-        public void ParsesIncomingGrammarFromIText()
-        {
-            IEnumerable<IDirective> dirs =
-               new Directives(
-                   new TextOf("ADD 'yummy directive';")
-            );
-
-            Assert.True(
-                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 1);
-        }
-
-        /// <summary>
-        /// Directives throw on incorrect grammar
-        /// </summary>
-        [Fact]
-        public void ThrowsOnBrokenGrammar()
-        {
-            Assert.Throws<SyntaxException>(() =>
-                new Directives("not a xambly at all"));
-        }
-
-        /// <summary>
         /// Directives throw on incorrect xmlcontent
         /// </summary>
         [Fact]
@@ -137,20 +97,8 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<XmlException>(() =>
             {
                 var dom = new XDocument(new XElement("root"));
-                new Xambler(new Directives("ADD '\u001b';")).Apply(dom);
+                new Xambler(new Directives().Add("\u001b")).Apply(dom);
             });
-        }
-
-
-        /// <summary>
-        /// Directives throw on incorrectly escaped xmlcontent
-        /// </summary>
-        [Fact]
-        public void ThrowsOnBrokenEscapedXmlContent()
-        {
-            Assert.Throws<SyntaxException>(() =>
-                new Directives("ADD '&#27;';"));
-
         }
 
         /// <summary>
@@ -179,37 +127,23 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         /// <summary>
-        /// Directives can ignore empty input.
-        /// </summary>
-        [Fact]
-        public void IgnoresEmptyInput()
-        {
-            Assert.Empty(
-                new Directives("\n\t   \r"));
-        }
-
-        /// <summary>
         /// Directives can build a correct modification programme.
         /// </summary>
         [Fact(Skip = "true")]
         public void PerformsFullScaleModifications()
         {
             throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            var dom = new XDocument();
             Assert.Equal(
                 "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><p>€ \\</p></body></html>",
                 new Xambler(
-                    new Directives(
-                        new Directives()
+                    new Directives()
                             .Add("html")
                             //.Ns("http://www.w3.org/1999/xhtml")
                             .Add("body")
                             .Add("p")
                             .Set("\u20ac \\")
-                            .ToString()
-                    )
                 ).Apply(
-                    dom
+                    new XDocument()
                 ).ToString(SaveOptions.DisableFormatting)
             );
         }
@@ -324,51 +258,6 @@ namespace Yaapii.Xambly.Directive.Tests
                 ).Xml();
 
             Assert.NotNull(FromXPath(xml, "//x:node"));
-        }
-
-        /// <summary>
-        /// Directives can accept directives from multiple threads.
-        /// </summary>
-        [Fact(Skip = "True")]
-        public void AcceptsFromMultipleThreads()
-        {
-            //final Directives dirs = new Directives().add("mt6");
-            //new Callable<Void>() {
-            //@Parallel(threads = Tv.FIFTY)
-            //@Override
-            //public Void call() throws Exception
-            //{
-            //    dirs.append(
-            //            new Directives()
-            //                .add("fo9").attr("yu", "").set("some text 90")
-            //                .add("tr4").attr("s2w3", "").set("some other text 76")
-            //                .up().up()
-            //        );
-            //        return null;
-            //    }
-            //} .call();
-            //MatcherAssert.assertThat(
-            //    XhtmlMatchers.xhtml(new Xambler(dirs).xml()),
-            //            XhtmlMatchers.hasXPath("/mt6[count(fo9[@yu])=50]")
-            //        );
-        }
-
-        /// <summary>
-        /// Directives can parse Xambly script
-        /// </summary>
-        [Fact]
-        public void ParsesGrammar()
-        {
-            IEnumerable<IDirective> dirs =
-                new Directives(
-                    "ADD 'root'; ADD 'something'; SET 'Teststring';" +
-                    "XPATH '/root/something[contains(.,\"Teststring\")]'; UP; " +
-                    "ADD 'yummydirective';");
-
-            new Xambler(dirs).Apply(new XDocument());
-
-            Assert.True(
-                new Yaapii.Atoms.Enumerable.LengthOf(dirs).Value() == 6);
         }
 
         /// <summary>

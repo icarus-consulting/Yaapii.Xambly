@@ -33,7 +33,7 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class SetDirective : IDirective
     {
-        private readonly IArg _value;
+        private readonly string text;
 
         /// <summary>
         /// SET directive.
@@ -42,7 +42,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public SetDirective(string val)
         {
-            _value = new ArgOf(val);
+            text = val;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("SET {0}", this._value).AsString();
+            return new FormattedText("SET {0}", this.text).AsString();
         }
 
         /// <summary>
@@ -63,16 +63,13 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var val = _value.Raw();
-
             foreach (var node in cursor)
             {
                 new FailWhen(
                         !(node is XElement)
                     ).Go();
 
-                (node as XElement).Value = val;
-                //node.InnerText = val;
+                (node as XElement).Value = text;
             }
 
             return cursor;

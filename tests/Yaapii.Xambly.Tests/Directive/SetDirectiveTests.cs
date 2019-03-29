@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Cursor;
@@ -27,19 +28,39 @@ using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
-    public class SetDirectiveTest
+    public class SetDirectiveTests
     {
         [Fact]
         public void SetTextContentOfNode()
         {
             Assert.True(
-                new Xambler(new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new SetDirective("foobar")
-                    )).Apply(
-                        new XDocument()
-                        ).ToString(SaveOptions.DisableFormatting) == "<root><item>foobar</item></root>", "Set content for node failed");
+                    )
+                ).Apply(
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting) == "<root><item>foobar</item></root>", "Set content for node failed");
+        }
+
+        [Theory]
+        [InlineData("&", "&amp;")]
+        [InlineData("<", "&lt;")]
+        [InlineData(">", "&gt;")]
+        public void EscapesInvalidChars(string chr, string result)
+        {
+            Assert.Equal(
+                $"<root><item>{result}</item></root>",
+                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new AddDirective("root"),
+                        new AddDirective("item"),
+                        new SetDirective(chr)
+                    )
+                ).Apply(
+                    new XDocument()
+                ).ToString(SaveOptions.DisableFormatting)
+            );
         }
 
         [Fact]

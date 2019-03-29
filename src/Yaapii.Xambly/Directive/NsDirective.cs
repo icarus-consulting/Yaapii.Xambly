@@ -38,13 +38,13 @@ namespace Yaapii.Xambly.Directive
         private readonly IArg nsp;
         private readonly IArg prefix;
 
-        public NsDirective(string prefix, string nsp) : this(new ArgOf(prefix),new ArgOf(nsp))
+        public NsDirective(string prefix, string nsp) : this(new Arg.AttributeArg(prefix),new Arg.AttributeArg(nsp))
         { }
 
-        public NsDirective(string nsp): this(new ArgOf(""), new ArgOf(nsp))
+        public NsDirective(string nsp): this(new Arg.AttributeArg(""), new Arg.AttributeArg(nsp))
         { }
 
-        public NsDirective(IArg nsp) : this(new ArgOf(""),nsp)
+        public NsDirective(IArg nsp) : this(new Arg.AttributeArg(""),nsp)
         { }
 
         /// <summary>

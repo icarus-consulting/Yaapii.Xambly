@@ -44,8 +44,8 @@ namespace Yaapii.Xambly.Directive
         /// <param name="data">Data</param>
         public PiDirective(string target, string data)
         {
-            this.target = new ArgOf(target);
-            this.data = new ArgOf(data);
+            this.target = new AttributeArg(target);
+            this.data = new AttributeArg(data);
         }
 
         /// <summary>

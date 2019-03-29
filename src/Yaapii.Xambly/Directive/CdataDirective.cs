@@ -43,7 +43,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public CdataDirective(string val)
         {
-            this.value = new ArgOf(val);
+            this.value = new AttributeArg(val);
         }
 
         /// <summary>

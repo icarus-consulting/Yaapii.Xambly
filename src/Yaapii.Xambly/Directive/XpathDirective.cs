@@ -64,7 +64,7 @@ namespace Yaapii.Xambly.Directive
         /// <exception cref="XmlContentException">If invalid input</exception>
         public XpathDirective(string path)
         {
-            this._expr = new ArgOf(path);
+            this._expr = new Arg.AttributeArg(path);
         }
 
         /// <summary>

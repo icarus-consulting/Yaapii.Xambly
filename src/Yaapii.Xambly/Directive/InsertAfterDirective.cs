@@ -45,7 +45,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="node">Name of node to add</param>
         public InsertAfterDirective(string node)
         {
-            this.name = new ArgOf(node);
+            this.name = new Arg.AttributeArg(node);
         }
 
         /// <summary>

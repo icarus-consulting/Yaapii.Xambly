@@ -20,31 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
 using Xunit;
+using Yaapii.Xambly.Arg;
 
-namespace Yaapii.Xambly.Arg.Tests
+namespace Yaapii.Xambly.Tests
 {
-    public class UnescapedTest
+    public class AttributeArgTests
     {
         [Fact]
-        public void Unescapes()
+        public void DoesNotModify()
         {
-            var escaped = "test € привет &amp; &lt;&gt;&apos;&quot;\\";
-            var unescaped = "test \u20ac привет & <>'\"\\";
-
-            Assert.Equal(
-                unescaped,
-                new Unescaped(escaped).AsString()
-            );
-        }
-
-        [Fact]
-        public void CantUnescapeInvalidXMLChars()
-        {
-            Assert.Throws<XmlException>(() =>
-                new Unescaped("&#27;&#0000;").AsString()
-            );
+            var raw = "test \u20ac привет & <>'\"\\";
+            Assert.True(new AttributeArg(raw).Raw() == raw);
         }
     }
 }

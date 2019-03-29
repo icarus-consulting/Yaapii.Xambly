@@ -90,20 +90,6 @@ namespace Yaapii.Xambly
         /// <summary>
         /// ctor.
         /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(IText text) : this(text.AsString())
-        { }
-
-        /// <summary>
-        /// ctor.
-        /// </summary>
-        /// <param name="text">Xambly script</param>
-        public Directives(String text) : this(Directives.Parse(text))
-        { }
-
-        /// <summary>
-        /// ctor.
-        /// </summary>
         public Directives(params IDirective[] dirs) : this(
             new List<IDirective>(dirs))
         { }
@@ -271,7 +257,7 @@ namespace Yaapii.Xambly
         /// </code>
         /// <para>
         ///    If a value provided contains illegal XML characters, a exception will be thrown.To avoid this, it is recommended to use
-        ///    <see cref="Yaapii.Xambly.Arg.Escaped"/>
+        ///    <see cref="Yaapii.Xambly.Arg.ElementEscaped"/>
         /// </para>
         /// </summary>
         /// <typeparam name="Key">type of the key</typeparam>
@@ -372,7 +358,7 @@ namespace Yaapii.Xambly
         /// Set attribute.
         /// If a value provided contains illegal XML characters, a runtime
         /// exception will be thrown. To avoid this, it is recommended to use
-        /// <see cref="Yaapii.Xambly.Arg.Escaped"/>.
+        /// <see cref="Yaapii.Xambly.Arg.ElementEscaped"/>.
         /// </summary>
         ///
         /// <param name="name">Name of the attribute</param>
@@ -402,7 +388,7 @@ namespace Yaapii.Xambly
         ///
         /// <para>If a value provided contains illegal XML characters, a runtime
         /// exception will be thrown. To avoid this, it is recommended to use
-        /// <see cref="Yaapii.Xambly.Arg.Escaped"/>
+        /// <see cref="Yaapii.Xambly.Arg.ElementEscaped"/>
         /// </para>
         ///</summary>
         /// <param name="target">target PI name</param>
@@ -548,7 +534,7 @@ namespace Yaapii.Xambly
         /// Set CDATA section.
         ///
         /// <para>If a value provided contains illegal XML characters, an
-        /// exception will be thrown.To avoid this, it is recommended to use <see cref="Yaapii.Xambly.Arg.Escaped"/>.
+        /// exception will be thrown.To avoid this, it is recommended to use <see cref="Yaapii.Xambly.Arg.ElementEscaped"/>.
         /// </para>
         /// </summary>
         /// <param name="text">Text to set</param>
@@ -570,35 +556,6 @@ namespace Yaapii.Xambly
                 );
             }
             return this;
-        }
-
-        /// <summary>
-        /// Parse script.
-        /// </summary>
-        /// <param name="script">Script to parse</param>
-        /// <returns>Collection of directives</returns>
-        private static ICollection<IDirective> Parse(String script)
-        {
-            var input = new AntlrInputStream(script);
-            XamblyLexer lexer = new XamblyLexer(input);
-            lexer.AddErrorListener(new ThrowingErrorListener());
-
-            var tokens = new CommonTokenStream(lexer);
-            XamblyParser parser = new XamblyParser(tokens);
-            parser.AddErrorListener(new ThrowingErrorListener());
-
-            try
-            {
-                return parser.directives().ret;
-            }
-            catch (RecognitionException ex)
-            {
-                throw new SyntaxException(script, ex);
-            }
-            catch (ParsingException ex)
-            {
-                throw new SyntaxException(script, ex);
-            }
         }
 
         private Directives Ns(string prefix, string uri)

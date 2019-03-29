@@ -35,19 +35,18 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class AttrDirective : IDirective
     {
-        private readonly IScalar<IArg> _name;
-        private readonly IScalar<IArg> _value;
+        private readonly IScalar<IArg> name;
+        private readonly IScalar<IText> value;
 
         /// <summary>
         /// ATTR directive.
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="value">Text value to set</param>
-        public AttrDirective(string name, string value)
-            : this(
-                  new ScalarOf<IArg>(() => new ArgOf(name)),
-                  new ScalarOf<IArg>(() => new ArgOf(value))
-                  )
+        public AttrDirective(string name, string value) : this(
+            new ScalarOf<IArg>(() => new AttributeArg(name)),
+            new ScalarOf<IText>(() => new TextOf(value))
+        )
         { }
 
         /// <summary>
@@ -55,10 +54,10 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="name">Attribute name</param>
         /// <param name="value">Text value to set</param>
-        public AttrDirective(IScalar<IArg> name, IScalar<IArg> value)
+        public AttrDirective(IScalar<IArg> name, IScalar<IText> value)
         {
-            _name = name;
-            _value = value;
+            this.name = name;
+            this.value = value;
         }
 
         /// <summary>
@@ -67,11 +66,12 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText(
-                            "ATTR '{0}', '{1}'",
-                            this._name.Value().Raw(),
-                            this._value.Value().Raw()
-                        ).AsString();
+            return 
+                new FormattedText(
+                    "ATTR '{0}', '{1}'",
+                    this.name.Value().Raw(),
+                    this.value.Value().AsString()
+                ).AsString();
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var key = _name.Value().Raw();
-            var value = _value.Value().Raw();
+            var key = this.name.Value().Raw();
+            var value = this.value.Value().AsString();
 
             foreach (var node in cursor)
             {
@@ -97,7 +97,6 @@ namespace Yaapii.Xambly.Directive
                     throw new ImpossibleModificationException($"Unable to set attribute to node '{node.ToString(SaveOptions.DisableFormatting)}'. Maybe try to access the root node by the XPath '/' that provides the Document. Instead, use '/*' to get the root Element.", ex);
                 }
             }
-
             return cursor;
         }
     }

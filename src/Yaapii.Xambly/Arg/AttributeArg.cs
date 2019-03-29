@@ -20,59 +20,69 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using Yaapii.Atoms;
-using Yaapii.Atoms.Text;
+using System.Text;
 
 namespace Yaapii.Xambly.Arg
 {
     /// <summary>
-    /// A legal XML character.
+    /// Argument properly escaped.
     /// </summary>
-    public class NotIllegal : IScalar<Char>
+    public class AttributeArg : IArg
     {
-        private readonly char _chr;
+        private readonly string value;
 
         /// <summary>
-        /// Validate char number and throw exception if it's not legal.
+        /// Argument properly escaped.
         /// </summary>
-        /// <param name="chr"></param>
-        public NotIllegal(char chr)
+        /// <param name="value">Value of it</param>
+        /// <exception cref="NotIllegal">If fails</exception>
+        public AttributeArg(string value)
         {
-            this._chr = chr;
+            this.value = value;
         }
 
         /// <summary>
-        /// Validate char number and throw exception if it's not legal.
+        /// The string representation.
         /// </summary>
-        /// <returns>The same number</returns>
-        public Char Value()
+        /// <returns>String</returns>
+        public string AsString()
         {
-            this.Range(_chr, 0x00, 0x08);
-            this.Range(_chr, 0x0B, 0x0C);
-            this.Range(_chr, 0x0E, 0x1F);
-            this.Range(_chr, 0x7F, 0x84);
-            this.Range(_chr, 0x86, 0x9F);
-            return _chr;
+            Validate();
+            return
+                new StringBuilder(this.value.Length + 2 + this.value.Length)
+                    .Append('"')
+                    .Append(this.value)
+                    .Append('"')
+                    .ToString();
         }
 
         /// <summary>
-        /// Throw if number is in the range.
+        /// This arg as a string
         /// </summary>
-        /// <param name="c">Char number</param>
-        /// <param name="left">Left number</param>
-        /// <param name="right">Right number</param>
-        /// <exception cref="System.Xml.XmlException">If illegal</exception>
-        private void Range(char c, int left, int right)
+        /// <returns>string</returns>
+        public override string ToString()
         {
-            if (c >= left && c <= right)
+            return AsString();
+        }
+
+        /// <summary>
+        /// Get it's raw value.
+        /// </summary>
+        /// <returns>Value</returns>
+        public string Raw()
+        {
+            Validate();
+            return this.value;
+        }
+
+        /// <summary>
+        /// Validates the value by checking for illegal characters
+        /// </summary>
+        private void Validate()
+        {
+            foreach (char chr in this.value.ToCharArray())
             {
-                throw new System.Xml.XmlException(
-                    new FormattedText(
-                        "Character {0} is in the restricted XML range {1} - {2}, see http://www.w3.org/TR/2004/REC-xml11-20040204/#charsets",
-                        c, left, right
-                    ).AsString()
-                );
+                new NotIllegal(chr).Value();
             }
         }
     }

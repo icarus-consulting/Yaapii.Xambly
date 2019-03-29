@@ -42,7 +42,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var dom = new XDocument(root);
 
             new NsDirective(
-                new ArgOf("somens")
+                new AttributeArg("somens")
             ).Exec(
                 dom,
                 new DomCursor(

@@ -29,24 +29,24 @@ namespace Yaapii.Xambly.Arg
     /// <summary>
     /// XML content with escaped representation of all unprintable XML symbols.
     /// </summary>
-    public class Escaped : IText
+    public class ElementEscaped : IText
     {
-        private readonly IText _src;
+        private readonly IText src;
 
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
         /// <param name="src">Raw text</param>
-        public Escaped(string src) : this(new TextOf(src))
+        public ElementEscaped(string src) : this(new TextOf(src))
         { }
 
         /// <summary>
         /// Escape all unprintable characters.
         /// </summary>
         /// <param name="src">Raw text</param>
-        public Escaped(IText src)
+        public ElementEscaped(IText src)
         {
-            _src = src;
+            this.src = src;
         }
 
         /// <summary>
@@ -55,42 +55,13 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The text</returns>
         public string AsString()
         {
-            var output = new StringBuilder(_src.AsString().Length);
-            foreach (char chr in _src.AsString().ToCharArray())
-            {
-                if (chr < ' ')
-                {
-                    output
-                        .Append("&#")
-                        .Append((int)chr)
-                        .Append(';');
-                }
-                else if (chr == '"')
-                {
-                    output.Append("&quot;");
-                }
-                else if (chr == '&')
-                {
-                    output.Append("&amp;");
-                }
-                else if (chr == '\'')
-                {
-                    output.Append("&apos;");
-                }
-                else if (chr == '<')
-                {
-                    output.Append("&lt;");
-                }
-                else if (chr == '>')
-                {
-                    output.Append("&gt;");
-                }
-                else
-                {
-                    output.Append(chr);
-                }
-            }
-            return output.ToString();
+            Validate();
+            return
+                new StringBuilder(this.src.AsString().Length + 2 + this.src.AsString().Length)
+                    .Append('"')
+                    .Append(this.src.AsString())
+                    .Append('"')
+                    .ToString();
         }
 
         /// <summary>
@@ -101,6 +72,18 @@ namespace Yaapii.Xambly.Arg
         public bool Equals(IText other)
         {
             return other.AsString().Equals(this.AsString());
+        }
+
+
+        /// <summary>
+        /// Validates the value by checking for illegal characters
+        /// </summary>
+        private void Validate()
+        {
+            foreach (char chr in this.src.AsString().ToCharArray())
+            {
+                new NotIllegal(chr).Value();
+            }
         }
     }
 }

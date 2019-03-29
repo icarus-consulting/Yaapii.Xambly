@@ -28,9 +28,9 @@ using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Directive;
 
-namespace Yaapii.Xambly.Tests.Directive
+namespace Yaapii.Xambly.Directive.Tests
 {
-    public sealed class CopyOfTest
+    public sealed class CopyOfDirectiveTests
     {
         [Fact]
         public void CopiesExistingNode()

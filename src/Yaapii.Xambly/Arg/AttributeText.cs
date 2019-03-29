@@ -21,67 +21,66 @@
 // SOFTWARE.
 
 using System.Text;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xambly.Arg
 {
     /// <summary>
-    /// Argument properly escaped.
+    /// XML content with escaped representation of all unprintable XML symbols.
     /// </summary>
-    public class ArgOf : IArg
+    public class AttributeText : IText
     {
-        private readonly string value;
+        private readonly IText src;
 
         /// <summary>
-        /// Argument properly escaped.
+        /// Escape all unprintable characters.
         /// </summary>
-        /// <param name="value">Value of it</param>
-        /// <exception cref="NotIllegal">If fails</exception>
-        public ArgOf(string value)
+        /// <param name="src">Raw text</param>
+        public AttributeText(string src) : this(new TextOf(src))
+        { }
+
+        /// <summary>
+        /// Escape all unprintable characters.
+        /// </summary>
+        /// <param name="src">Raw text</param>
+        public AttributeText(IText src)
         {
-            this.value = value;
+            this.src = src;
         }
 
         /// <summary>
-        /// The string representation.
+        /// Clean text.
         /// </summary>
-        /// <returns>String</returns>
+        /// <returns>The text</returns>
         public string AsString()
         {
             Validate();
-            var escaped = new Escaped(this.value).AsString();
             return
-                new StringBuilder(this.value.Length + 2 + escaped.Length)
+                new StringBuilder(this.src.AsString().Length + 2 + this.src.AsString().Length)
                     .Append('"')
-                    .Append(escaped)
+                    .Append(this.src.AsString())
                     .Append('"')
                     .ToString();
         }
 
         /// <summary>
-        /// This arg as a string
+        /// Compare this with other text.
         /// </summary>
-        /// <returns>string</returns>
-        public override string ToString()
+        /// <param name="other">Content for comparision</param>
+        /// <returns>Comparision result</returns>
+        public bool Equals(IText other)
         {
-            return AsString();
+            return other.AsString().Equals(this.AsString());
         }
 
-        /// <summary>
-        /// Get it's raw value.
-        /// </summary>
-        /// <returns>Value</returns>
-        public string Raw()
-        {
-            Validate();
-            return this.value;
-        }
 
         /// <summary>
         /// Validates the value by checking for illegal characters
         /// </summary>
         private void Validate()
         {
-            foreach (char chr in this.value.ToCharArray())
+            foreach (char chr in this.src.AsString().ToCharArray())
             {
                 new NotIllegal(chr).Value();
             }
