@@ -6,14 +6,6 @@ Port of [Xembly Library](https://github.com/yegor256/Xembly) from Yegor Bugayenk
 
 The following usage guide is taken from the original repository.
 
-### Prepare ANTLR4 on your machine (optional)
-If you want to participate in the development of Xambly, you have to setup ANTLR4 parser on your development machine.
-ANTLR is a parser generating library. You write in a language defined by ANTLR4, compile that with the ANTLR4 compiler and get classes for C#, javascript etc. These classes then can parse your text so that you receive objects to work with.
-
-ANTLR.g file -> compile manually by calling antlr compiler in cmd or pre-build -> use classes in code
-
-[See these instructions to setup your machine for using ANTLR4](https://github.com/antlr/antlr4/tree/master/runtime/CSharp)
-
 # Usage
 
 **Xambly** is an [Assembly](http://en.wikipedia.org/wiki/Assembly_language)-like
