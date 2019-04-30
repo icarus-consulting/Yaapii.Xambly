@@ -53,7 +53,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns></returns>
         public override string ToString()
         {
-            return new FormattedText("XSET {0}", this._expr).AsString();
+            return new Formatted("XSET {0}", this._expr).AsString();
         }
 
         /// <summary>

@@ -236,7 +236,7 @@ namespace System.Collections.Generic
                 if (index < 0 || index > this.items.Count)
                     throw new ArgumentOutOfRangeException(
                         "index", index, 
-                        new FormattedText(
+                        new Formatted(
                             "value {0} must be in range of {1}", index, this.Items.Count).AsString());
 
                 this.InsertItem(index, item);
@@ -489,7 +489,7 @@ namespace System.Collections.Generic
             {
                 throw 
                     new ArgumentException(
-                        new FormattedText(
+                        new Formatted(
                             "object is of type {0} but collection is of {1}", 
                             value.GetType().FullName, 
                             typeof(T).FullName).AsString());

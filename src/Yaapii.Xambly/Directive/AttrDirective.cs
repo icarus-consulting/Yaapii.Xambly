@@ -67,7 +67,7 @@ namespace Yaapii.Xambly.Directive
         public override string ToString()
         {
             return 
-                new FormattedText(
+                new Formatted(
                     "ATTR '{0}', '{1}'",
                     this.name.Value().Raw(),
                     this.value.Value().AsString()

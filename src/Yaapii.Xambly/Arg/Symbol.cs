@@ -89,7 +89,7 @@ namespace Yaapii.Xambly.Arg
             else
             {
                 throw new XmlException(
-                        new FormattedText(
+                        new Formatted(
                             "unknown XML symbol &{0};",
                             _src
                         ).AsString());

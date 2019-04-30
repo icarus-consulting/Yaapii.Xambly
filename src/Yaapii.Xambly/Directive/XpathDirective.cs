@@ -73,7 +73,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("XPATH {0}", this._expr).AsString();
+            return new Formatted("XPATH {0}", this._expr).AsString();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Yaapii.Xambly.Directive
                 catch(Exception ex)
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText("invalid XPath expr '{0}' ({1})", query, ex.Message).AsString(), ex);
+                        new Formatted("invalid XPath expr '{0}' ({1})", query, ex.Message).AsString(), ex);
                 }
 
                 new Each<XElement>(

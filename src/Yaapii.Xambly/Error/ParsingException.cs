@@ -35,7 +35,7 @@ namespace Yaapii.Xambly.Error
         /// <param name="innerException">Original exception</param>
         public ParsingException(Exception innerException) 
             : this(
-                new FormattedText("Error parsing script: {0}", innerException.Message).AsString(),
+                new Formatted("Error parsing script: {0}", innerException.Message).AsString(),
                 innerException)
         { }
 
