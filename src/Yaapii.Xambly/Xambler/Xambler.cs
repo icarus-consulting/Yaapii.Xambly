@@ -25,13 +25,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using Yaapii.Atoms.Text;
-using Yaapii.Xambly;
-using Yaapii.Xambly.Error;
-using Yaapii.Xambly.Stack;
-using Yaapii.Xambly.Cursor;
 using System.Xml.Linq;
 using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly
 {
@@ -77,7 +76,7 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(params IDirective[] directives) : this(
-            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(directives))
+            new EnumerableOf<IDirective>(directives))
         { }
 
         /// <summary>
@@ -103,7 +102,7 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new FormattedText("quietly failed to apply DOM: {0}", this._directives).AsString(),
+                    new Formatted("quietly failed to apply DOM: {0}", this._directives).AsString(),
                     ex);
             }
         }
@@ -133,12 +132,12 @@ namespace Yaapii.Xambly
                 //catch (ImpossibleModificationException ex)
                 //{
                 //    throw new ImpossibleModificationException(
-                //        new FormattedText("directive {0}: {1}", pos, dir).AsString());
+                //        new Formatted("directive {0}: {1}", pos, dir).AsString());
                 //}
                 catch (Exception ex) //TODO: Original catches DOMException. We don't have that. But do we have something similar?
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString());
+                        new Formatted("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString());
                 }
                 ++pos;
             }
@@ -158,7 +157,7 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new FormattedText("failed to create DOM: {0}", this._directives).AsString(),
+                    new Formatted("failed to create DOM: {0}", this._directives).AsString(),
                     ex);
             }
         }
@@ -188,7 +187,7 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new FormattedText("quietly failed to build XML: {0}", this._directives).AsString(),
+                    new Formatted("quietly failed to build XML: {0}", this._directives).AsString(),
                     ex);
             }
         }
@@ -232,7 +231,7 @@ namespace Yaapii.Xambly
 
                 if (illegal)
                 {
-                    output.Append(new FormattedText("\\u{0:000}", (int)chr).AsString());
+                    output.Append(new Formatted("\\u{0:000}", (int)chr).AsString());
                 }
                 else
                 {

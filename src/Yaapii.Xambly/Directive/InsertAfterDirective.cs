@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("INSERTAFTER {0}", this.name).AsString();
+            return new Formatted("INSERTAFTER {0}", this.name).AsString();
         }
 
         /// <summary>

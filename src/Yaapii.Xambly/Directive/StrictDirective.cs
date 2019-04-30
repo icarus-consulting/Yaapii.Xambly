@@ -66,7 +66,7 @@ namespace Yaapii.Xambly.Directive
                 if (lengthOfCursor == 0)
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText(
+                        new Formatted(
                             "no current nodes while {0} expected",
                             _number
                         ).AsString());
@@ -74,14 +74,14 @@ namespace Yaapii.Xambly.Directive
                 if (lengthOfCursor == 1)
                 {
                     throw new ImpossibleModificationException(
-                        new FormattedText(
+                        new Formatted(
                             "one current node '{0}' while strictly {1} expected",
                             new Yaapii.Atoms.Enumerable.ItemAt<XNode>(cursor).Value().ToString(SaveOptions.DisableFormatting),
                             _number
                         ).AsString());
                 }
                 throw new ImpossibleModificationException(
-                    new FormattedText(
+                    new Formatted(
                         "{0} current nodes [{1}] while strictly {2} expected",
                         lengthOfCursor,
                         Names(cursor),
@@ -107,7 +107,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns></returns>
         public override string ToString()
         {
-            return new FormattedText("STRICT \"{0}\"", _number).AsString();
+            return new Formatted("STRICT \"{0}\"", _number).AsString();
         }
 
         /// <summary> Node names as a string. </summary>
@@ -116,7 +116,7 @@ namespace Yaapii.Xambly.Directive
         private string Names(IEnumerable<XNode> nodes)
         {
             var nodeNames = new Mapped<XNode, string>(
-                tNode => new FormattedText(
+                tNode => new Formatted(
                     "{0}/{1}", 
                     tNode.Parent?.Name + String.Empty,
                     (tNode as XElement).Name
@@ -124,7 +124,7 @@ namespace Yaapii.Xambly.Directive
                 nodes
             );
 
-            return new JoinedText(", ", nodeNames).AsString();
+            return new Joined(", ", nodeNames).AsString();
         }
     }
 }

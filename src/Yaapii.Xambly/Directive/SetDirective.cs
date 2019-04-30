@@ -51,7 +51,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("SET {0}", this.text).AsString();
+            return new Formatted("SET {0}", this.text).AsString();
         }
 
         /// <summary>

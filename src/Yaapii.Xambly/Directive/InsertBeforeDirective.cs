@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("INSERTBEFORE {0}", this.name).AsString();
+            return new Formatted("INSERTBEFORE {0}", this.name).AsString();
         }
 
         /// <summary>

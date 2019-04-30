@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new FormattedText("ADD {0}", this._name).AsString();
+            return new Formatted("ADD {0}", this._name).AsString();
         }
 
         /// <summary>

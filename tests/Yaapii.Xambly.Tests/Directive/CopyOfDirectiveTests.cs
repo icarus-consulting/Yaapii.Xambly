@@ -26,7 +26,6 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Directive;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -37,7 +36,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var dom = new XDocument();
             var content = 
-                new JoinedText(
+                new Joined(
                     "",
                     "<jeff name='Jeffrey'><first/><second/>",
                     "<?some-pi test?>",
