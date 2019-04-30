@@ -130,7 +130,7 @@ namespace Yaapii.Xambly
                 ++idx;
             }
             return
-                new TrimmedText(
+                new Trimmed(
                     new TextOf(text)).AsString();
         }
 
@@ -181,7 +181,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, ADD({0})",
                         name).AsString(),
                     ex
@@ -225,7 +225,7 @@ namespace Yaapii.Xambly
             catch (ArgumentException aex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to add xml node '{0}'",
                         node.ToString()
                     ).AsString(),
@@ -264,7 +264,7 @@ namespace Yaapii.Xambly
         /// <typeparam name="Value">type of the value</typeparam>
         /// <param name="nodes">the Dictionary with data to create</param>
         /// <returns>this object</returns>
-        public Directives Add<Key, Value>(Dictionary<Key, Value> nodes)
+        public Directives Add<Key, Value>(IDictionary<Key, Value> nodes)
         {
             foreach (KeyValuePair<Key, Value> entry in nodes)
             {
@@ -289,7 +289,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, ADDIF({0})",
                         name).AsString(),
                     ex
@@ -312,7 +312,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, INSERTBEFORE({0})",
                         name).AsString(),
                     ex
@@ -335,7 +335,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, INSERTAFTER({0})",
                         name).AsString(),
                     ex
@@ -374,7 +374,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, ATTR({0}, {1})",
                         name, value).AsString(),
                     ex
@@ -404,7 +404,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, PI({0}, {1})",
                         target, data).AsString(),
                     ex
@@ -432,7 +432,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, SET({0})",
                         text).AsString(),
                     ex
@@ -456,9 +456,10 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, XSET({0})",
-                        text).AsString(),
+                        text
+                    ).AsString(),
                     ex
                 );
             }
@@ -490,7 +491,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, XPATH({0})",
                         path).AsString(),
                     ex
@@ -549,9 +550,10 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, CDATA({0})",
-                        text).AsString(),
+                        text
+                    ).AsString(),
                     ex
                 );
             }
@@ -568,7 +570,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, NS({0}:{1})",
                         prefix, uri).AsString(),
                     ex
@@ -587,7 +589,7 @@ namespace Yaapii.Xambly
             catch (XmlContentException ex)
             {
                 throw new IllegalArgumentException(
-                    new FormattedText(
+                    new Formatted(
                         "failed to understand XML content, NS({0})",
                         nsp).AsString(),
                     ex
