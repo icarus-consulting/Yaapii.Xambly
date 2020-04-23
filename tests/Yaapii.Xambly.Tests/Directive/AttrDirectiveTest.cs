@@ -37,7 +37,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var dom = new XDocument();
             Assert.True(
                     new Xambler(
-                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                     new AddDirective("root"),
                                     new AddDirective("foo"),
                                     new UpDirective(),
@@ -58,7 +58,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void RejectsInvalidNameChars(string chr)
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
+                new Xambler(new Atoms.Enumerable.ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new AttrDirective(chr, "beep")
@@ -78,7 +78,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             Assert.Equal(
                 $"<root><item attr=\"{result}\" /></root>",
-                new Xambler(new Atoms.Enumerable.EnumerableOf<IDirective>(
+                new Xambler(new Atoms.Enumerable.ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new AttrDirective("attr", chr)
@@ -102,7 +102,7 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new AttrDirective("x", "y").Exec(
                     dom,
-                    new DomCursor(new Yaapii.Atoms.Enumerable.EnumerableOf<XNode>(second)),
+                    new DomCursor(new Yaapii.Atoms.Enumerable.ManyOf<XNode>(second)),
                     new DomStack()
                 );
 

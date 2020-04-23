@@ -20,13 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Antlr4.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
-using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Directive;
@@ -302,10 +300,36 @@ namespace Yaapii.Xambly
         /// Add node if no node with the specified attribute exists.
         /// </summary>
         /// <param name="name">Name of the node to add</param>
+        /// <param name="childName">Name of the child element to match</param>
+        /// <param name="textContent">Text inside the child to match</param>
+        /// <returns>This object</returns>
+        public Directives AddIfChildContent(Object name, string childName, string textContent)
+        {
+            try
+            {
+                this.all.Add(new AddIfChildDirective(name.ToString(), childName, textContent));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new Formatted(
+                        "failed to understand XML content, ADDIFCHILD({0})",
+                        name
+                    ).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add node if no node with the specified attribute exists.
+        /// </summary>
+        /// <param name="name">Name of the node to add</param>
         /// <param name="attributeName">Name of the attribute to check</param>
         /// <param name="attributeValue">Name of the attribute-value to check</param>
         /// <returns>This object</returns>
-        public Directives AddIfAttribute(Object name, string attributeName, string attributeValue)
+        public Directives AddIfAttr(Object name, string attributeName, string attributeValue)
         {
             try
             {
@@ -580,44 +604,6 @@ namespace Yaapii.Xambly
                         "failed to understand XML content, CDATA({0})",
                         text
                     ).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string prefix, string uri)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(prefix, uri));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, NS({0}:{1})",
-                        prefix, uri).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string nsp)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(nsp));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, NS({0})",
-                        nsp).AsString(),
                     ex
                 );
             }

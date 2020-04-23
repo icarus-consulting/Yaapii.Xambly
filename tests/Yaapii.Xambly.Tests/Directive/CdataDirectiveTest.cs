@@ -35,7 +35,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Equal(
                     "<root><foo><![CDATA[Hello World]]></foo></root>",
                     new Xambler(
-                        new EnumerableOf<IDirective>(
+                        new ManyOf<IDirective>(
                                 new AddDirective("root"),
                                 new AddDirective("foo"),
                                 new CdataDirective("Hello World")

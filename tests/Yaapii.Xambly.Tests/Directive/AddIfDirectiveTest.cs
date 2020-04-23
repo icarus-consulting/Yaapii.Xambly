@@ -38,7 +38,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Equal(
                 "<root><foo /><bar /></root>",
                 new Xambler(
-                    new EnumerableOf<IDirective>(
+                    new ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foo"),
                         new UpDirective(),
@@ -66,7 +66,7 @@ namespace Yaapii.Xambly.Directive.Tests
             dom.Add(root);
             new AddIfDirective("b").Exec(
                 dom,
-                new DomCursor(new EnumerableOf<XNode>(root)),
+                new DomCursor(new ManyOf<XNode>(root)),
                 new DomStack()
             );
 

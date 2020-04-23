@@ -47,7 +47,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var xml = XDocument.Parse(content.AsString());      
             new Xambler(
                 new Joined<IDirective>(
-                    new EnumerableOf<IDirective>(
+                    new ManyOf<IDirective>(
                         new AddDirective("dudes")
                     ),
                     new CopyOfDirective(xml.Root)
@@ -75,7 +75,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var xml = XDocument.Parse(content.AsString());
             new Xambler(
                 new Joined<IDirective>(
-                     new EnumerableOf<IDirective>(
+                     new ManyOf<IDirective>(
                         new AddDirective("target")
                     ),
                     new CopyOfDirective(xml.Root.Element("body"))
@@ -97,7 +97,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var xml = XDocument.Parse(content.AsString());
             new Xambler(
                 new Joined<IDirective>(
-                     new EnumerableOf<IDirective>(
+                     new ManyOf<IDirective>(
                         new AddDirective("root")
                     ),
                     new CopyOfDirective(xml.FirstNode)

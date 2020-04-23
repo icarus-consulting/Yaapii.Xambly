@@ -40,7 +40,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Equal(
                 "<root><?ab boom €?><test><?foo some data €?></test></root>",
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("root"),
                                 new PiDirective("ab", "boom \u20ac"),
                                 new AddDirective("test"),
@@ -57,7 +57,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsProcessingInstructionsDirectlyToDom()
         {
             var dom = new Xambler(
-                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("xxx")
                             )
                         ).Dom();
@@ -83,7 +83,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void PrependsProcessingInstructionsToDomRoot()
         {
             var dom = new Xambler(
-                            new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                            new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new PiDirective("alpha","beta \u20ac"),
                                 new AddDirective("x4")
                             )

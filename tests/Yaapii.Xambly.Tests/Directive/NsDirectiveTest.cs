@@ -46,7 +46,7 @@ namespace Yaapii.Xambly.Directive.Tests
             ).Exec(
                 dom,
                 new DomCursor(
-                    new EnumerableOf<XNode>(root)
+                    new ManyOf<XNode>(root)
                 ),
                 new DomStack()
             );
@@ -76,7 +76,7 @@ namespace Yaapii.Xambly.Directive.Tests
             //    .Exec(
             //        dom,
             //        new DomCursor(
-            //            new EnumerableOf<XNode>(root)
+            //            new ManyOf<XNode>(root)
             //        ),
             //        new DomStack()
             //);

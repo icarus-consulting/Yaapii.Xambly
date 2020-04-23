@@ -44,7 +44,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var dom = new XDocument();
             new Xambler(
-               new EnumerableOf<IDirective>(
+               new ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foo"),
                         new AttrDirective("bar", "1"),
@@ -107,7 +107,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XNode>(first)
+                        new Atoms.Enumerable.ManyOf<XNode>(first)
                     ),
                     new DomStack()
                 )
@@ -127,7 +127,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "/some-root").Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XNode>()
+                        new Atoms.Enumerable.ManyOf<XNode>()
                     ),
                     new DomStack()
                 )
@@ -151,7 +151,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "//Tag[contains(.,'Tran\"sient')]").Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XNode>(dom)
+                        new Atoms.Enumerable.ManyOf<XNode>(dom)
                     ),
                     new DomStack()
                 )
@@ -175,7 +175,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "//Tag[contains(.,\"Tran'sient\")]").Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.EnumerableOf<XNode>(dom)
+                        new Atoms.Enumerable.ManyOf<XNode>(dom)
                     ),
                     new DomStack()
                 )
@@ -220,7 +220,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "/root/child"
                 ).Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XNode>(first)),
+                    new DomCursor(new ManyOf<XNode>(first)),
                     new DomStack()
                 )
             );
@@ -244,7 +244,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "/root/child"
                 ).Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XNode>(strangerCursor)),
+                    new DomCursor(new ManyOf<XNode>(strangerCursor)),
                     new DomStack()
                 )
             );

@@ -84,7 +84,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("foo"),
                                 new AddDirective("bar"),
                                 new XpathDirective("/foo/bar/boom"),
@@ -101,7 +101,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("root"),
                                 new StrictDirective(2)
                             )).Apply(dom);
