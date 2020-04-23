@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 
 namespace Yaapii.Xambly.Directive

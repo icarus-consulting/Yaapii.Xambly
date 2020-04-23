@@ -24,7 +24,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Lists;
+using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
 

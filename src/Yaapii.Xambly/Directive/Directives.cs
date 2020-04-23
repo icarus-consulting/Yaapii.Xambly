@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Error;
 

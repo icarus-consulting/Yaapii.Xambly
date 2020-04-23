@@ -25,8 +25,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Texts;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xambly.Directive.Tests
 {

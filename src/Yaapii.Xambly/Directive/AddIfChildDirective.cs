@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
-using Yaapii.Atoms.Lists;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.List;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 

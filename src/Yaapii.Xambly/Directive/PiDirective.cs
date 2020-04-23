@@ -22,7 +22,7 @@
 
 using System.Xml.Linq;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 
 namespace Yaapii.Xambly.Directive

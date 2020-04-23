@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 

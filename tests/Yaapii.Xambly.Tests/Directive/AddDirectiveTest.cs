@@ -23,7 +23,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using Xunit;
-using Yaapii.Atoms.Lists;
+using Yaapii.Atoms.List;
 
 namespace Yaapii.Xambly.Directive.Tests
 {

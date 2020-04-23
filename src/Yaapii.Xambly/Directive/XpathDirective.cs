@@ -27,7 +27,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;

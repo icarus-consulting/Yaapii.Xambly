@@ -30,7 +30,7 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
-using Yaapii.Atoms.Texts;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -127,62 +127,6 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         /// <summary>
-        /// Directives can build a correct modification programme.
-        /// </summary>
-        [Fact(Skip = "true")]
-        public void PerformsFullScaleModifications()
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            Assert.Equal(
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\"><body><p>€ \\</p></body></html>",
-                new Xambler(
-                    new Directives()
-                            .Add("html")
-                            //.Ns("http://www.w3.org/1999/xhtml")
-                            .Add("body")
-                            .Add("p")
-                            .Set("\u20ac \\")
-                ).Apply(
-                    new XDocument()
-                ).ToString(SaveOptions.DisableFormatting)
-            );
-        }
-
-        //NOT FOR NOW - CopyTo missing atm
-        /// <summary>
-        /// Directives can copy an existing node
-        /// </summary>
-        [Fact]
-        public void CopiesExistingNode()
-        {
-            //final Document dom = DocumentBuilderFactory.newInstance()
-            //.newDocumentBuilder().newDocument();
-            //new Xambler(
-            //    new Directives().add("dudes").append(
-            //        Directives.copyOf(
-            //            new XMLDocument(
-            //                StringUtils.join(
-            //                    "<jeff name='Jeffrey'><first/><second/>",
-            //                    "<?some-pi test?>",
-            //                    "<file a='x'><f><name>\u20ac</name></f></file>",
-            //                    "<!-- some comment -->",
-            //                    "<x><![CDATA[hey you]]></x>  </jeff>"
-            //                )
-            //            ).node()
-            //        )
-            //    )
-            //).apply(dom);
-            //MatcherAssert.assertThat(
-            //    XhtmlMatchers.xhtml(dom),
-            //    XhtmlMatchers.hasXPaths(
-            //        "/dudes/jeff[@name = 'Jeffrey']",
-            //        "/dudes/jeff[first and second]",
-            //        "/dudes/jeff/file[@a='x']/f[name='\u20ac']"
-            //    )
-            //);
-        }
-
-        /// <summary>
         /// Directives can understand case.
         /// </summary>
         [Fact]
@@ -240,24 +184,6 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.True(
                 null != FromXPath(xml, testXPath)
             );
-        }
-
-        /// <summary>
-        /// Directives can use namespaces.
-        /// </summary>
-        [Fact(Skip = "true")]
-        public void PrefixesItemsWithNamespaces()
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            var xml =
-                new Xambler(
-                    new Directives()
-                        .Add("bbb")
-                        //.Ns("x", "http://www.w3.org/1999/xhtml")
-                        .Add("node").Set("HELLO WORLD!")
-                ).Xml();
-
-            Assert.NotNull(FromXPath(xml, "//x:node"));
         }
 
         /// <summary>
