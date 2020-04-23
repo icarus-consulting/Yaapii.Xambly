@@ -299,6 +299,32 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
+        /// Add node if no node with the specified attribute exists.
+        /// </summary>
+        /// <param name="name">Name of the node to add</param>
+        /// <param name="attributeName">Name of the attribute to check</param>
+        /// <param name="attributeValue">Name of the attribute-value to check</param>
+        /// <returns>This object</returns>
+        public Directives AddIfAttribute(Object name, string attributeName, string attributeValue)
+        {
+            try
+            {
+                this.all.Add(new AddIfAttributeDirective(name.ToString(), attributeName, attributeValue));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new Formatted(
+                        "failed to understand XML content, ADDIFATTRIBUTE({0})",
+                        name
+                    ).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        /// <summary>
         /// Insert node before current nodes.
         /// </summary>
         /// <param name="name">Name of the node to add</param>
