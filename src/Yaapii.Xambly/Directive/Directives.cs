@@ -302,10 +302,36 @@ namespace Yaapii.Xambly
         /// Add node if no node with the specified attribute exists.
         /// </summary>
         /// <param name="name">Name of the node to add</param>
+        /// <param name="childName">Name of the child element to match</param>
+        /// <param name="textContent">Text inside the child to match</param>
+        /// <returns>This object</returns>
+        public Directives AddIfChildContent(Object name, string childName, string textContent)
+        {
+            try
+            {
+                this.all.Add(new AddIfChildDirective(name.ToString(), childName, textContent));
+            }
+            catch (XmlContentException ex)
+            {
+                throw new IllegalArgumentException(
+                    new Formatted(
+                        "failed to understand XML content, ADDIFCHILD({0})",
+                        name
+                    ).AsString(),
+                    ex
+                );
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add node if no node with the specified attribute exists.
+        /// </summary>
+        /// <param name="name">Name of the node to add</param>
         /// <param name="attributeName">Name of the attribute to check</param>
         /// <param name="attributeValue">Name of the attribute-value to check</param>
         /// <returns>This object</returns>
-        public Directives AddIfAttribute(Object name, string attributeName, string attributeValue)
+        public Directives AddIfAttr(Object name, string attributeName, string attributeValue)
         {
             try
             {
