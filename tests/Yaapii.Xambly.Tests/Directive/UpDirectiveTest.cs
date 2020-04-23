@@ -50,7 +50,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                     new AddDirective("foo"),
                                     new UpDirective(),
                                     new UpDirective(),

@@ -30,7 +30,7 @@ using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.IO;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive.Tests
@@ -78,7 +78,7 @@ namespace Yaapii.Xambly.Directive.Tests
             string xml =
                 new Xambler(
                     new Directives(
-                        new EnumerableOf<IDirective>(
+                        new ManyOf<IDirective>(
                             new AddDirective("page"),
                             new AddDirective("child-node")
                         )

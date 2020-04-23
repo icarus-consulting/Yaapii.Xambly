@@ -20,15 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using Antlr4.Runtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
-using Yaapii.Atoms;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Error;
 
@@ -606,44 +604,6 @@ namespace Yaapii.Xambly
                         "failed to understand XML content, CDATA({0})",
                         text
                     ).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string prefix, string uri)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(prefix, uri));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, NS({0}:{1})",
-                        prefix, uri).AsString(),
-                    ex
-                );
-            }
-            return this;
-        }
-
-        private Directives Ns(string nsp)
-        {
-            throw new ImpossibleModificationException("Modifying namespaces is not implemented at the moment.");
-            try
-            {
-                this.all.Add(new NsDirective(nsp));
-            }
-            catch (XmlContentException ex)
-            {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, NS({0})",
-                        nsp).AsString(),
                     ex
                 );
             }

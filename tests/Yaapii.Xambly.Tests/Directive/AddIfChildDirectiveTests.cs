@@ -1,5 +1,4 @@
-﻿using DopX.Core.Entity.Machine.Memory;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Directive;
@@ -14,7 +13,7 @@ namespace Yaapii.Xambly
             Assert.Equal(
                 "<root>\r\n  <sub>\r\n    <dontOverrideMe>please</dontOverrideMe>\r\n    <child />\r\n    <child />\r\n  </sub>\r\n</root>",
                 new Xambler(
-                    new EnumerableOf<IDirective>(
+                    new ManyOf<IDirective>(
                         new PushDirective(),
                         new AddDirective("root"),
                         new PushDirective(),

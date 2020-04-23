@@ -22,7 +22,7 @@
 
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Error;
 

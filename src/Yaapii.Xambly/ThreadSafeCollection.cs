@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 using System.Reflection;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 
 namespace System.Collections.Generic
 {

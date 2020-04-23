@@ -22,7 +22,7 @@
 
 using System;
 using Yaapii.Atoms;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 
 namespace Yaapii.Xambly.Arg
 {

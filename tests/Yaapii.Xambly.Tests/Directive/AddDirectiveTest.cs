@@ -23,7 +23,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using Xunit;
-using Yaapii.Atoms.List;
+using Yaapii.Atoms.Lists;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -34,7 +34,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             Assert.True(
                     new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("root"),
                                 new AddDirective("item")
                             )).Dom().ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");
@@ -45,7 +45,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             Assert.True(
             new Xambler(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                             new AddDirective("root"),
                             new AddDirective("item")
                         )).Apply(new XDocument()).ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");

@@ -38,7 +38,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Equal(
                 "<root />",
                 new Xambler(
-                    new EnumerableOf<IDirective>(
+                    new ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("foobar"),
                         new RemoveDirective()
@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
                     new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                             new AddDirective("root"),
                             new RemoveDirective()
                         )
@@ -71,7 +71,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
                     new Xambler(
-                        new Yaapii.Atoms.Enumerable.EnumerableOf<IDirective>(
+                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                             new RemoveDirective()
                         )
                     ).Apply(
@@ -104,7 +104,7 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new RemoveDirective().Exec(
                 dom,
-                new DomCursor(new EnumerableOf<XNode>(first)),
+                new DomCursor(new ManyOf<XNode>(first)),
                 new DomStack()
             );
 
@@ -133,11 +133,11 @@ namespace Yaapii.Xambly.Directive.Tests
             var cursor =
                 new RemoveDirective().Exec(
                     dom,
-                    new DomCursor(new EnumerableOf<XNode>(frstChild, scndChild)),
+                    new DomCursor(new ManyOf<XNode>(frstChild, scndChild)),
                     new DomStack()
                 );
             Assert.Equal(
-                new EnumerableOf<XNode>(first, second),
+                new ManyOf<XNode>(first, second),
                 cursor
             );
         }

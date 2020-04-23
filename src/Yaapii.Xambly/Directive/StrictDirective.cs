@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Yaapii.Atoms.List;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Lists;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive

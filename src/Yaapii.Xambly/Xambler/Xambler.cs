@@ -27,7 +27,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 using Yaapii.Xambly.Stack;
@@ -76,7 +76,7 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <param name="directives">Directives</param>
         public Xambler(params IDirective[] directives) : this(
-            new EnumerableOf<IDirective>(directives))
+            new ManyOf<IDirective>(directives))
         { }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace Yaapii.Xambly
         {
             ICursor cursor = 
                 new DomCursor(
-                    new Yaapii.Atoms.Enumerable.EnumerableOf<XNode>(dom)
+                    new Yaapii.Atoms.Enumerable.ManyOf<XNode>(dom)
                 );
 
             int pos = 1;

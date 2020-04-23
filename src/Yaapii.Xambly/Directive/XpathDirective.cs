@@ -27,7 +27,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Texts;
 using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
@@ -94,7 +94,7 @@ namespace Yaapii.Xambly.Directive
                     this.Traditional(
                         query,
                         dom,
-                        new EnumerableOf<XNode>(
+                        new ManyOf<XNode>(
                             new XmlDocumentOf(dom).Value().Document
                         )
                     );
@@ -156,7 +156,7 @@ namespace Yaapii.Xambly.Directive
         //private IEnumerable<XmlNode> RootOnly(string root, XmlNode dom)
         //{
         //    var rootElem = new XmlDocumentOf(dom).Value().DocumentElement;
-        //    var targets = new EnumerableOf<XmlNode>();  // empty list
+        //    var targets = new ManyOf<XmlNode>();  // empty list
 
         //    if (
         //        root != null &&
@@ -164,7 +164,7 @@ namespace Yaapii.Xambly.Directive
         //        ("*".Equals(root) || rootElem.Name.Equals(root))
         //    )
         //    {
-        //        targets = new EnumerableOf<XmlNode>(rootElem);
+        //        targets = new ManyOf<XmlNode>(rootElem);
         //    }
         //    return targets;
         //}
@@ -183,7 +183,7 @@ namespace Yaapii.Xambly.Directive
             // Return document root if there are no nodes.
             if (new LengthOf(nodes).Value() == 0)
             {
-                roots = new EnumerableOf<XNode>(
+                roots = new ManyOf<XNode>(
                     new XmlDocumentOf(
                         dom
                     ).Value().Document);
