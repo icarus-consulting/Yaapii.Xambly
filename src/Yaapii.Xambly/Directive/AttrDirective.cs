@@ -45,7 +45,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="value">Text value to set</param>
         public AttrDirective(string name, string value) : this(
             new ScalarOf<IArg>(() => new AttributeArg(name)),
-            new ScalarOf<IText>(() => new TextOf(value))
+            new ScalarOf<IText>(() => new NotIllegalText(value))
         )
         { }
 
@@ -66,7 +66,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return 
+            return
                 new Formatted(
                     "ATTR '{0}', '{1}'",
                     this.name.Value().Raw(),

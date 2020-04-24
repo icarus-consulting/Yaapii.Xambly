@@ -21,8 +21,10 @@
 // SOFTWARE.
 
 using System;
+using System.Xml;
 using System.Xml.Linq;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
 
@@ -85,6 +87,22 @@ namespace Yaapii.Xambly.Directive.Tests
 
             Assert.True(dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a>alpha</a><b>alpha</b></xxx>", "Set content for nodes failed");
 
+        }
+
+        [Fact]
+        public void ThrowsForInvalidCharacter()
+        {
+            Assert.Throws<XmlException>(() =>
+                new SetDirective("\0invalid")
+                    .Exec(
+                    new XDocument(),
+                    new DomCursor(
+                        new ManyOf<XNode>(
+                            new XElement("rot")
+                        )
+                    ), new DomStack()
+                )
+            );
         }
     }
 }
