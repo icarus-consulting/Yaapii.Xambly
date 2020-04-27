@@ -21,8 +21,8 @@ var project = new DirectoryPath("./src/Yaapii.Xambly/Yaapii.Xambly.csproj");
 var owner = "icarus-consulting";
 var repository = "Yaapii.Xambly";
 
-var username = "";
-var password = "";
+var githubtoken = "";
+var codecovToken = "";
 
 var isAppVeyor          = AppVeyor.IsRunningOnAppVeyor;
 
@@ -127,8 +127,8 @@ Task("Pack")
 Task("GetCredentials")
     .Does(() =>
 {
-    username = EnvironmentVariable("GITHUB_USERNAME");
-    password = EnvironmentVariable("GITHUB_PASSWORD");
+    githubtoken = EnvironmentVariable("GITHUB_TOKEN");
+	codecovToken = EnvironmentVariable("CODECOV_TOKEN");
 });
 
 Task("Release")
@@ -137,25 +137,25 @@ Task("Release")
   .IsDependentOn("GetCredentials")
   .Does(() => {
     var version = BuildSystem.AppVeyor.Environment.Repository.Tag.Name;
-     GitReleaseManagerCreate(username, password, owner, repository, new GitReleaseManagerCreateSettings {
-            Milestone         = version,
-            Name              = version,
-            Prerelease        = false,
-            TargetCommitish   = "master"
-    });
+	GitReleaseManagerCreate(githubtoken, owner, repository, new GitReleaseManagerCreateSettings {
+        Milestone         = version,
+        Name              = version,
+        Prerelease        = false,
+        TargetCommitish   = "master"
+	});
           
-    var nugetFiles = string.Join(",", GetFiles("./artifacts/**/*.nupkg").Select(f => f.FullPath) );
+	var nugetFiles = string.Join(",", GetFiles("./artifacts/**/*.nupkg").Select(f => f.FullPath) );
+	Information("Nuget artifacts: " + nugetFiles);
 
-    GitReleaseManagerAddAssets(
-        username,
-        password,
-        owner,
-        repository,
-        version,
-        nugetFiles
-      );
+	GitReleaseManagerAddAssets(
+		githubtoken,
+		owner,
+		repository,
+		version,
+		nugetFiles
+	);
 
-	  GitReleaseManagerPublish(username, password, owner, repository, version);
+	GitReleaseManagerPublish(githubtoken, owner, repository, version);
   });
 
 Task("Default")
