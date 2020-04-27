@@ -4,6 +4,7 @@
 version: 1.0.{build}
 image: Visual Studio 2017
 configuration: Release
+environment:
   GITHUB_TOKEN:
     secure: tvoyJ/iv8Y+9VaKvOFvxegvQFBNqPkhiwghS8lQDsrt7B/1MWU4e8uOHQzfTU580
   CODECOV_TOKEN:
