@@ -21,8 +21,10 @@
 // SOFTWARE.
 
 using System;
+using System.Xml;
 using System.Xml.Linq;
 using Xunit;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 using Yaapii.Xambly.Stack;
@@ -113,5 +115,20 @@ namespace Yaapii.Xambly.Directive.Tests
 
         }
 
+        [Fact]
+        public void ThrowsForInvalidCharacter()
+        {
+            Assert.Throws<XmlException>(() =>
+                new AttrDirective("valid", "\0invalid")
+                    .Exec(
+                    new XDocument(),
+                    new DomCursor(
+                        new ManyOf<XNode>(
+                            new XElement("rot")
+                        )
+                    ), new DomStack()
+                )
+            );
+        }
     }
 }

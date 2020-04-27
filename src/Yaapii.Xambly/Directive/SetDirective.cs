@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Xml.Linq;
+using Yaapii.Atoms;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Arg;
@@ -33,7 +34,7 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class SetDirective : IDirective
     {
-        private readonly string text;
+        private readonly IText text;
 
         /// <summary>
         /// SET directive.
@@ -42,7 +43,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public SetDirective(string val)
         {
-            text = val;
+            text = new NotIllegalText(val);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted("SET {0}", this.text).AsString();
+            return new Formatted("SET {0}", this.text.AsString()).AsString();
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Yaapii.Xambly.Directive
                         !(node is XElement)
                     ).Go();
 
-                (node as XElement).Value = text;
+                (node as XElement).Value = text.AsString();
             }
 
             return cursor;
