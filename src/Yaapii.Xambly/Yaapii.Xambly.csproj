@@ -11,13 +11,18 @@
     </PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
-    <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Atoms.xml</DocumentationFile>
+    <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
+    <None Remove="Yaapii.Xambly.nuspec" />
+    <None Remove="Yaapii.Xambly.Sources.nuspec" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
     <PackageReference Include="Yaapii.Atoms" Version="2.0.1" />
   </ItemGroup>
 </Project>
