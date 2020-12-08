@@ -11,6 +11,7 @@
     </PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
+    <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Atoms.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
