@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3544FF1C-467C-441A-82CA-A7AE091A2E69}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BCF93090-CFF8-4CA1-B760-5CE870BC865E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yaapii.Xambly.Tests", "tests\Yaapii.Xambly.Tests\Yaapii.Xambly.Tests.csproj", "{5BECECA3-37DB-46E1-8913-6C16708111F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Yaapii.Xambly", "tests\Test.Yaapii.Xambly\Test.Yaapii.Xambly.csproj", "{5BECECA3-37DB-46E1-8913-6C16708111F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yaapii.Xambly", "src\Yaapii.Xambly\Yaapii.Xambly.csproj", "{110B6BA7-96D4-4F68-A4BD-26995117D64B}"
 EndProject
