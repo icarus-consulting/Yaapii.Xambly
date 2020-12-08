@@ -16,9 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{EE773E
 		appveyor.yml = appveyor.yml
 		build.cake = build.cake
 		.github\ISSUE_TEMPLATE.md = .github\ISSUE_TEMPLATE.md
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
 		README.md = README.md
+		src\Yaapii.Xambly\Yaapii.Xambly.nuspec = src\Yaapii.Xambly\Yaapii.Xambly.nuspec
+		src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec_ = src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec_
 	EndProjectSection
 EndProject
 Global
