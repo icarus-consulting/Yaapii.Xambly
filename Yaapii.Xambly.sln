@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{EE773E
 		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
 		README.md = README.md
 		src\Yaapii.Xambly\Yaapii.Xambly.nuspec = src\Yaapii.Xambly\Yaapii.Xambly.nuspec
-		src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec_ = src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec_
+		src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec = src\Yaapii.Xambly\Yaapii.Xambly.Sources.nuspec
 	EndProjectSection
 EndProject
 Global
