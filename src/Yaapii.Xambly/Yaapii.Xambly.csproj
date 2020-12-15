@@ -2,27 +2,42 @@
   
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;ReleaseSources</Configurations>
     <Authors>ICARUS Consulting GmbH</Authors>
-    <Copyright>ICARUS Consulting GmbH</Copyright>
-    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</RepositoryUrl>
-    <DocumentationFile>artifacts\yaapii.xml.xambly.xml</DocumentationFile>
-    <PackageTags>
-      xml-editor, csharp, xml-documents, xpath, xml-builder
-    </PackageTags>
-    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xml.Xambly</PackageProjectUrl>
-    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
     <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
+    <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <Copyright>Copyright (c) 2020 ICARUS Consulting GmbH</Copyright>
+    <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
+    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xambly.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
-  
+ 
   <ItemGroup>
-    <None Remove="Yaapii.Xambly.nuspec" />
-    <None Remove="Yaapii.Xambly.Sources.nuspec" />
+    <Content Include="_._" Condition="'$(Configuration)' == 'ReleaseSources'">
+      <PackagePath>lib\$(TargetFramework)\</PackagePath>
+    </Content>
+    <Content Include="..\..\LICENSE.txt">
+      <PackagePath></PackagePath>
+    </Content>
+    <Content Include="**\*.cs" Exclude="obj\**\*.*" Condition="'$(Configuration)' == 'ReleaseSources'">
+      <BuildAction>Compile</BuildAction>
+      <PackagePath>content\LIBS\Yaapii.Xambly\;contentFiles\cs\netstandard2.0\LIBS\Yaapii.Xambly\</PackagePath>
+    </Content>
   </ItemGroup>
-  
+    
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="Yaapii.Atoms" Version="2.1.3" />
+    <PackageReference Include="Yaapii.Atoms" Version="2.1.3" Condition="'$(Configuration)' != 'ReleaseSources'" />
+    <PackageReference Include="Yaapii.Atoms.Sources" Version="2.1.3" Condition="'$(Configuration)' == 'ReleaseSources'">
+      <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>  
+    </PackageReference>
   </ItemGroup>
 </Project>
