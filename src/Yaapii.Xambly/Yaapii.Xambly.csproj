@@ -3,10 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Configurations>Debug;Release;ReleaseSources</Configurations>
-    <Authors>ICARUS Consulting GmbH</Authors>
     <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
-    <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
+    
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Authors>ICARUS Consulting GmbH</Authors>
+    <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -15,20 +16,28 @@
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
     <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xambly.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xml.Xambly/releases</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
  
-  <ItemGroup>
-    <Content Include="_._" Condition="'$(Configuration)' == 'ReleaseSources'">
+  <ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
+    <Content Include="_._">
       <PackagePath>lib\$(TargetFramework)\</PackagePath>
     </Content>
+    <Content Include="**\*.cs" Exclude="obj\**\*.*">
+      <BuildAction>Compile</BuildAction>
+      <PackagePath>content\LIBS\$(AssemblyName)\;contentFiles\cs\$(TargetFramework)\LIBS\$(AssemblyName)\</PackagePath>
+    </Content>
+  </ItemGroup>
+ 
+  <ItemGroup>
     <Content Include="..\..\LICENSE.txt">
       <PackagePath></PackagePath>
+      <Visible>false</Visible>
     </Content>
-    <Content Include="**\*.cs" Exclude="obj\**\*.*" Condition="'$(Configuration)' == 'ReleaseSources'">
-      <BuildAction>Compile</BuildAction>
-      <PackagePath>content\LIBS\Yaapii.Xambly\;contentFiles\cs\netstandard2.0\LIBS\Yaapii.Xambly\</PackagePath>
-    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="_._" />
   </ItemGroup>
     
   <ItemGroup>
