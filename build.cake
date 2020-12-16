@@ -5,17 +5,17 @@
 #addin nuget:?package=Cake.Codecov&version=0.9.1
 #addin nuget:?package=Cake.Incubator&version=5.1.0
 
-var target = Argument("target", "Default");
-var configuration   = "Release";
+var target                  = Argument("target", "Default");
+var configuration           = "Release";
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////////////////
 // We define where the build artifacts should be places
 // this is relative to the project root folder
-var buildArtifacts                  = Directory("./artifacts");
-var deployment                      = Directory("./artifacts/deployment");
-var version                         = "1.0.0";
+var buildArtifacts          = Directory("./artifacts");
+var deployment              = Directory("./artifacts/deployment");
+var version                 = "1.0.0";
 
 ///////////////////////////////////////////////////////////////////////////////
 // MODULES
@@ -23,31 +23,33 @@ var version                         = "1.0.0";
 var modules = Directory("./src");
 // To skip building a project in the source folder add the project folder name
 // as string to the list e.g. "Yaapii.SimEngine.Tmx.Setup".
-var blacklistedModules = new List<string>() { };
+var blacklistedModules      = new List<string>() { };
 
 // Unit tests
 var unitTests = Directory("./tests");
 // To skip executing a test in the tests folder add the test project folder name
 // as string to the list e.g. "TmxTest.Yaapii.Olp.Tmx.AllInOneRobot".
-var blacklistedUnitTests = new List<string>() { }; 
+var blacklistedUnitTests    = new List<string>() { }; 
 
 ///////////////////////////////////////////////////////////////////////////////
 // CONFIGURATION VARIABLES
 ///////////////////////////////////////////////////////////////////////////////
-var isAppVeyor                      = AppVeyor.IsRunningOnAppVeyor;
-var isWindows                       = IsRunningOnWindows();
+var isAppVeyor              = AppVeyor.IsRunningOnAppVeyor;
+var isWindows               = IsRunningOnWindows();
 
 // For GitHub release
-var owner                           = "icarus-consulting";
-var repository                      = "Yaapii.Xambly";
+var owner                   = "icarus-consulting";
+var repository              = "Yaapii.Xambly";
 
 // For NuGetFeed
 var nuGetSource = "https://api.nuget.org/v3/index.json";
+var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
 
 // API key tokens for deployment
-var gitHubToken                     = "";
-var nugetReleaseToken               = "";
-var codeCovToken                    = "";
+var gitHubToken             = "";
+var nugetReleaseToken       = "";
+var appVeyorFeedToken       = "";
+var codeCovToken            = "";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Version
@@ -302,7 +304,6 @@ Task("NuGet")
         NoBuild = false,
         VersionSuffix = ""
     };
-    settingsSources.ArgumentCustomization = args => args.Append("-p:IncludeBuildOutput=false");
     settingsSources.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
 
     foreach (var module in GetSubDirectories(modules))
@@ -315,7 +316,7 @@ Task("NuGet")
                 settings
             );
 
-            settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources");
+            settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources").Append("-p:IncludeBuildOutput=false");
             DotNetCorePack(
                 module.ToString(),
                 settingsSources
@@ -339,6 +340,7 @@ Task("Credentials")
     
     gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
     nugetReleaseToken = EnvironmentVariable("NUGET_TOKEN");
+    appVeyorFeedToken = EnvironmentVariable("APPVEYOR_TOKEN");
     codeCovToken = EnvironmentVariable("CODECOV_TOKEN");
 });
 
@@ -392,13 +394,26 @@ Task("NuGetFeed")
     var nugets = GetFiles($"{buildArtifacts.Path}/*.nupkg");
     foreach(var package in nugets)
     {
-        NuGetPush(
-            package,
-            new NuGetPushSettings {
-                Source = nuGetSource,
-                ApiKey = nugetReleaseToken
-            }
-        );
+        if (package.GetFilename().ToString().Contains(".Sources"))
+        {
+            NuGetPush(
+                package,
+                new NuGetPushSettings {
+                    Source = appVeyorNuGetFeed,
+                    ApiKey = appVeyorFeedToken
+                }
+            );
+        }
+        else
+        {
+            NuGetPush(
+                package,
+                new NuGetPushSettings {
+                    Source = nuGetSource,
+                    ApiKey = nugetReleaseToken
+                }
+            );
+        }
     }
     var symbols = GetFiles($"{buildArtifacts.Path}/*.snupkg");
     foreach(var symbol in symbols)
@@ -425,6 +440,7 @@ Task("Default")
 .IsDependentOn("GenerateCoverage")
 .IsDependentOn("Credentials")
 .IsDependentOn("UploadCoverage")
+.IsDependentOn("AssertPackages")
 .IsDependentOn("NuGet")
 .IsDependentOn("GitHubRelease")
 .IsDependentOn("NuGetFeed");
