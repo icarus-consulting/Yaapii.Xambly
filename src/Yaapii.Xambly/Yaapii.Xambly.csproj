@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Configurations>Debug;Release;ReleaseSources</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>ICARUS Consulting GmbH</Authors>
