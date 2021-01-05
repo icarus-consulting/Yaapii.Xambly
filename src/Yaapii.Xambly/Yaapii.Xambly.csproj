@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <Configurations>Debug;Release;ReleaseSources</Configurations>
     <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
-    
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>ICARUS Consulting GmbH</Authors>
     <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
@@ -19,13 +18,16 @@
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
  
-  <ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
+<ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
     <Content Include="_._">
-      <PackagePath>lib\$(TargetFramework)\</PackagePath>
+      <PackagePath>lib\netstandard2.0\</PackagePath>
+    </Content>
+    <Content Include="_._">
+      <PackagePath>lib\net461\</PackagePath>
     </Content>
     <Content Include="**\*.cs" Exclude="obj\**\*.*">
       <BuildAction>Compile</BuildAction>
-      <PackagePath>content\LIBS\$(AssemblyName)\;contentFiles\cs\$(TargetFramework)\LIBS\$(AssemblyName)\</PackagePath>
+      <PackagePath>content\LIBS\$(AssemblyName)\;contentFiles\cs\netstandard2.0\LIBS\$(AssemblyName)\</PackagePath>
     </Content>
   </ItemGroup>
  
@@ -39,7 +41,11 @@
   <ItemGroup>
     <None Remove="_._" />
   </ItemGroup>
-    
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
