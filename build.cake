@@ -20,13 +20,13 @@ var version                 = "1.0.0";
 ///////////////////////////////////////////////////////////////////////////////
 // MODULES
 ///////////////////////////////////////////////////////////////////////////////
-var modules = Directory("./src");
+var modules                 = Directory("./src");
 // To skip building a project in the source folder add the project folder name
 // as string to the list e.g. "Yaapii.SimEngine.Tmx.Setup".
 var blacklistedModules      = new List<string>() { };
 
 // Unit tests
-var unitTests = Directory("./tests");
+var unitTests               = Directory("./tests");
 // To skip executing a test in the tests folder add the test project folder name
 // as string to the list e.g. "TmxTest.Yaapii.Olp.Tmx.AllInOneRobot".
 var blacklistedUnitTests    = new List<string>() { }; 
@@ -42,7 +42,7 @@ var owner                   = "icarus-consulting";
 var repository              = "Yaapii.Xambly";
 
 // For NuGetFeed
-var nuGetSource = "https://api.nuget.org/v3/index.json";
+var nuGetSource             = "https://api.nuget.org/v3/index.json";
 var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
 
 // API key tokens for deployment
