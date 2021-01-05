@@ -18,7 +18,7 @@
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
   </PropertyGroup>
  
-<ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
+  <ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
     <Content Include="_._">
       <PackagePath>lib\netstandard2.0\</PackagePath>
     </Content>
