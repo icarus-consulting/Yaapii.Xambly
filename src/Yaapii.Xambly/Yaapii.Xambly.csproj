@@ -44,7 +44,6 @@
  
   <ItemGroup>
     <Compile Remove="Assets\**" />
-    <Content Remove="Assets\**" />
     <EmbeddedResource Remove="Assets\**" />
     <None Remove="Assets\**" />
   </ItemGroup>
