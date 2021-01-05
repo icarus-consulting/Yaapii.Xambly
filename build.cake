@@ -186,7 +186,7 @@ Task("UnitTests")
             Warning($"  {name}");
         }
     }
-});    
+});
 
 ///////////////////////////////////////////////////////////////////////////////
 // Generate Coverage
@@ -195,7 +195,7 @@ Task("GenerateCoverage")
 .IsDependentOn("Build")
 .Does(() => 
 {
-    Information(Figlet("GenerateCoverage"));
+    Information(Figlet("Generate Coverage"));
     
     try
     {
@@ -232,14 +232,19 @@ Task("UploadCoverage")
 .WithCriteria(() => isAppVeyor)
 .Does(() =>
 {
-    Information(Figlet("UploadCoverage"));
+    Information(Figlet("Upload Coverage"));
     
     Codecov($"{buildArtifacts.Path}/coverage.xml", codeCovToken);
 });
 
+///////////////////////////////////////////////////////////////////////////////
+// Assert Packages
+///////////////////////////////////////////////////////////////////////////////
 Task("AssertPackages")
 .Does(() => 
 {
+    Information(Figlet("Assert Packages"));
+
     foreach (var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
@@ -367,7 +372,6 @@ Task("GitHubRelease")
             TargetCommitish   = "master"
         }
     );
-
     var nugets = string.Join(",", GetFiles("./artifacts/*.*nupkg").Select(f => f.FullPath) );
     Information($"Release files:{Environment.NewLine}  " + nugets.Replace(",", $"{Environment.NewLine}  "));
     GitReleaseManagerAddAssets(
@@ -389,7 +393,7 @@ Task("NuGetFeed")
 .IsDependentOn("Credentials")
 .Does(() => 
 {
-    Information(Figlet("NuGetFeed"));
+    Information(Figlet("NuGet Feed"));
     
     var nugets = GetFiles($"{buildArtifacts.Path}/*.nupkg");
     foreach(var package in nugets)
