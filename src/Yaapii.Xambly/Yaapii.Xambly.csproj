@@ -2,7 +2,6 @@
   
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Configurations>Debug;Release</Configurations>
     <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Authors>ICARUS Consulting GmbH</Authors>
@@ -41,7 +40,7 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net461'">
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
- 
+  
   <ItemGroup>
     <Compile Remove="Assets\**" />
     <EmbeddedResource Remove="Assets\**" />
