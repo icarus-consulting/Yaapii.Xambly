@@ -8,7 +8,7 @@
     <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>Copyright (c) 2020 ICARUS Consulting GmbH</Copyright>
     <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
@@ -31,7 +31,7 @@
   </ItemGroup>
  
   <ItemGroup>
-    <Content Include="..\..\LICENSE.txt">
+    <Content Include="..\..\LICENSE">
       <PackagePath></PackagePath>
       <Visible>false</Visible>
     </Content>
