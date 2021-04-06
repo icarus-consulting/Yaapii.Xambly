@@ -6,7 +6,10 @@
 Port of [Xembly Library](https://github.com/yegor256/Xembly) from Yegor Bugayenko.
 
 The following usage guide is taken from the original repository.
+## Repo Guidelines
 
+Main responsible for this repository is [HerickJ-22](https://github.com/HerickJ-22).
+Please request in every single PR a review from him. 
 # Usage
 
 **Xambly** is an [Assembly](http://en.wikipedia.org/wiki/Assembly_language)-like
