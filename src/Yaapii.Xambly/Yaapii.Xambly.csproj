@@ -8,7 +8,7 @@
     <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) 2021 ICARUS Consulting GmbH</Copyright>
     <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
