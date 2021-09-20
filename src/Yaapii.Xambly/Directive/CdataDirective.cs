@@ -52,10 +52,11 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted(
-                            $"CDATA {0}",
-                            this.value.Raw()
-                        ).AsString();
+            return 
+                new Formatted(
+                    $"CDATA {0}",
+                    this.value.Raw()
+                ).AsString();
         }
 
         /// <summary>
