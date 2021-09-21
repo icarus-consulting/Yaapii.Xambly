@@ -22,14 +22,14 @@ var version                 = "1.0.0";
 ///////////////////////////////////////////////////////////////////////////////
 var modules                 = Directory("./src");
 // To skip building a project in the source folder add the project folder name
-// as string to the list e.g. "Yaapii.SimEngine.Tmx.Setup".
-var blacklistedModules      = new List<string>() { };
+// as string to the list e.g. "Yaapii.Atoms".
+var excludedModules         = new List<string>() { };
 
 // Unit tests
 var unitTests               = Directory("./tests");
 // To skip executing a test in the tests folder add the test project folder name
-// as string to the list e.g. "TmxTest.Yaapii.Olp.Tmx.AllInOneRobot".
-var blacklistedUnitTests    = new List<string>() { }; 
+// as string to the list e.g. "Yaapii.IrrelevantTests".
+var exludedUnitTests        = new List<string>() { };
 
 ///////////////////////////////////////////////////////////////////////////////
 // CONFIGURATION VARIABLES
@@ -76,7 +76,7 @@ Task("Clean")
     foreach(var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
-        if(!blacklistedModules.Contains(name))
+        if(!excludedModules.Contains(name))
         {
             CleanDirectories(
                 new DirectoryPath[] 
@@ -122,7 +122,7 @@ Task("Build")
     foreach(var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
-        if(!blacklistedModules.Contains(name))
+        if(!excludedModules.Contains(name))
         {
             Information($"Building {name}");
             
@@ -165,17 +165,9 @@ Task("UnitTests")
     foreach(var test in GetSubDirectories(unitTests))
     {
         var name = test.GetDirectoryName();
-        if(blacklistedUnitTests.Contains(name))
+        if(excludedUnitTests.Contains(name))
         {
             skipped.Add(name);
-        }
-        else if(!name.StartsWith("TmxTest"))
-        {
-            Information($"Testing {name}");
-            DotNetCoreTest(
-                test.FullPath,
-                settings
-            );
         }
     }
     if (skipped.Count > 0)
@@ -248,7 +240,7 @@ Task("AssertPackages")
     foreach (var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
-        if(!blacklistedModules.Contains(name))
+        if(!excludedModules.Contains(name))
         {
             var project = ParseProject(new FilePath($"{module}/{name}.csproj"), configuration);
             var packageVersion = new Dictionary<string, string>();
@@ -315,7 +307,7 @@ Task("NuGet")
     foreach (var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
-        if(!blacklistedModules.Contains(name))
+        if(!excludedModules.Contains(name))
         {
             DotNetCorePack(
                 module.ToString(),
