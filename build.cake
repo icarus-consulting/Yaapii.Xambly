@@ -29,7 +29,7 @@ var excludedModules         = new List<string>() { };
 var unitTests               = Directory("./tests");
 // To skip executing a test in the tests folder add the test project folder name
 // as string to the list e.g. "Yaapii.IrrelevantTests".
-var exludedUnitTests        = new List<string>() { };
+var excludedUnitTests        = new List<string>() { };
 
 ///////////////////////////////////////////////////////////////////////////////
 // CONFIGURATION VARIABLES
