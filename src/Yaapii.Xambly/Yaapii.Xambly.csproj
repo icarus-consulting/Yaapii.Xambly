@@ -1,59 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Authors>ICARUS Consulting GmbH</Authors>
-    <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <NeutralLanguage>en</NeutralLanguage>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright (c) 2021 ICARUS Consulting GmbH</Copyright>
-    <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
-    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xambly.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
-  </PropertyGroup>
- 
-  <ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
-    <Content Include="Assets\_._">
-      <PackagePath>lib\netstandard2.0\</PackagePath>
-    </Content>
-     <Content Include="Assets\_._">
-      <PackagePath>lib\net461\</PackagePath>
-    </Content>
-    <Content Include="**\*.cs" Exclude="obj\**\*.*">
-      <BuildAction>Compile</BuildAction>
-      <PackagePath>content\LIBS\$(AssemblyName)\;contentFiles\cs\netstandard2.0\LIBS\$(AssemblyName)\</PackagePath>
-    </Content>
-  </ItemGroup>
- 
-  <ItemGroup>
-    <Content Include="..\..\LICENSE">
-      <PackagePath></PackagePath>
-      <Visible>false</Visible>
-    </Content>
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Remove="Assets\**" />
-    <EmbeddedResource Remove="Assets\**" />
-    <None Remove="Assets\**" />
-  </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="Yaapii.Atoms" Version="2.2.1" Condition="'$(Configuration)' != 'ReleaseSources'" />
-    <PackageReference Include="Yaapii.Atoms.Sources" Version="2.2.1" Condition="'$(Configuration)' == 'ReleaseSources'">
-      <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>  
-    </PackageReference>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+        <DocumentationFile>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)\Yaapii.Xambly.xml</DocumentationFile>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <Authors>ICARUS Consulting GmbH</Authors>
+        <Description>Port of Xembly Library from Yegor Bugayenko.</Description>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <NeutralLanguage>en</NeutralLanguage>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright (c) 2021 ICARUS Consulting GmbH</Copyright>
+        <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
+        <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xambly.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Xambly/releases</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'ReleaseSources'">
+        <Content Include="Assets\_._">
+            <PackagePath>lib\netstandard2.0\</PackagePath>
+        </Content>
+        <Content Include="Assets\_._">
+            <PackagePath>lib\net461\</PackagePath>
+        </Content>
+        <Content Include="**\*.cs" Exclude="obj\**\*.*">
+            <BuildAction>Compile</BuildAction>
+            <PackagePath>content\LIBS\$(AssemblyName)\;contentFiles\cs\netstandard2.0\LIBS\$(AssemblyName)\</PackagePath>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\LICENSE">
+            <PackagePath></PackagePath>
+            <Visible>false</Visible>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+        <Reference Include="System.Xml.Linq" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Assets\**" />
+        <EmbeddedResource Remove="Assets\**" />
+        <None Remove="Assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
+        <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.3" />
+        <PackageReference Include="Yaapii.Atoms" Version="2.3.2" Condition="'$(Configuration)' != 'ReleaseSources'" />
+        <PackageReference Include="Yaapii.Atoms.Sources" Version="2.3.2" Condition="'$(Configuration)' == 'ReleaseSources'">
+            <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
 </Project>
