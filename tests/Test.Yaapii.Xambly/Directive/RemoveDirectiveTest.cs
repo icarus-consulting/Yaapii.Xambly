@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
                     new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
+                        new ManyOf<IDirective>(
                             new AddDirective("root"),
                             new RemoveDirective()
                         )
@@ -71,7 +71,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
                 {
                     new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
+                        new ManyOf<IDirective>(
                             new RemoveDirective()
                         )
                     ).Apply(
@@ -84,15 +84,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void RemoveDomNodesDirectly()
         {
-            //var dom = new XmlDocument();
-            //var root = dom.CreateElement("root");
-            //var first = dom.CreateElement("a");
-            //root.AppendChild(first);
-            //var second = dom.CreateElement("b");
-            //root.AppendChild(second);
-
-            //dom.AppendChild(root);
-
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
@@ -101,21 +93,23 @@ namespace Yaapii.Xambly.Directive.Tests
             root.Add(second);
             dom.Add(root);
 
-
             new RemoveDirective().Exec(
                 dom,
                 new DomCursor(new ManyOf<XNode>(first)),
-                new DomStack()
+                new DomStack(),
+                resolver
             );
 
-            Assert.True(
-                dom.ToString(SaveOptions.DisableFormatting) == "<root><b /></root>", "Remove directive failed"
+            Assert.Equal(
+                "<root><b /></root>",
+                dom.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void CursorPointsToParents()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
@@ -134,7 +128,8 @@ namespace Yaapii.Xambly.Directive.Tests
                 new RemoveDirective().Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(frstChild, scndChild)),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 );
             Assert.Equal(
                 new ManyOf<XNode>(first, second),

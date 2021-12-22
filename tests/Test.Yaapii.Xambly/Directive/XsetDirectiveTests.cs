@@ -38,22 +38,27 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             try
             {
-                XDocument doc = new XDocument();
-                XElement root = new XElement("xxx");
-                XElement first = new XElement("first");
+                var resolver = new XmlNamespaceManager(new NameTable());
+                var doc = new XDocument();
+                var root = new XElement("xxx");
+                var first = new XElement("first");
 
                 first.Value = "15";
                 root.Add(first);
-                XElement second = new XElement("second");
+                var second = new XElement("second");
                 second.Value = "13";
                 root.Add(second);
 
                 doc.Add(root);
                 //doc.Save("XsetDirectiveTests.xml");
 
-                new XsetDirective("sum(/xxx/*/text()) + 6").Exec(
-                doc, new DomCursor(new List<XNode>() { first }),
-                new DomStack());
+                new XsetDirective("sum(/xxx/*/text()) + 6")
+                .Exec(
+                    doc,
+                    new DomCursor(new List<XNode>() { first }),
+                    new DomStack(),
+                    resolver
+                );
                 doc.Save("XsetDirectiveTests.xml");
 
                 XPathNavigator nav = doc.CreateNavigator();

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -31,7 +32,8 @@ namespace Yaapii.Xambly.Directive.Tests
     public class AddIfAttributeDirectiveTest
     {
         [Fact]
-        public void DoesNotAddIfExists() {
+        public void DoesNotAddIfExists()
+        {
 
             Assert.Equal(
                 "<root><foo rooft=\"oota\" /><bar /></root>",
@@ -54,7 +56,9 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddsDomNodesDirectly() {
+        public void AddsDomNodesDirectly()
+        {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root =
                 new XElement("root",
@@ -68,7 +72,8 @@ namespace Yaapii.Xambly.Directive.Tests
             new AddIfAttributeDirective("b", "c", "d").Exec(
                 dom,
                 new DomCursor(new ManyOf<XNode>(root)),
-                new DomStack()
+                new DomStack(),
+                resolver
             );
 
             Assert.Equal(

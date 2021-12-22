@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
 using System.Xml;
 using System.Xml.Linq;
 using Xunit;
@@ -94,6 +93,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsAttributeDirectly()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -104,20 +104,23 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new AttrDirective("x", "y").Exec(
                     dom,
-                    new DomCursor(new Yaapii.Atoms.Enumerable.ManyOf<XNode>(second)),
-                    new DomStack()
+                    new DomCursor(new ManyOf<XNode>(second)),
+                    new DomStack(),
+                    resolver
                 );
 
-            Assert.True(
-                dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a /><b x=\"y\" /></xxx>",
-                "Directly add attribute failed"
-                );
+            Assert.Equal(
+                "<xxx><a /><b x=\"y\" /></xxx>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
 
         }
 
         [Fact]
         public void ThrowsForInvalidCharacter()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
+
             Assert.Throws<XmlException>(() =>
                 new AttrDirective("valid", "\0invalid")
                     .Exec(
@@ -126,7 +129,9 @@ namespace Yaapii.Xambly.Directive.Tests
                         new ManyOf<XNode>(
                             new XElement("rot")
                         )
-                    ), new DomStack()
+                    ),
+                    new DomStack(),
+                    resolver
                 )
             );
         }

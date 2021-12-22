@@ -31,44 +31,41 @@ namespace Yaapii.Xambly.Directive.Tests
 {
     public class PiDirectiveTest
     {
-        /// <summary>
-        /// Adds the processing instructions to DOM.
-        /// </summary>
         [Fact]
-        public void AddsProcessingInstructionsToDom() 
+        public void AddsProcessingInstructionsToDom()
         {
             Assert.Equal(
                 "<root><?ab boom €?><test><?foo some data €?></test></root>",
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("root"),
-                                new PiDirective("ab", "boom \u20ac"),
-                                new AddDirective("test"),
-                                new PiDirective("foo", "some data \u20ac")
-                            )
-                    ).Dom().ToString(SaveOptions.DisableFormatting)
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                        new AddDirective("root"),
+                        new PiDirective("ab", "boom \u20ac"),
+                        new AddDirective("test"),
+                        new PiDirective("foo", "some data \u20ac")
+                    )
+                ).Dom().ToString(SaveOptions.DisableFormatting)
             );
         }
 
-        /// <summary>
-        /// Adds the processing instructions directly to DOM.
-        /// </summary>
         [Fact]
         public void AddsProcessingInstructionsDirectlyToDom()
         {
-            var dom = new Xambler(
-                            new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("xxx")
-                            )
-                        ).Dom();
+            var resolver = new XmlNamespaceManager(new NameTable());
+            var dom =
+                new Xambler(
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                        new AddDirective("xxx")
+                    )
+                ).Dom();
 
             new PiDirective("x", "y").Exec(
-                                        dom,
-                                        new DomCursor(
-                                            new List<XNode>()
-                                        ),
-                                        new DomStack()
-                                    );
+                dom,
+                new DomCursor(
+                    new List<XNode>()
+                ),
+                new DomStack(),
+                resolver
+            );
 
             Assert.Equal(
                 "<?x y?><xxx />",
@@ -76,15 +73,12 @@ namespace Yaapii.Xambly.Directive.Tests
             );
         }
 
-        /// <summary>
-        /// Prepends the processing instructions to DOM root.
-        /// </summary>
         [Fact]
         public void PrependsProcessingInstructionsToDomRoot()
         {
             var dom = new Xambler(
                             new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new PiDirective("alpha","beta \u20ac"),
+                                new PiDirective("alpha", "beta \u20ac"),
                                 new AddDirective("x4")
                             )
                         ).Dom();

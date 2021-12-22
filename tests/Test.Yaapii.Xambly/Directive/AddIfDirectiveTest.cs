@@ -24,7 +24,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
 
@@ -33,8 +32,8 @@ namespace Yaapii.Xambly.Directive.Tests
     public class AddIfDirectiveTest
     {
         [Fact]
-        public void AddNodesToCurrentNode() {
-
+        public void AddNodesToCurrentNode()
+        {
             Assert.Equal(
                 "<root><foo /><bar /></root>",
                 new Xambler(
@@ -53,7 +52,9 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddDomNodesDirectly() {
+        public void AddDomNodesDirectly()
+        {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root =
                 new XElement("root",
@@ -67,7 +68,8 @@ namespace Yaapii.Xambly.Directive.Tests
             new AddIfDirective("b").Exec(
                 dom,
                 new DomCursor(new ManyOf<XNode>(root)),
-                new DomStack()
+                new DomStack(),
+                resolver
             );
 
             Assert.Equal(

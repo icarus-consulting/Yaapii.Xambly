@@ -35,6 +35,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact(Skip = "true")]
         public void SetsNsAttr()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var root =
                 new XElement("f",
                     new XElement("g")
@@ -48,10 +49,14 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomCursor(
                     new ManyOf<XNode>(root)
                 ),
-                new DomStack()
+                new DomStack(),
+                resolver
             );
 
-            Assert.Equal("<f xmlns=\"somens\"><g /></f>", dom.ToString(SaveOptions.DisableFormatting));
+            Assert.Equal(
+                "<f xmlns=\"somens\"><g /></f>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
         }
 
         [Fact(Skip = "true")]
@@ -81,7 +86,10 @@ namespace Yaapii.Xambly.Directive.Tests
             //        new DomStack()
             //);
 
-            Assert.Equal("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head /><body /></html>", dom.ToString(SaveOptions.DisableFormatting));
+            Assert.Equal(
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head /><body /></html>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
         }
     }
 }

@@ -34,9 +34,6 @@ namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class XpathDirectiveTests
     {
-        /// <summary>
-        /// XpathDirective can find nodes.
-        /// </summary>
         [Theory]
         [InlineData("/root/foo[@bar=1]/test")]
         [InlineData("/root/bar")]
@@ -45,11 +42,11 @@ namespace Yaapii.Xambly.Directive.Tests
             var dom = new XDocument();
             new Xambler(
                new ManyOf<IDirective>(
-                        new AddDirective("root"),
-                        new AddDirective("foo"),
-                        new AttrDirective("bar", "1"),
-                        new UpDirective(),
-                        new AddDirective("bar")
+                    new AddDirective("root"),
+                    new AddDirective("foo"),
+                    new AttrDirective("bar", "1"),
+                    new UpDirective(),
+                    new AddDirective("bar")
                 )
             ).Apply(dom);
 
@@ -58,17 +55,14 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("test")
             ).Apply(dom);
 
-            Assert.True(
-                null != FromXPath(
+            Assert.NotNull(
+                NavigatorFromXPath(
                     dom.ToString(SaveOptions.DisableFormatting),
                     testXPath
                 )
             );
         }
 
-        /// <summary>
-        /// XpathDirective can ignore empty searches.
-        /// </summary>
         [Fact]
         public void IgnoresEmptySearches()
         {
@@ -76,22 +70,25 @@ namespace Yaapii.Xambly.Directive.Tests
                 new XDocument(
                     new XElement("top")
                 );
-
             new Xambler(
-                    new XpathDirective("/nothing"),
-                    new XpathDirective("/top"),
-                    new StrictDirective(1),
-                    new AddDirective("hey")
+                new XpathDirective("/nothing"),
+                new XpathDirective("/top"),
+                new StrictDirective(1),
+                new AddDirective("hey")
             ).Apply(dom);
-            Assert.NotNull(FromXPath(dom.ToString(SaveOptions.DisableFormatting), "/top/hey"));
+
+            Assert.NotNull(
+                NavigatorFromXPath(
+                    dom.ToString(SaveOptions.DisableFormatting),
+                    "/top/hey"
+                )
+            );
         }
 
-        /// <summary>
-        /// XpathDirective can find nodes by XPath.
-        /// </summary>
         [Fact]
         public void FindsNodesByXpathDirectly()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -102,34 +99,33 @@ namespace Yaapii.Xambly.Directive.Tests
 
             Assert.Contains(
                 root,
-                new XpathDirective(
-                    "/*")
+                new XpathDirective("/*")
                 .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.ManyOf<XNode>(first)
+                        new ManyOf<XNode>(first)
                     ),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
 
-        /// <summary>
-        /// XpathDirective can find nodes in empty DOM.
-        /// </summary>
         [Fact]
         public void FindsNodesInEmptyDom()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             Assert.Empty(
-                new XpathDirective(
-                    "/some-root").Exec(
+                new XpathDirective("/some-root")
+                .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.ManyOf<XNode>()
+                        new ManyOf<XNode>()
                     ),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
@@ -137,6 +133,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithDoubleQuotes()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             new Xambler(
@@ -144,16 +141,17 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("Tag"),
                 new SetDirective("Tran\"sient")
             ).Apply(dom);
-            
+
 
             Assert.NotEmpty(
-                new XpathDirective(
-                    "//Tag[contains(.,'Tran\"sient')]").Exec(
+                new XpathDirective("//Tag[contains(.,'Tran\"sient')]")
+                .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.ManyOf<XNode>(dom)
+                        new ManyOf<XNode>(dom)
                     ),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
@@ -161,6 +159,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithSingleQuotes()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             new Xambler(
@@ -171,13 +170,14 @@ namespace Yaapii.Xambly.Directive.Tests
 
 
             Assert.NotEmpty(
-                new XpathDirective(
-                    "//Tag[contains(.,\"Tran'sient\")]").Exec(
+                new XpathDirective("//Tag[contains(.,\"Tran'sient\")]")
+                .Exec(
                     dom,
                     new DomCursor(
-                        new Atoms.Enumerable.ManyOf<XNode>(dom)
+                        new ManyOf<XNode>(dom)
                     ),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
@@ -188,7 +188,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsRootInClonedNode()
         {
-            var dom = 
+            var dom =
                 new XDocument(
                     new XElement("high")
                 );
@@ -201,13 +201,17 @@ namespace Yaapii.Xambly.Directive.Tests
             ).Apply(clone);
 
             Assert.NotNull(
-                FromXPath(clone.ToString(SaveOptions.DisableFormatting), "/high/boom-5")
+                NavigatorFromXPath(
+                    clone.ToString(SaveOptions.DisableFormatting),
+                    "/high/boom-5"
+                )
             );
         }
 
         [Fact]
         public void NavigatesFromRoot()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("child");
@@ -216,12 +220,12 @@ namespace Yaapii.Xambly.Directive.Tests
 
             Assert.Contains(
                 first,
-                new XpathDirective(
-                    "/root/child"
-                ).Exec(
+                new XpathDirective("/root/child")
+                .Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(first)),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
@@ -229,6 +233,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void NavigatesFromRootWithStrangerCursor()
         {
+            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("child");
@@ -240,23 +245,17 @@ namespace Yaapii.Xambly.Directive.Tests
 
             Assert.Contains(
                 first,
-                new XpathDirective(
-                    "/root/child"
-                ).Exec(
+                new XpathDirective("/root/child")
+                .Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(strangerCursor)),
-                    new DomStack()
+                    new DomStack(),
+                    resolver
                 )
             );
         }
 
-        /// <summary>
-        /// A navigator from an Xml and XPath
-        /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="xpath"></param>
-        /// <returns></returns>
-        private XPathNavigator FromXPath(string xml, string xpath)
+        private XPathNavigator NavigatorFromXPath(string xml, string xpath)
         {
             var nav =
                 new XPathDocument(
@@ -277,12 +276,10 @@ namespace Yaapii.Xambly.Directive.Tests
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
         {
             XmlNamespaceManager result = new XmlNamespaceManager(xDoc.NameTable);
-
-            IDictionary<string, string> localNamespaces = null;
             XPathNavigator xNav = xDoc.CreateNavigator();
             while (xNav.MoveToFollowing(XPathNodeType.Element))
             {
-                localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
+                var localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
                 foreach (var localNamespace in localNamespaces)
                 {
                     string prefix = localNamespace.Key;
