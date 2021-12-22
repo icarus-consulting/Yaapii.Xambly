@@ -224,10 +224,11 @@ namespace Yaapii.Xambly
             }
             catch (Exception ex)
             {
-                throw new IllegalStateException(
-                    new Formatted("quietly failed to apply DOM: {0}", this.directives).AsString(),
-                    ex
-                );
+                throw
+                    new IllegalStateException(
+                        new Formatted("quietly failed to apply DOM: {0}", this.directives).AsString(),
+                        ex
+                    );
             }
         }
 
@@ -261,7 +262,8 @@ namespace Yaapii.Xambly
                 {
                     throw
                         new ImpossibleModificationException(
-                            new Formatted("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString()
+                            new Formatted("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString(),
+                            ex
                         );
                 }
                 ++pos;
@@ -311,9 +313,11 @@ namespace Yaapii.Xambly
             }
             catch (Exception ex)
             {
-                throw new IllegalStateException(
-                    new Formatted("quietly failed to build XML: {0}", this.directives).AsString(),
-                    ex);
+                throw
+                    new IllegalStateException(
+                        new Formatted("quietly failed to build XML: {0}", this.directives).AsString(),
+                        ex
+                    );
             }
         }
 
