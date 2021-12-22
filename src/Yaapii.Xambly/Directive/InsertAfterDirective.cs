@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
@@ -45,7 +46,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="node">Name of node to add</param>
         public InsertAfterDirective(string node)
         {
-            this.name = new Arg.AttributeArg(node);
+            this.name = new AttributeArg(node);
         }
 
         /// <summary>
@@ -63,31 +64,27 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var targets = new List<XElement>();
             string label = this.name.Raw();
-            
-            foreach(var node in cursor)
+
+            foreach (var node in cursor)
             {
                 var container = node as XContainer;
                 new FailPrecise(
                      new FailNull(container),
                      new ArgumentException($"Can't insert element after node which is not of type 'XContainer'")
                 ).Go();
-
                 new FailPrecise(
                     new FailWhen(node.Document.FirstNode == node),
                     new ArgumentException($"Can't insert element after root node")
                 ).Go();
-
-                var ns = Namespace(node);
-
+                var ns = this.Namespace(node);
                 XElement element;
-
                 element = ns != null ? new XElement(ns + label) : new XElement(label);
-
                 container.AddAfterSelf(element);
                 targets.Add(element);
             }
@@ -103,7 +100,7 @@ namespace Yaapii.Xambly.Directive
         private XNamespace Namespace(XNode node)
         {
             XNamespace ns = null;
-            if(node is XElement)
+            if (node is XElement)
             {
                 var elmnt = node as XElement;
                 ns = elmnt.Name.Namespace;

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
@@ -54,7 +55,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted("ADDIF {0}", name.Raw()).AsString();
+            return new Formatted("ADDIF {0}", this.name.Raw()).AsString();
         }
 
         /// <summary>
@@ -63,11 +64,12 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var targets = new List<XNode>();
-            var label = name.Raw().ToLower();
+            var label = this.name.Raw().ToLower();
             foreach (var node in cursor)
             {
                 var ctn = node as XContainer;
@@ -89,7 +91,8 @@ namespace Yaapii.Xambly.Directive
                     }
                 }
 
-                if(target == null){
+                if (target == null)
+                {
                     XDocument doc = new XmlDocumentOf(dom).Value();
 
                     target = new XElement(this.name.Raw());

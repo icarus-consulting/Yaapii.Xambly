@@ -147,7 +147,7 @@ namespace Yaapii.Xambly
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// Append all directives.

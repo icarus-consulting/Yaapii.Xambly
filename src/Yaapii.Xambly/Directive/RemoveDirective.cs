@@ -33,7 +33,7 @@ namespace Yaapii.Xambly.Directive
     /// REMOVE directive.
     /// Removes all current nodes.
     /// </summary>
-    public sealed  class RemoveDirective : IDirective
+    public sealed class RemoveDirective : IDirective
     {
         /// <summary>
         /// REMOVE directive.
@@ -45,7 +45,6 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// String representation.
         /// </summary>
-        /// <returns>The string</returns>
         public override string ToString()
         {
             return "REMOVE";
@@ -57,10 +56,12 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var parents = new HashSet<XNode>();
+
             foreach (var node in cursor)
             {
                 XNode parent = node.Parent;
@@ -70,14 +71,12 @@ namespace Yaapii.Xambly.Directive
                     ),
                     new IllegalArgumentException("you can't delete root document element from XML")
                 ).Go();
-
                 new FailPrecise(
                     new FailWhen(
                         parent.NodeType == XmlNodeType.Document
                     ),
                     new IllegalArgumentException("you can't delete root document element from XML")
                 ).Go();
-
                 node.Remove();
                 parents.Add(parent);
             }

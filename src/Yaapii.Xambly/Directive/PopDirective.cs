@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Directive
@@ -40,7 +41,6 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// String representation.
         /// </summary>
-        /// <returns>The string</returns>
         public override string ToString()
         {
             return "POP";
@@ -52,8 +52,9 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             return stack.Pop();
         }

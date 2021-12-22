@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
@@ -54,11 +55,12 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted(
-                "PI {0} {1}",
-                this.target.Raw(),
-                this.data.Raw()
-            ).AsString();
+            return
+                new Formatted(
+                    "PI {0} {1}",
+                    this.target.Raw(),
+                    this.data.Raw()
+                ).AsString();
         }
 
         /// <summary>
@@ -67,15 +69,19 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var doc = new XmlDocumentOf(dom).Value();
             var pi = new XProcessingInstruction(this.target.Raw(), this.data.Raw());
-            // if cursor list is empty
-            if(new LengthOf(cursor).Value() == 0){
+
+            if (new LengthOf(cursor).Value() == 0)
+            {
                 doc.Root.AddBeforeSelf(pi);
-            } else {
+            }
+            else
+            {
                 foreach (var node in cursor)
                 {
                     (node as XContainer).Add(pi);

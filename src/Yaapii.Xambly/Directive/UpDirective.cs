@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
@@ -45,7 +46,6 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// String representation.
         /// </summary>
-        /// <returns>The string</returns>
         public override string ToString()
         {
             return "UP";
@@ -57,8 +57,9 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var parents = new HashSet<XNode>();
             foreach (var node in cursor)
@@ -67,8 +68,13 @@ namespace Yaapii.Xambly.Directive
                 new FailPrecise(
                     new FailNull(parent),
                     new ImpossibleModificationException(
-                            new Formatted("there is no parent node of '{0}' ({1}), can't go UP",node.ToString(SaveOptions.DisableFormatting),node.NodeType).AsString()
-                        )).Go();
+                        new Formatted(
+                            "There is no parent node of '{0}' ({1}), can't go UP",
+                            node.ToString(SaveOptions.DisableFormatting),
+                            node.NodeType
+                        ).AsString()
+                    )
+                ).Go();
 
                 parents.Add(parent);
             }

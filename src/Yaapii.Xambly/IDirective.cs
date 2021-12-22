@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Yaapii.Xambly
@@ -38,7 +39,8 @@ namespace Yaapii.Xambly
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        ICursor Exec(XNode dom, ICursor cursor, IStack stack);
+        ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context);
     }
 }

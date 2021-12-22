@@ -22,10 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 
 namespace Yaapii.Xambly.Directive
@@ -63,13 +63,14 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var targets = new List<XElement>();
             string label = this._name.Raw();
-            
-            foreach(var node in cursor)
+
+            foreach (var node in cursor)
             {
                 var parent = node as XContainer;
                 new FailPrecise(
@@ -77,7 +78,7 @@ namespace Yaapii.Xambly.Directive
                      new ArgumentException($"Can't add child to node which is not of type 'XContainer'")
                 ).Go();
 
-                var ns = Namespace(node);
+                var ns = this.Namespace(node);
 
                 XElement element;
 
@@ -98,7 +99,7 @@ namespace Yaapii.Xambly.Directive
         private XNamespace Namespace(XNode node)
         {
             XNamespace ns = null;
-            if(node is XElement)
+            if (node is XElement)
             {
                 var elmnt = node as XElement;
                 ns = elmnt.Name.Namespace;

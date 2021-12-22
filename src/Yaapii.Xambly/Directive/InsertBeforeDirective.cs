@@ -22,10 +22,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 
 namespace Yaapii.Xambly.Directive
@@ -63,8 +63,9 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var targets = new List<XElement>();
             string label = this.name.Raw();
@@ -76,18 +77,13 @@ namespace Yaapii.Xambly.Directive
                      new FailNull(container),
                      new ArgumentException($"Can't insert element before node which is not of type 'XContainer'")
                 ).Go();
-
                 new FailPrecise(
                     new FailWhen(node.Document.FirstNode == node),
                     new ArgumentException($"Can't insert element before root node")
                 ).Go();
-
-                var ns = Namespace(node);
-
+                var ns = this.Namespace(node);
                 XElement element;
-
                 element = ns != null ? new XElement(ns + label) : new XElement(label);
-
                 container.AddBeforeSelf(element);
                 targets.Add(element);
             }
@@ -98,8 +94,6 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// Checks for namespace in node
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
         private XNamespace Namespace(XNode node)
         {
             XNamespace ns = null;

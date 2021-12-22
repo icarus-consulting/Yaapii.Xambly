@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
@@ -69,14 +70,15 @@ namespace Yaapii.Xambly
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             var targets = new List<XNode>();
             var label = this.name.Raw().ToLower();
             foreach (var node in cursor)
             {
-                var kids = Children(node);
+                var kids = this.Children(node);
                 XNode target = null;
                 var len = kids.Count;
                 for (int i = 0; i < len; i++)

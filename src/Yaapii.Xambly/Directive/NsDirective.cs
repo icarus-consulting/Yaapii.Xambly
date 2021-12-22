@@ -21,10 +21,10 @@
 // SOFTWARE.
 
 using System;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
@@ -38,21 +38,29 @@ namespace Yaapii.Xambly.Directive
         private readonly IArg nsp;
         private readonly IArg prefix;
 
-        public NsDirective(string prefix, string nsp) : this(new Arg.AttributeArg(prefix),new Arg.AttributeArg(nsp))
+        public NsDirective(string prefix, string nsp) : this(
+            new Arg.AttributeArg(prefix),
+            new Arg.AttributeArg(nsp)
+        )
         { }
 
-        public NsDirective(string nsp): this(new Arg.AttributeArg(""), new Arg.AttributeArg(nsp))
+        public NsDirective(string nsp) : this(
+            new Arg.AttributeArg(""),
+            new Arg.AttributeArg(nsp)
+        )
         { }
 
-        public NsDirective(IArg nsp) : this(new Arg.AttributeArg(""),nsp)
+        public NsDirective(IArg nsp) : this(
+            new Arg.AttributeArg(""),
+            nsp
+        )
         { }
 
         /// <summary>
         /// Namespace directive.
         /// Sets namespace of all current nodes
         /// </summary>
-        /// <param name="nsp"></param>
-        public NsDirective(IArg prefix,IArg nsp)
+        public NsDirective(IArg prefix, IArg nsp)
         {
             this.prefix = prefix;
             this.nsp = nsp;
@@ -64,10 +72,11 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted(
-                            "NS {0}",
-                            this.nsp
-                        ).AsString();
+            return
+                new Formatted(
+                    "NS {0}",
+                    this.nsp
+                ).AsString();
         }
 
         /// <summary>
@@ -76,46 +85,47 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
+        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
         {
             throw new ImpossibleModificationException("Modifying namespaces is not supported at the moment.");
             try
             {
                 XElement element = null;
-                if(dom is XDocument)
+                if (dom is XDocument)
                 {
                     element = (dom as XDocument).Root;
-                } else
+                }
+                else
                 {
                     element = dom as XElement;
                 }
-
                 new FailPrecise(
                     new FailNull(element),
                     new ArgumentException($"Node is not of type 'XElement'")
                 ).Go();
-
                 XNamespace xnsp = this.nsp.Raw();
-
-                ApplyNamespace(element, xnsp);
+                this.ApplyNamespace(element, xnsp);
 
                 return cursor;
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException("can't set xmlns",ex);
+                throw new IllegalArgumentException("Can't set xmlns", ex);
             }
         }
 
         private void ApplyNamespace(XElement xelem, XNamespace xmlns)
         {
             if (xelem.Name.NamespaceName == string.Empty)
-                xelem.Name = xmlns + xelem.Name.LocalName;
+            {
+                xelem.Name = $"{xmlns}{xelem.Name.LocalName}";
+            }
             foreach (var e in xelem.Elements())
-                ApplyNamespace(e, xmlns);
-
+            {
+                this.ApplyNamespace(e, xmlns);
+            }
         }
-
     }
 }
