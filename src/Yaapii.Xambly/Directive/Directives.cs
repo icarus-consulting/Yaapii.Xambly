@@ -609,5 +609,33 @@ namespace Yaapii.Xambly
             }
             return this;
         }
+
+        /// <summary>
+        /// Namespace directive.
+        /// 
+        /// Sets namespace of all current nodes selected by the cursor.
+        /// All child nodes are moved to the namespace.
+        /// All attributes are moved to the namespace.
+        /// The namespace declaration will be done in the root node.
+        /// 
+        /// If the prefix is empty a default namespace will be created.
+        /// which is declared only in the current nodes.
+        /// Attributes cannot be added to a default namespace.
+        /// 
+        /// Hint:
+        /// After declaring a namespace the XPath will be affected.
+        /// The namespace resolver is not updated by adding namespaces.
+        /// To address nodes belonging to a namespace the namesapce resolver
+        /// injected to the Xambler object must be set up accordingly.
+        /// </summary>
+        public Directives Ns(string namespaceUri, string prefix = "")
+        {
+            this.all.Add(
+                new NsDirective(prefix, namespaceUri)
+            );
+
+            return this;
+        }
+
     }
 }
