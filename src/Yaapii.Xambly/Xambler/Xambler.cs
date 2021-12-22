@@ -66,33 +66,156 @@ namespace Yaapii.Xambly
     /// </summary>
     public sealed class Xambler : IXambler
     {
-        /// <summary>
-        /// The directives to apply.
-        /// </summary>
-        private readonly IEnumerable<IDirective> _directives;
+        private readonly IEnumerable<IDirective> directives;
+        private readonly IXmlNamespaceResolver context;
 
         /// <summary>
         /// Processor of Xambly directives, main entry point to the module.
+        /// 
+        /// <para>For example, to modify a DOM document:
+        /// 
+        /// <example>
+        /// XMLDocument dom = ....
+        /// new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).apply(dom);
+        /// </example>
+        /// </para>
+        /// 
+        /// <para>You can also convert your Xambly directives directly to XML document:
+        /// 
+        /// <example>
+        /// String xml = new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).xml("root");
+        /// </example>
+        /// </para>
         /// </summary>
-        /// <param name="directives">Directives</param>
         public Xambler(params IDirective[] directives) : this(
-            new ManyOf<IDirective>(directives))
+            new XmlNamespaceManager(new NameTable()),
+            new ManyOf<IDirective>(directives)
+        )
         { }
 
         /// <summary>
         /// Processor of Xambly directives, main entry point to the module.
+        /// 
+        /// <para>For example, to modify a DOM document:
+        /// 
+        /// <example>
+        /// XMLDocument dom = ....
+        /// new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).apply(dom);
+        /// </example>
+        /// </para>
+        /// 
+        /// <para>You can also convert your Xambly directives directly to XML document:
+        /// 
+        /// <example>
+        /// String xml = new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).xml("root");
+        /// </example>
+        /// </para>
         /// </summary>
-        /// <param name="directives">Directives</param>
-        public Xambler(IEnumerable<IDirective> directives)
+        public Xambler(IEnumerable<IDirective> directives) : this(
+            new XmlNamespaceManager(new NameTable()),
+            directives
+        )
+        { }
+
+        /// <summary>
+        /// Processor of Xambly directives, main entry point to the module.
+        /// 
+        /// <para>For example, to modify a DOM document:
+        /// 
+        /// <example>
+        /// XMLDocument dom = ....
+        /// new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).apply(dom);
+        /// </example>
+        /// </para>
+        /// 
+        /// <para>You can also convert your Xambly directives directly to XML document:
+        /// 
+        /// <example>
+        /// String xml = new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).xml("root");
+        /// </example>
+        /// </para>
+        /// </summary>
+        public Xambler(IXmlNamespaceResolver context, params IDirective[] directives) : this(
+            context,
+            new ManyOf<IDirective>(directives)
+        )
+        { }
+
+        /// <summary>
+        /// Processor of Xambly directives, main entry point to the module.
+        /// 
+        /// <para>For example, to modify a DOM document:
+        /// 
+        /// <example>
+        /// XMLDocument dom = ....
+        /// new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).apply(dom);
+        /// </example>
+        /// </para>
+        /// 
+        /// <para>You can also convert your Xambly directives directly to XML document:
+        /// 
+        /// <example>
+        /// String xml = new Xembler(
+        /// new Directives()
+        ///     .xpath("/root")
+        ///     .addIfAbsent("employees")
+        ///     .add("employee")
+        ///     .attr("id", 6564)
+        /// ).xml("root");
+        /// </example>
+        /// </para>
+        /// </summary>
+        public Xambler(IXmlNamespaceResolver context, IEnumerable<IDirective> directives)
         {
-            this._directives = directives;
+            this.directives = directives;
+            this.context = context;
         }
 
         /// <summary>
         /// Apply all changes to the document/node, redirect all exceptions to a IllegalStateException.
         /// </summary>
-        /// <returns>The quietly.</returns>
-        /// <param name="dom">DOM.</param>
         public XNode ApplyQuietly(XNode dom)
         {
             try
@@ -102,8 +225,9 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new Formatted("quietly failed to apply DOM: {0}", this._directives).AsString(),
-                    ex);
+                    new Formatted("quietly failed to apply DOM: {0}", this.directives).AsString(),
+                    ex
+                );
             }
         }
 
@@ -111,23 +235,22 @@ namespace Yaapii.Xambly
         /// Apply all changes to the document/node.
         /// </summary>
         /// <returns>Same document/node.</returns>
-        /// <param name="dom">DOM document/node</param>
         public XNode Apply(XNode dom)
         {
-            ICursor cursor = 
+            ICursor cursor =
                 new DomCursor(
-                    new Yaapii.Atoms.Enumerable.ManyOf<XNode>(dom)
+                    new ManyOf<XNode>(dom)
                 );
 
             int pos = 1;
 
             IStack stack = new DomStack();
 
-            foreach (var dir in this._directives)
+            foreach (var dir in this.directives)
             {
                 try
                 {
-                    cursor = dir.Exec(dom, cursor, stack);
+                    cursor = dir.Exec(dom, cursor, stack, this.context);
                 }
                 //catch (ImpossibleModificationException ex)
                 //{
@@ -136,8 +259,10 @@ namespace Yaapii.Xambly
                 //}
                 catch (Exception ex) //TODO: Original catches DOMException. We don't have that. But do we have something similar?
                 {
-                    throw new ImpossibleModificationException(
-                        new Formatted("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString());
+                    throw
+                        new ImpossibleModificationException(
+                            new Formatted("Exception at dir {0}: {1} ({2})", pos, dir, ex.Message).AsString()
+                        );
                 }
                 ++pos;
             }
@@ -157,7 +282,7 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new Formatted("failed to create DOM: {0}", this._directives).AsString(),
+                    new Formatted("failed to create DOM: {0}", this.directives).AsString(),
                     ex);
             }
         }
@@ -187,7 +312,7 @@ namespace Yaapii.Xambly
             catch (Exception ex)
             {
                 throw new IllegalStateException(
-                    new Formatted("quietly failed to build XML: {0}", this._directives).AsString(),
+                    new Formatted("quietly failed to build XML: {0}", this.directives).AsString(),
                     ex);
             }
         }
@@ -205,7 +330,7 @@ namespace Yaapii.Xambly
             using (var stringWriter = new StringWriter())
             using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
             {
-                Dom().WriteTo(xmlTextWriter);
+                this.Dom().WriteTo(xmlTextWriter);
                 xmlTextWriter.Flush();
                 return stringWriter.GetStringBuilder().ToString();
             }
