@@ -302,17 +302,5 @@ namespace Yaapii.Xambly.Directive
                 this.ns.Value().NamespaceName
             ).Exec(dom, cursor, stack, context);
         }
-
-        private void ApplyNamespace(XElement xelem, XNamespace xmlns)
-        {
-            if (xelem.Name.NamespaceName == string.Empty)
-            {
-                xelem.Name = xmlns.GetName(xelem.Name.LocalName);
-            }
-            foreach (var e in xelem.Elements())
-            {
-                this.ApplyNamespace(e, xmlns);
-            }
-        }
     }
 }
