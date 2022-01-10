@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -117,7 +117,7 @@ namespace Yaapii.Xambly.Directive
         {
             var nodeNames = new Mapped<XNode, string>(
                 tNode => new Formatted(
-                    "{0}/{1}", 
+                    "{0}/{1}",
                     tNode.Parent?.Name + String.Empty,
                     (tNode as XElement).Name
                 ).AsString(),

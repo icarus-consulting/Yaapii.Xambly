@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -73,9 +73,12 @@ namespace Yaapii.Xambly.Directive
             var doc = new XmlDocumentOf(dom).Value();
             var pi = new XProcessingInstruction(this.target.Raw(), this.data.Raw());
             // if cursor list is empty
-            if(new LengthOf(cursor).Value() == 0){
+            if (new LengthOf(cursor).Value() == 0)
+            {
                 doc.Root.AddBeforeSelf(pi);
-            } else {
+            }
+            else
+            {
                 foreach (var node in cursor)
                 {
                     (node as XContainer).Add(pi);

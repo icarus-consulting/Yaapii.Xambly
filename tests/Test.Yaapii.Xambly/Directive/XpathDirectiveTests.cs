@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -144,7 +144,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("Tag"),
                 new SetDirective("Tran\"sient")
             ).Apply(dom);
-            
+
 
             Assert.NotEmpty(
                 new XpathDirective(
@@ -188,7 +188,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsRootInClonedNode()
         {
-            var dom = 
+            var dom =
                 new XDocument(
                     new XElement("high")
                 );

@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.List;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
 
@@ -33,7 +31,8 @@ namespace Yaapii.Xambly.Directive.Tests
     public class AddIfDirectiveTest
     {
         [Fact]
-        public void AddNodesToCurrentNode() {
+        public void AddNodesToCurrentNode()
+        {
 
             Assert.Equal(
                 "<root><foo /><bar /></root>",
@@ -53,7 +52,8 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddDomNodesDirectly() {
+        public void AddDomNodesDirectly()
+        {
             var dom = new XDocument();
             var root =
                 new XElement("root",

@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System;
-using Xunit;
-using System.Xml;
 using System.Xml.Linq;
+using Xunit;
 
 namespace Yaapii.Xambly.Tests
 {
@@ -37,7 +35,7 @@ namespace Yaapii.Xambly.Tests
             var child = new XElement("child");
             var node = new XElement("test", child);
             doc.Add(node);
-           
+
             Assert.True(
                 new XmlDocumentOf(child).Value().FirstNode == node);
         }

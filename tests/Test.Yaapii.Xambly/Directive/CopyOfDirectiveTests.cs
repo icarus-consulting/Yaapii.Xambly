@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void CopiesExistingNode()
         {
             var dom = new XDocument();
-            var content = 
+            var content =
                 new Joined(
                     "",
                     "<jeff name='Jeffrey'><first/><second/>",
@@ -44,7 +44,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "<!-- some comment -->",
                     "<x><![CDATA[hey you]]></x>  </jeff>"
                 );
-            var xml = XDocument.Parse(content.AsString());      
+            var xml = XDocument.Parse(content.AsString());
             new Xambler(
                 new Joined<IDirective>(
                     new ManyOf<IDirective>(

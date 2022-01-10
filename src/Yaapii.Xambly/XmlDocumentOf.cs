@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ namespace Yaapii.Xambly
             //{
             //    doc = dom.Document;
             //}
-            
+
             //if (this.dom.Document == null) //if the ownerdocument is null, this node is the document (see https://msdn.microsoft.com/de-de/library/system.xml.xmlnode.ownerdocument(v=vs.110).aspx)
             //{
             //    doc = this.dom as XDocument;
