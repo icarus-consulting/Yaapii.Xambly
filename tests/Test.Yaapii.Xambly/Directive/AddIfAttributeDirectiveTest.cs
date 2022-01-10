@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,8 @@ namespace Yaapii.Xambly.Directive.Tests
     public class AddIfAttributeDirectiveTest
     {
         [Fact]
-        public void DoesNotAddIfExists() {
+        public void DoesNotAddIfExists()
+        {
 
             Assert.Equal(
                 "<root><foo rooft=\"oota\" /><bar /></root>",
@@ -54,7 +55,8 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddsDomNodesDirectly() {
+        public void AddsDomNodesDirectly()
+        {
             var dom = new XDocument();
             var root =
                 new XElement("root",

@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -114,7 +114,7 @@ namespace Yaapii.Xambly
         /// <param name="dom">DOM document/node</param>
         public XNode Apply(XNode dom)
         {
-            ICursor cursor = 
+            ICursor cursor =
                 new DomCursor(
                     new Yaapii.Atoms.Enumerable.ManyOf<XNode>(dom)
                 );

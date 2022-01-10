@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,8 @@ namespace Yaapii.Xambly.Directive
         /// String representation.
         /// </summary>
         /// <returns>The string</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return "PUSH";
         }
 

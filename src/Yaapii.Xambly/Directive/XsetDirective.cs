@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -64,14 +64,14 @@ namespace Yaapii.Xambly.Directive
         /// <param name="stack"></param>
         /// <returns></returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
-        { 
+        {
             XPathNavigator nav = dom.CreateNavigator();
             Dictionary<XElement, string> values = new Dictionary<XElement, string>(0);
 
             foreach (XNode node in cursor)
             {
                 var elmnt = node as XElement;
-                values.Add(elmnt, nav.Evaluate(_expr.Raw()).ToString());   
+                values.Add(elmnt, nav.Evaluate(_expr.Raw()).ToString());
             }
 
             foreach (KeyValuePair<XElement, string> pair in values)

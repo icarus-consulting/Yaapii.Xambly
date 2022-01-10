@@ -9,7 +9,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright (c) 2021 ICARUS Consulting GmbH</Copyright>
+    <Copyright>Copyright (c) 2022 ICARUS Consulting GmbH</Copyright>
     <PackageTags>xml-editor, csharp, xml-documents, xpath, xml-builder</PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Xambly</PackageProjectUrl>
     <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Xambly.git</RepositoryUrl>
@@ -51,8 +51,8 @@
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="Yaapii.Atoms" Version="2.2.1" Condition="'$(Configuration)' != 'ReleaseSources'" />
-    <PackageReference Include="Yaapii.Atoms.Sources" Version="2.2.1" Condition="'$(Configuration)' == 'ReleaseSources'">
+    <PackageReference Include="Yaapii.Atoms" Version="2.4.0" Condition="'$(Configuration)' != 'ReleaseSources'" />
+    <PackageReference Include="Yaapii.Atoms.Sources" Version="2.4.0" Condition="'$(Configuration)' == 'ReleaseSources'">
       <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>  
     </PackageReference>
   </ItemGroup>

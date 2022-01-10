@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ namespace Yaapii.Xambly.Directive
                 new FailPrecise(
                     new FailNull(parent),
                     new ImpossibleModificationException(
-                            new Formatted("there is no parent node of '{0}' ({1}), can't go UP",node.ToString(SaveOptions.DisableFormatting),node.NodeType).AsString()
+                            new Formatted("there is no parent node of '{0}' ({1}), can't go UP", node.ToString(SaveOptions.DisableFormatting), node.NodeType).AsString()
                         )).Go();
 
                 parents.Add(parent);

@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Cursor;
@@ -35,7 +34,7 @@ namespace Yaapii.Xambly.Directive.Tests
         /// Adds the processing instructions to DOM.
         /// </summary>
         [Fact]
-        public void AddsProcessingInstructionsToDom() 
+        public void AddsProcessingInstructionsToDom()
         {
             Assert.Equal(
                 "<root><?ab boom €?><test><?foo some data €?></test></root>",
@@ -84,7 +83,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var dom = new Xambler(
                             new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new PiDirective("alpha","beta \u20ac"),
+                                new PiDirective("alpha", "beta \u20ac"),
                                 new AddDirective("x4")
                             )
                         ).Dom();

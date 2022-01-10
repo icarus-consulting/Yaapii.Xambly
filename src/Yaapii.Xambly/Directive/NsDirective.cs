@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2019 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ using System;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
@@ -38,13 +37,13 @@ namespace Yaapii.Xambly.Directive
         private readonly IArg nsp;
         private readonly IArg prefix;
 
-        public NsDirective(string prefix, string nsp) : this(new Arg.AttributeArg(prefix),new Arg.AttributeArg(nsp))
+        public NsDirective(string prefix, string nsp) : this(new Arg.AttributeArg(prefix), new Arg.AttributeArg(nsp))
         { }
 
-        public NsDirective(string nsp): this(new Arg.AttributeArg(""), new Arg.AttributeArg(nsp))
+        public NsDirective(string nsp) : this(new Arg.AttributeArg(""), new Arg.AttributeArg(nsp))
         { }
 
-        public NsDirective(IArg nsp) : this(new Arg.AttributeArg(""),nsp)
+        public NsDirective(IArg nsp) : this(new Arg.AttributeArg(""), nsp)
         { }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace Yaapii.Xambly.Directive
         /// Sets namespace of all current nodes
         /// </summary>
         /// <param name="nsp"></param>
-        public NsDirective(IArg prefix,IArg nsp)
+        public NsDirective(IArg prefix, IArg nsp)
         {
             this.prefix = prefix;
             this.nsp = nsp;
@@ -83,10 +82,11 @@ namespace Yaapii.Xambly.Directive
             try
             {
                 XElement element = null;
-                if(dom is XDocument)
+                if (dom is XDocument)
                 {
                     element = (dom as XDocument).Root;
-                } else
+                }
+                else
                 {
                     element = dom as XElement;
                 }
@@ -104,7 +104,7 @@ namespace Yaapii.Xambly.Directive
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException("can't set xmlns",ex);
+                throw new IllegalArgumentException("can't set xmlns", ex);
             }
         }
 
