@@ -124,7 +124,7 @@ namespace Yaapii.Xambly.Directive
                 nodes
             );
 
-            return new Joined(", ", nodeNames).AsString();
+            return new Atoms.Text.Joined(", ", nodeNames).AsString();
         }
     }
 }

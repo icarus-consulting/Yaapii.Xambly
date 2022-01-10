@@ -36,7 +36,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var dom = new XDocument();
             var content =
-                new Joined(
+                new Atoms.Text.Joined(
                     "",
                     "<jeff name='Jeffrey'><first/><second/>",
                     "<?some-pi test?>",
