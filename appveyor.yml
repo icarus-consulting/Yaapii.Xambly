@@ -10,7 +10,7 @@ environment:
   CODECOV_TOKEN:
     secure: KE2A2I2gpzWzC8fqWQDW/4lOcCJH54j2A6MATbxRaoQUwTwp7bF0/2EupHxq01eV
   NUGET_TOKEN:
-    secure: LxvD0QqULNgY5XtjQPrBlvQDOVacEkfkZILXVJbY2YPpwSQJLkbXF8QYtx7EMtL6
+    secure: ZDvc2hL3H+4ubTi1cibTM+XeOJVXEzhuMCnDxOL8Hs2e9unfRUHrCwYC52IVjXjh
   APPVEYOR_TOKEN:
     secure: wVt1RgJAnhNTyIjtK9yFkQbEEM+fBk1TLUzo0j3pe2U=
 nuget:
