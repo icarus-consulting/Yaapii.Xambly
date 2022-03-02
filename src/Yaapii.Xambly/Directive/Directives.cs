@@ -614,8 +614,8 @@ namespace Yaapii.Xambly
         /// Namespace directive.
         /// 
         /// Sets namespace of all current nodes selected by the cursor.
-        /// All child nodes are moved to the namespace.
-        /// All attributes are moved to the namespace.
+        /// All child nodes are moved to the namespace (default).
+        /// All attributes are moved to the namespace (default).
         /// The namespace declaration will be done in the root node.
         /// 
         /// If the prefix is empty a default namespace will be created.
@@ -628,14 +628,17 @@ namespace Yaapii.Xambly
         /// To address nodes belonging to a namespace the namesapce resolver
         /// injected to the Xambler object must be set up accordingly.
         /// </summary>
-        public Directives Ns(string namespaceUri, string prefix = "")
+        /// <param name="prefix">If empty a default namespace will be created</param>
+        /// <param name="ns">Namespace</param>
+        /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
+        /// <param name="inheritance">Is applied to the children</param>
+        public Directives Ns(string prefix, string ns, string purpose = "nodesAndAttributes", bool inheritance = true)
         {
             this.all.Add(
-                new NsDirective(prefix, namespaceUri)
+                new NsDirective(prefix, ns, purpose, inheritance)
             );
 
             return this;
         }
-
     }
 }
