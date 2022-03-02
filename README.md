@@ -245,7 +245,7 @@ you're not sure where your
 
 ```assembly
 XPATH '/garage/car';                // move cursor to "<car/>" node(s)
-NS "http://www.w3.org/TR/html4/";   // set namespace there an to its childs
+NS "http://www.w3.org/TR/html4/";   // set namespace there and to its children
 ```
 
 ```csharp
