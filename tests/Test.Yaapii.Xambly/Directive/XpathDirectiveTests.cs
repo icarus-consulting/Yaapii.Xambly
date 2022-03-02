@@ -268,13 +268,38 @@ namespace Yaapii.Xambly.Directive.Tests
                         .Add("child")
                         .Set("child value")
                 .Xpath("/root")
-                .Ns("MyDefaultNamespaceUri")
+                .Ns("", "MyDefaultNamespaceUri")
                     .Xpath("/def:root/def:parent")
                     .Attr("key", "value")
             ).Apply(dom);
 
             Assert.Equal(
                 "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"value\"><child>child value</child></parent></root>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void PrefixedNamespaceIsRequiredInXPath()
+        {
+            var dom = new XDocument();
+            var nsResolver = new XmlNamespaceManager(new NameTable());
+            nsResolver.AddNamespace("nice", "MyNiceNamespace");
+            new Xambler(
+                nsResolver,
+                new Directives()
+                .Add("root")
+                    .Add("parent")
+                        .Add("child")
+                        .Set("child value")
+                .Xpath("/root")
+                .Ns("nice", "MyNiceNamespace")
+                    .Xpath("/nice:root/nice:parent")
+                    .Attr("key", "value")
+            ).Apply(dom);
+
+            Assert.Equal(
+                "<nice:root xmlns:nice=\"MyNiceNamespace\"><nice:parent key=\"value\"><nice:child>child value</nice:child></nice:parent></nice:root>",
                 dom.ToString(SaveOptions.DisableFormatting)
             );
         }
