@@ -138,31 +138,6 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void DefaultNamespaceAffectesXPath()
-        {
-            var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("def", "MyDefaultNamespaceUri");
-            new Xambler(
-                nsResolver,
-                new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                        .Set("child value")
-                .Xpath("/root")
-                .Ns("MyDefaultNamespaceUri")
-                    .Xpath("/def:root/def:parent")
-                    .Attr("key", "value")
-            ).Apply(dom);
-
-            Assert.Equal(
-                "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"value\"><child>child value</child></parent></root>",
-                dom.ToString(SaveOptions.DisableFormatting)
-            );
-        }
-
-        [Fact]
         public void SetsPrefixedNamespace()
         {
             var resolver = new XmlNamespaceManager(new NameTable());
@@ -221,7 +196,7 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void ChildsInheritsNamespace()
+        public void ChildrenInheritsNamespace()
         {
             var dom = new XDocument();
             new Xambler(
@@ -240,7 +215,7 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddsPrefixedNamespaceToSeveralNodes()
+        public void AddsPrefixedNamespaceToRootChildren()
         {
             var dom = new XDocument();
             new Xambler(
@@ -262,7 +237,7 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void PrefixedNamespaceAffectesAttributes()
+        public void AddsPrefixedNamespaceToAttributes()
         {
             var dom = new XDocument();
             var nsResolver = new XmlNamespaceManager(new NameTable());

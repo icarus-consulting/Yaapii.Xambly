@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -56,7 +55,7 @@ namespace Yaapii.Xambly.Directive.Tests
             ).Apply(dom);
 
             Assert.NotNull(
-                NavigatorFromXPath(
+                this.NavigatorFromXPath(
                     dom.ToString(SaveOptions.DisableFormatting),
                     testXPath
                 )
@@ -78,7 +77,7 @@ namespace Yaapii.Xambly.Directive.Tests
             ).Apply(dom);
 
             Assert.NotNull(
-                NavigatorFromXPath(
+                this.NavigatorFromXPath(
                     dom.ToString(SaveOptions.DisableFormatting),
                     "/top/hey"
                 )
@@ -201,7 +200,7 @@ namespace Yaapii.Xambly.Directive.Tests
             ).Apply(clone);
 
             Assert.NotNull(
-                NavigatorFromXPath(
+                this.NavigatorFromXPath(
                     clone.ToString(SaveOptions.DisableFormatting),
                     "/high/boom-5"
                 )
@@ -255,6 +254,32 @@ namespace Yaapii.Xambly.Directive.Tests
             );
         }
 
+        [Fact]
+        public void DefaultNamespaceIsRequiredInXPath()
+        {
+            var dom = new XDocument();
+            var nsResolver = new XmlNamespaceManager(new NameTable());
+            nsResolver.AddNamespace("def", "MyDefaultNamespaceUri");
+            new Xambler(
+                nsResolver,
+                new Directives()
+                .Add("root")
+                    .Add("parent")
+                        .Add("child")
+                        .Set("child value")
+                .Xpath("/root")
+                .Ns("MyDefaultNamespaceUri")
+                    .Xpath("/def:root/def:parent")
+                    .Attr("key", "value")
+            ).Apply(dom);
+
+            Assert.Equal(
+                "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"value\"><child>child value</child></parent></root>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+
         private XPathNavigator NavigatorFromXPath(string xml, string xpath)
         {
             var nav =
@@ -262,7 +287,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new StringReader(xml)
                 ).CreateNavigator();
 
-            var nsm = NamespacesOfDom(xml);
+            var nsm = this.NamespacesOfDom(xml);
             return nav.SelectSingleNode(xpath, nsm);
         }
 
@@ -270,7 +295,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var xDoc = new XmlDocument();
             xDoc.LoadXml(xml);
-            return NamespacesOfDom(xDoc);
+            return this.NamespacesOfDom(xDoc);
         }
 
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
