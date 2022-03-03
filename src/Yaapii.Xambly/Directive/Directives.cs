@@ -558,8 +558,6 @@ namespace Yaapii.Xambly
             return this;
         }
 
-
-
         /// <summary>
         /// Check that there is exactly this number of current nodes.
         /// </summary>
@@ -621,8 +619,6 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
-        /// Namespace directive.
-        /// 
         /// Sets namespace of all current nodes selected by the cursor.
         /// All child nodes are moved to the namespace (default).
         /// All attributes are moved to the namespace (default).
