@@ -15,6 +15,11 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Collection;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {

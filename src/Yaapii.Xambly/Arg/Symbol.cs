@@ -21,6 +21,9 @@
 // SOFTWARE.
 
 using System;
+using System.Xml;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xambly.Arg
 {
@@ -54,14 +57,14 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The character</returns>
         public char Value()
         {
-            var src = _src.AsString();
+            var src = this._src.AsString();
             char chr;
             if (src[0] == '#')
             {
                 chr =
                     new NotIllegal((char)
                         new IntOf(
-                            new SubText(_src, 1)).Value()).Value();
+                            new SubText(this._src, 1)).Value()).Value();
             }
             else if (String.Compare(src, "apos", true) == 0)
             {
@@ -85,11 +88,13 @@ namespace Yaapii.Xambly.Arg
             }
             else
             {
-                throw new XmlException(
+                throw
+                    new XmlException(
                         new Formatted(
                             "unknown XML symbol &{0};",
-                            _src
-                        ).AsString());
+                            this._src
+                        ).AsString()
+                    );
             }
             return chr;
         }

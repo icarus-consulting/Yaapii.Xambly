@@ -23,6 +23,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Scalar;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -125,12 +132,13 @@ namespace Yaapii.Xambly.Directive
                     new ImpossibleModificationException("Cannot copy a node which is not of type XContainer")
                 ).Go();
 
+            var src = new Mapped<XNode, XmlNodeType>(
+                                    xnode => xnode.NodeType,
+                                    ctn.Nodes()
+                                );
             var containsElement =
                 new Contains<XmlNodeType>(
-                    new Mapped<XNode, XmlNodeType>(
-                        xnode => xnode.NodeType,
-                        ctn.Nodes()
-                    ),
+                    src,
                     XmlNodeType.Element
                 ).Value();
             foreach (XNode child in ctn.Nodes())

@@ -28,6 +28,7 @@ using System.Xml.Linq;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Func;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Xambly.Error;
 

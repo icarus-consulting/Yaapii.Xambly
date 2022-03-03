@@ -22,6 +22,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Tests
 {
@@ -33,12 +34,12 @@ namespace Yaapii.Xambly.Tests
 
         public IEnumerator<XNode> GetEnumerator()
         {
-            return _src.GetEnumerator();
+            return this._src.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

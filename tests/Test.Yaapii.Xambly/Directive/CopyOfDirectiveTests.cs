@@ -20,6 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Text;
+
 namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class CopyOfDirectiveTests

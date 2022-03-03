@@ -20,6 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Xunit;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Tests;
+
 namespace Yaapii.Xambly.Stack.Tests
 {
     public class DomStackTest

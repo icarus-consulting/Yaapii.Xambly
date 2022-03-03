@@ -21,6 +21,13 @@
 // SOFTWARE.
 
 using System;
+using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Scalar;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {

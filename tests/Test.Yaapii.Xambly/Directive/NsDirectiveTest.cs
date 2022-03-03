@@ -20,6 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Stack;
+
 namespace Yaapii.Xambly.Directive.Tests
 {
     public class NsDirectiveTest

@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml.Linq;
+using Yaapii.Atoms;
+
 namespace Yaapii.Xambly
 {
     /// <summary>
@@ -47,7 +50,7 @@ namespace Yaapii.Xambly
         /// <returns></returns>
         public XDocument Value()
         {
-            XDocument doc = dom.Document;
+            XDocument doc = this.dom.Document;
             //if (this.dom.NodeType == System.Xml.XmlNodeType.Document)
             //{
             //    doc = dom.Document;

@@ -23,6 +23,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.Func;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {

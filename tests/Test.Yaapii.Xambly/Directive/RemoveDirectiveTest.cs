@@ -20,6 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Error;
+using Yaapii.Xambly.Stack;
+
 namespace Yaapii.Xambly.Directive.Tests
 {
     public class RemoveDirectiveTest
@@ -28,6 +36,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void RemoveCurrentNode()
         {
 
+            var dom = new XDocument();
             Assert.Equal(
                 "<root />",
                 new Xambler(
@@ -37,7 +46,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new RemoveDirective()
                     )
                 ).Apply(
-                    new XDocument()
+                    dom
                 ).ToString(SaveOptions.DisableFormatting)
             );
         }

@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using Xunit;
+using Yaapii.Xambly.Arg;
+
 namespace Yaapii.Xambly.Tests
 {
     public class AttributeArgTests

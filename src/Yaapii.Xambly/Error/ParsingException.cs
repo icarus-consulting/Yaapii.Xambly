@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 using System;
+using Yaapii.Atoms.Text;
+
 namespace Yaapii.Xambly.Error
 {
     /// <summary>

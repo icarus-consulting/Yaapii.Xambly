@@ -22,6 +22,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Cursor
 {
@@ -56,7 +57,7 @@ namespace Yaapii.Xambly.Cursor
         /// <returns>Enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return this.GetEnumerator();
         }
     }
 }

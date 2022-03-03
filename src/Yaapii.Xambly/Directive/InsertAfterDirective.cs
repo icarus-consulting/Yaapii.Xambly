@@ -22,6 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Cursor;
 
 namespace Yaapii.Xambly.Directive
 {

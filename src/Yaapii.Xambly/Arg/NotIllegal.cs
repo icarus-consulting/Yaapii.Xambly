@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 using System;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xambly.Arg
 {
@@ -46,12 +48,12 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The same number</returns>
         public Char Value()
         {
-            this.Range(_chr, 0x00, 0x08);
-            this.Range(_chr, 0x0B, 0x0C);
-            this.Range(_chr, 0x0E, 0x1F);
-            this.Range(_chr, 0x7F, 0x84);
-            this.Range(_chr, 0x86, 0x9F);
-            return _chr;
+            this.Range(this._chr, 0x00, 0x08);
+            this.Range(this._chr, 0x0B, 0x0C);
+            this.Range(this._chr, 0x0E, 0x1F);
+            this.Range(this._chr, 0x7F, 0x84);
+            this.Range(this._chr, 0x86, 0x9F);
+            return this._chr;
         }
 
         /// <summary>

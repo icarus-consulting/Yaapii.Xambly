@@ -22,6 +22,11 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Xunit;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -46,9 +51,9 @@ namespace Yaapii.Xambly.Directive.Tests
                 ).Apply(dom);
 
             Assert.True(
-                null != FromXPath(
+                null != this.FromXPath(
                     dom.ToString(SaveOptions.DisableFormatting), "/root/foo") &&
-                null != FromXPath(
+                null != this.FromXPath(
                     dom.ToString(SaveOptions.DisableFormatting), "/root/foo/bar/boom"));
         }
 
@@ -79,12 +84,13 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("foo"),
-                                new AddDirective("bar"),
-                                new XpathDirective("/foo/bar/boom"),
-                                new StrictDirective(1)
-                            )).Apply(dom);
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                            new AddDirective("foo"),
+                            new AddDirective("bar"),
+                            new XpathDirective("/foo/bar/boom"),
+                            new StrictDirective(1)
+                        )
+                ).Apply(dom);
             });
         }
 
@@ -96,10 +102,11 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("root"),
-                                new StrictDirective(2)
-                            )).Apply(dom);
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                            new AddDirective("root"),
+                            new StrictDirective(2)
+                        )
+                ).Apply(dom);
             });
         }
         #region Helper
@@ -116,7 +123,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new StringReader(xml)
                 ).CreateNavigator();
 
-            var nsm = NamespacesOfDom(xml);
+            var nsm = this.NamespacesOfDom(xml);
             return nav.SelectSingleNode(xpath, nsm);
         }
 
@@ -124,7 +131,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var xDoc = new XmlDocument();
             xDoc.LoadXml(xml);
-            return NamespacesOfDom(xDoc);
+            return this.NamespacesOfDom(xDoc);
         }
 
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)

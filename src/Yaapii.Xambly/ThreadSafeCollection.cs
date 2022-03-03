@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 using System.Reflection;
+using Yaapii.Atoms.Text;
 
 namespace System.Collections.Generic
 {
@@ -247,13 +248,13 @@ namespace System.Collections.Generic
         /// </summary>
         /// <param name="item">item to search</param>
         /// <returns>the index</returns>
-        int InternalIndexOf(T item)
+        private int InternalIndexOf(T item)
         {
-            int count = items.Count;
+            int count = this.items.Count;
 
             for (int i = 0; i < count; i++)
             {
-                if (object.Equals(items[i], item))
+                if (object.Equals(this.items[i], item))
                 {
                     return i;
                 }
@@ -475,7 +476,7 @@ namespace System.Collections.Generic
         /// Test the value type
         /// </summary>
         /// <param name="value">the value to verify</param>
-        static void VerifyValueType(object value)
+        private static void VerifyValueType(object value)
         {
             if (value == null)
             {

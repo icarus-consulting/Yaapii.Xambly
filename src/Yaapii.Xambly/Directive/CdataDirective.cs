@@ -20,6 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+using System.Xml;
+using System.Xml.Linq;
+using Yaapii.Atoms.Error;
+using Yaapii.Atoms.Text;
+using Yaapii.Xambly.Arg;
+using Yaapii.Xambly.Error;
+
 namespace Yaapii.Xambly.Directive
 {
     /// <summary>

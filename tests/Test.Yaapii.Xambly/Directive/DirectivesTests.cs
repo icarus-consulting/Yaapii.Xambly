@@ -24,6 +24,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Atoms.IO;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
@@ -47,7 +54,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         .Add("big-text").Cdata("<<hello!!!>>").Up()
                 ).Xml();
 
-            Assert.NotNull(FromXPath(xml, testXPath));
+            Assert.NotNull(this.FromXPath(xml, testXPath));
         }
 
         [Fact]
@@ -61,7 +68,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     )
                 ).Xml();
 
-            Assert.NotNull(FromXPath(xml, "/page/child-node"));
+            Assert.NotNull(this.FromXPath(xml, "/page/child-node"));
         }
 
         [Fact]
@@ -77,7 +84,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     )
                 ).Xml();
 
-            Assert.NotNull(FromXPath(xml, "/page/child-node"));
+            Assert.NotNull(this.FromXPath(xml, "/page/child-node"));
         }
 
         /// <summary>
@@ -115,7 +122,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     .Add("third")
                 ).Apply(dom).ToString(SaveOptions.DisableFormatting);
 
-            Assert.True(FromXPath(xml, testXPath) != null);
+            Assert.True(this.FromXPath(xml, testXPath) != null);
         }
 
         /// <summary>
@@ -174,7 +181,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 ).Xml();
 
             Assert.True(
-                null != FromXPath(xml, testXPath)
+                null != this.FromXPath(xml, testXPath)
             );
         }
 
@@ -232,7 +239,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new StringReader(xml)
                 ).CreateNavigator();
 
-            var nsm = NamespacesOfDom(xml);
+            var nsm = this.NamespacesOfDom(xml);
             return nav.SelectSingleNode(xpath, nsm);
         }
 
@@ -240,7 +247,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var xDoc = new XmlDocument();
             xDoc.LoadXml(xml);
-            return NamespacesOfDom(xDoc);
+            return this.NamespacesOfDom(xDoc);
         }
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
         {

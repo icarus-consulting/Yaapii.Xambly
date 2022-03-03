@@ -21,6 +21,13 @@
 // SOFTWARE.
 
 using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using Xunit;
+using Yaapii.Atoms.Enumerable;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
 {

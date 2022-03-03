@@ -21,6 +21,11 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
+using System.Xml;
+using System.Xml.Linq;
+using Xunit;
+using Yaapii.Xambly.Cursor;
+using Yaapii.Xambly.Stack;
 
 namespace Yaapii.Xambly.Directive.Tests
 {

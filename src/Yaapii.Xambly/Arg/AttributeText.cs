@@ -21,6 +21,8 @@
 // SOFTWARE.
 
 using System.Text;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Text;
 
 namespace Yaapii.Xambly.Arg
 {
@@ -53,7 +55,7 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The text</returns>
         public string AsString()
         {
-            Validate();
+            this.Validate();
             return
                 new StringBuilder(this.src.AsString().Length + 2 + this.src.AsString().Length)
                     .Append('"')
