@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-using System.Xml;
-using System.Xml.Linq;
-using Yaapii.Atoms.Error;
-using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
-using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -53,7 +46,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return 
+            return
                 new Formatted(
                     $"CDATA {0}",
                     this.value.Raw()

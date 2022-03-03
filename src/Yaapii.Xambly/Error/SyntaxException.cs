@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ namespace Yaapii.Xambly.Error
         /// </summary>
         /// <param name="cause">Cause of it</param>
         /// <param name="innerException">Original exception</param>
-        public SyntaxException(string cause, Exception innerException) : base (cause, innerException)
+        public SyntaxException(string cause, Exception innerException) : base(cause, innerException)
         { }
     }
 }

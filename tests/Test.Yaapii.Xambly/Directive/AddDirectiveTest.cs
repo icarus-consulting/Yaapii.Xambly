@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
-using System.Xml.Linq;
-using Xunit;
-using Yaapii.Atoms.List;
-
 namespace Yaapii.Xambly.Directive.Tests
 {
     public class AddDirectiveTest
@@ -37,7 +32,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                                 new AddDirective("root"),
                                 new AddDirective("item")
-                            )).Dom().ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");
+                            )).Dom().ToString(SaveOptions.DisableFormatting) == "<root><item /></root>", "Add Directive failed");
         }
 
         [Fact]
@@ -48,7 +43,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                             new AddDirective("root"),
                             new AddDirective("item")
-                        )).Apply(new XDocument()).ToString(SaveOptions.DisableFormatting) == "<root><item /></root>","Add Directive failed");
+                        )).Apply(new XDocument()).ToString(SaveOptions.DisableFormatting) == "<root><item /></root>", "Add Directive failed");
         }
     }
 }

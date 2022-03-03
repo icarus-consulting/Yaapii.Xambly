@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 using System.Reflection;
-using Yaapii.Atoms.Text;
 
 namespace System.Collections.Generic
 {
@@ -235,7 +234,7 @@ namespace System.Collections.Generic
             {
                 if (index < 0 || index > this.items.Count)
                     throw new ArgumentOutOfRangeException(
-                        "index", index, 
+                        "index", index,
                         new Formatted(
                             "value {0} must be in range of {1}", index, this.Items.Count).AsString());
 
@@ -487,11 +486,11 @@ namespace System.Collections.Generic
             }
             else if (!(value is T))
             {
-                throw 
+                throw
                     new ArgumentException(
                         new Formatted(
-                            "object is of type {0} but collection is of {1}", 
-                            value.GetType().FullName, 
+                            "object is of type {0} but collection is of {1}",
+                            value.GetType().FullName,
                             typeof(T).FullName).AsString());
             }
         }

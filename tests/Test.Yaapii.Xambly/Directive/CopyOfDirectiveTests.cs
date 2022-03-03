@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,13 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
-using Xunit;
-using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Text;
-
 namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class CopyOfDirectiveTests
@@ -35,8 +28,8 @@ namespace Yaapii.Xambly.Directive.Tests
         public void CopiesExistingNode()
         {
             var dom = new XDocument();
-            var content = 
-                new Joined(
+            var content =
+                new Atoms.Text.Joined(
                     "",
                     "<jeff name='Jeffrey'><first/><second/>",
                     "<?some-pi test?>",
@@ -44,7 +37,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     "<!-- some comment -->",
                     "<x><![CDATA[hey you]]></x>  </jeff>"
                 );
-            var xml = XDocument.Parse(content.AsString());      
+            var xml = XDocument.Parse(content.AsString());
             new Xambler(
                 new Joined<IDirective>(
                     new ManyOf<IDirective>(

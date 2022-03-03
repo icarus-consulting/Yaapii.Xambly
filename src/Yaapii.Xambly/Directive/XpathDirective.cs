@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,14 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.XPath;
-using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Cursor;
-using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {

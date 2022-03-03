@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,17 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
-using System.Xml.Linq;
-using Xunit;
-using Yaapii.Atoms.Enumerable;
-
 namespace Yaapii.Xambly.Directive.Tests
 {
     public class CdataDirectiveTest
     {
         [Fact]
-        public void AddsCdataSectionToCurrentNode() {
+        public void AddsCdataSectionToCurrentNode()
+        {
             var dom = new XDocument();
             Assert.Equal(
                     "<root><foo><![CDATA[Hello World]]></foo></root>",

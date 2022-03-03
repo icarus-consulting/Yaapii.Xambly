@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-using System.Xml.Linq;
-using Yaapii.Atoms;
 
 namespace Yaapii.Xambly
 {
@@ -55,7 +52,7 @@ namespace Yaapii.Xambly
             //{
             //    doc = dom.Document;
             //}
-            
+
             //if (this.dom.Document == null) //if the ownerdocument is null, this node is the document (see https://msdn.microsoft.com/de-de/library/system.xml.xmlnode.ownerdocument(v=vs.110).aspx)
             //{
             //    doc = this.dom as XDocument;

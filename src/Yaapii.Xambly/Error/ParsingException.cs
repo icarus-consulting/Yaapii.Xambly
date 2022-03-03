@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 using System;
-using Yaapii.Atoms.Text;
 namespace Yaapii.Xambly.Error
 {
     /// <summary>
@@ -33,7 +32,7 @@ namespace Yaapii.Xambly.Error
         /// When parsing of directives is impossible.
         /// </summary>
         /// <param name="innerException">Original exception</param>
-        public ParsingException(Exception innerException) 
+        public ParsingException(Exception innerException)
             : this(
                 new Formatted("Error parsing script: {0}", innerException.Message).AsString(),
                 innerException)
@@ -43,7 +42,7 @@ namespace Yaapii.Xambly.Error
         /// When parsing of directives is impossible.
         /// </summary>
         /// <param name="cause">Cause of it</param>
-        public ParsingException(string cause) 
+        public ParsingException(string cause)
             : this(cause, null)
         { }
 
@@ -52,7 +51,7 @@ namespace Yaapii.Xambly.Error
         /// </summary>
         /// <param name="cause">Cause of it</param>
         /// <param name="innerException">Original exception</param>
-        public ParsingException(string cause, Exception innerException) 
+        public ParsingException(string cause, Exception innerException)
             : base(cause, innerException)
         { }
     }
