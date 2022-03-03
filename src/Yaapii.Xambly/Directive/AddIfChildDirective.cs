@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.List;
 using Yaapii.Atoms.Text;
@@ -49,12 +47,10 @@ namespace Yaapii.Xambly
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
-        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XNode>();
-            var label = this.name.Raw().ToLower();
             foreach (var node in cursor)
             {
                 var kids = this.Children(node);
@@ -73,16 +69,6 @@ namespace Yaapii.Xambly
 
                 if (target == null)
                 {
-                    XDocument doc = null;
-                    if (dom.Document == null)
-                    {
-                        doc = new XDocument(dom);
-                    }
-                    else
-                    {
-                        doc = dom.Document;
-                    }
-
                     target = new XElement(this.name.Raw());// doc.CreateElement(this.name.Raw());
                     (node as XElement).Add(target);// AppendChild(target);
                 }
@@ -95,12 +81,12 @@ namespace Yaapii.Xambly
         {
             bool matches = false;
             var xElement = node as XElement;
-            if (String.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
+            if (string.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
             {
                 foreach (XNode child in this.Children(node))
                 {
                     var xChild = child as XElement;
-                    if (String.Compare(xChild.Name.LocalName, this.child.Raw(), true) == 0 && String.Compare(xChild.Value, this.content, true) == 0)
+                    if (string.Compare(xChild.Name.LocalName, this.child.Raw(), true) == 0 && string.Compare(xChild.Value, this.content, true) == 0)
                     {
                         matches = true;
                         break;

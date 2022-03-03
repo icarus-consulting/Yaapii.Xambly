@@ -23,14 +23,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Func;
+using Yaapii.Atoms.Map;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
+using Yaapii.Xambly.XmlNamespaceResolver;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -47,11 +48,15 @@ namespace Yaapii.Xambly.Directive
         private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
 
         private readonly IArg expr;
+        private readonly string rootDefNamespacePrefix;
+        private readonly IDictionary<string, string> defaultNamespaceAndPrefix;
 
-        // <summary>
-        // Pattern to match root-only XPath queries.
-        // </summary>
-        //private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
+        public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary) : this(
+            path,
+            rootDefNamespacePrefix,
+            new MapOf(defNamesapceAndPrefixDictionary)
+        )
+        { }
 
         /// <summary>
         /// XPATH directive.
@@ -59,9 +64,11 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="path">XPath</param>
         /// <exception cref="XmlContentException">If invalid input</exception>
-        public XpathDirective(string path)
+        public XpathDirective(string path, string rootDefNamespacePrefix, IDictionary<string, string> defaultNamespaceAndPrefix)
         {
             this.expr = new Arg.AttributeArg(path);
+            this.rootDefNamespacePrefix = rootDefNamespacePrefix;
+            this.defaultNamespaceAndPrefix = defaultNamespaceAndPrefix;
         }
 
         /// <summary>
@@ -78,31 +85,24 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
-        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            IEnumerable<XNode> targets;
             string query = this.expr.Raw();
 
+            IEnumerable<XNode> current = cursor;
             if (this.AbsoluteXPath(query))
             {
-                targets =
-                    this.Traditional(
-                        query,
-                        dom,
-                        new ManyOf<XNode>(
-                            new XmlDocumentOf(dom).Value().Document
-                        ),
-                        context
+                current =
+                    new ManyOf<XNode>(
+                        new XmlDocumentOf(dom).Value().Document
                     );
             }
-            else
-            {
-                targets = this.Traditional(query, dom, cursor, context);
-            }
 
-            return new DomCursor(targets);
+            return
+                new DomCursor(
+                    this.Traditional(query, dom, current)
+                );
 
         }
 
@@ -114,7 +114,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="current">Nodes we're currently at</param>
         /// <returns>Found nodes</returns>
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
-        private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current, IXmlNamespaceResolver context)
+        private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current)
         {
             var targets = new HashSet<XNode>();
             foreach (XNode node in this.Roots(dom, current))
@@ -122,7 +122,15 @@ namespace Yaapii.Xambly.Directive
                 IEnumerable<XElement> list;
                 try
                 {
-                    list = node.XPathSelectElements(query, context);
+                    list =
+                        node.XPathSelectElements(
+                            query,
+                            new ResolverFromDocument(
+                                dom,
+                                this.rootDefNamespacePrefix,
+                                this.defaultNamespaceAndPrefix
+                            )
+                        );
                 }
                 catch (Exception ex)
                 {

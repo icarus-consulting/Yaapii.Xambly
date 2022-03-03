@@ -532,23 +532,33 @@ namespace Yaapii.Xambly
         /// <param name="path">path to go to</param>
         /// <exception cref="IllegalArgumentException"/>
         /// <returns>This object</returns>
-        public Directives Xpath(Object path)
+        public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary)
         {
             try
             {
-                this.all.Add(new XpathDirective(path.ToString()));
+                this.all.Add(
+                    new XpathDirective(
+                        path.ToString(),
+                        rootDefNamespacePrefix,
+                        defNamesapceAndPrefixDictionary
+                    )
+                );
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, XPATH({0})",
-                        path).AsString(),
-                    ex
-                );
+                throw
+                    new IllegalArgumentException(
+                        new Formatted(
+                            "failed to understand XML content, XPATH({0})",
+                            path
+                        ).AsString(),
+                        ex
+                    );
             }
             return this;
         }
+
+
 
         /// <summary>
         /// Check that there is exactly this number of current nodes.

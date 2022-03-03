@@ -21,7 +21,6 @@
 // SOFTWARE.
 
 using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Xambly.Cursor;
@@ -50,7 +49,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsProcessingInstructionsDirectlyToDom()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom =
                 new Xambler(
                     new Atoms.Enumerable.ManyOf<IDirective>(
@@ -63,8 +61,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomCursor(
                     new List<XNode>()
                 ),
-                new DomStack(),
-                resolver
+                new DomStack()
             );
 
             Assert.Equal(
@@ -77,7 +74,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void PrependsProcessingInstructionsToDomRoot()
         {
             var dom = new Xambler(
-                            new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
+                            new Atoms.Enumerable.ManyOf<IDirective>(
                                 new PiDirective("alpha", "beta \u20ac"),
                                 new AddDirective("x4")
                             )

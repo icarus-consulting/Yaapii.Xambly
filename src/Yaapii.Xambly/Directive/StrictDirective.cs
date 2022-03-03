@@ -15,7 +15,6 @@
 // ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
-using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Collection;
 using Yaapii.Atoms.Text;
@@ -58,9 +57,8 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">node to execute on</param>
         /// <param name="cursor">cursor</param>
         /// <param name="stack">the stack</param>
-        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var lengthOfCursor = new Atoms.Enumerable.LengthOf(cursor).Value();
 

@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Enumerable;
@@ -165,20 +164,19 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Document</param>
         /// <param name="cursor">Nodes we're currently at</param>
         /// <param name="stack">Execution stack</param>
-        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             this.ValidatePurpose();
             try
             {
                 if (this.prefix.Value() == string.Empty)
                 {
-                    this.ApplyDefaultNS(dom, cursor, stack, context);
+                    this.ApplyDefaultNS(dom, cursor, stack);
                 }
                 else
                 {
-                    this.ApplyPrefixedNS(dom, cursor, stack, context);
+                    this.ApplyPrefixedNS(dom, cursor, stack);
                 }
                 return cursor;
             }
@@ -196,9 +194,9 @@ namespace Yaapii.Xambly.Directive
             ).Go();
         }
 
-        private void ApplyDefaultNS(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        private void ApplyDefaultNS(XNode dom, ICursor cursor, IStack stack)
         {
-            this.SetNsToNodesSelectedByCursor(dom, cursor, stack, context);
+            this.SetNsToNodesSelectedByCursor(dom, cursor, stack);
             foreach (var node in cursor)
             {
                 new FailWhen(
@@ -218,15 +216,15 @@ namespace Yaapii.Xambly.Directive
             }
         }
 
-        private void SetNsToNodesSelectedByCursor(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        private void SetNsToNodesSelectedByCursor(XNode dom, ICursor cursor, IStack stack)
         {
             new AttrDirective(
                 "xmlns",
                 this.ns.Value().NamespaceName
-            ).Exec(dom, cursor, stack, context);
+            ).Exec(dom, cursor, stack);
         }
 
-        private void ApplyPrefixedNS(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        private void ApplyPrefixedNS(XNode dom, ICursor cursor, IStack stack)
         {
             new Each<XNode>(node =>
                 {

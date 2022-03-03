@@ -67,7 +67,6 @@ namespace Yaapii.Xambly
     public sealed class Xambler : IXambler
     {
         private readonly IEnumerable<IDirective> directives;
-        private readonly IXmlNamespaceResolver context;
 
         /// <summary>
         /// Processor of Xambly directives, main entry point to the module.
@@ -100,8 +99,7 @@ namespace Yaapii.Xambly
         /// </para>
         /// </summary>
         public Xambler(params IDirective[] directives) : this(
-            new XmlNamespaceManager(new NameTable()),
-            new ManyOf<IDirective>(directives)
+            ManyOf.New(directives)
         )
         { }
 
@@ -135,82 +133,9 @@ namespace Yaapii.Xambly
         /// </example>
         /// </para>
         /// </summary>
-        public Xambler(IEnumerable<IDirective> directives) : this(
-            new XmlNamespaceManager(new NameTable()),
-            directives
-        )
-        { }
-
-        /// <summary>
-        /// Processor of Xambly directives, main entry point to the module.
-        /// 
-        /// <para>For example, to modify a DOM document:
-        /// 
-        /// <example>
-        /// XMLDocument dom = ....
-        /// new Xembler(
-        /// new Directives()
-        ///     .xpath("/root")
-        ///     .addIfAbsent("employees")
-        ///     .add("employee")
-        ///     .attr("id", 6564)
-        /// ).apply(dom);
-        /// </example>
-        /// </para>
-        /// 
-        /// <para>You can also convert your Xambly directives directly to XML document:
-        /// 
-        /// <example>
-        /// String xml = new Xembler(
-        /// new Directives()
-        ///     .xpath("/root")
-        ///     .addIfAbsent("employees")
-        ///     .add("employee")
-        ///     .attr("id", 6564)
-        /// ).xml("root");
-        /// </example>
-        /// </para>
-        /// </summary>
-        public Xambler(IXmlNamespaceResolver context, params IDirective[] directives) : this(
-            context,
-            new ManyOf<IDirective>(directives)
-        )
-        { }
-
-        /// <summary>
-        /// Processor of Xambly directives, main entry point to the module.
-        /// 
-        /// <para>For example, to modify a DOM document:
-        /// 
-        /// <example>
-        /// XMLDocument dom = ....
-        /// new Xembler(
-        /// new Directives()
-        ///     .xpath("/root")
-        ///     .addIfAbsent("employees")
-        ///     .add("employee")
-        ///     .attr("id", 6564)
-        /// ).apply(dom);
-        /// </example>
-        /// </para>
-        /// 
-        /// <para>You can also convert your Xambly directives directly to XML document:
-        /// 
-        /// <example>
-        /// String xml = new Xembler(
-        /// new Directives()
-        ///     .xpath("/root")
-        ///     .addIfAbsent("employees")
-        ///     .add("employee")
-        ///     .attr("id", 6564)
-        /// ).xml("root");
-        /// </example>
-        /// </para>
-        /// </summary>
-        public Xambler(IXmlNamespaceResolver context, IEnumerable<IDirective> directives)
+        public Xambler(IEnumerable<IDirective> directives)
         {
             this.directives = directives;
-            this.context = context;
         }
 
         /// <summary>
@@ -244,14 +169,12 @@ namespace Yaapii.Xambly
                 );
 
             int pos = 1;
-
             IStack stack = new DomStack();
-
             foreach (var dir in this.directives)
             {
                 try
                 {
-                    cursor = dir.Exec(dom, cursor, stack, this.context);
+                    cursor = dir.Exec(dom, cursor, stack);
                 }
                 //catch (ImpossibleModificationException ex)
                 //{
@@ -372,9 +295,11 @@ namespace Yaapii.Xambly
 
         public XDocument Dom()
         {
-            var dom = new XDocument();
-            var result = this.Apply(dom);
-            return dom;
+            var result = new XDocument();
+
+            this.Apply(result);
+
+            return result;
         }
     }
 }

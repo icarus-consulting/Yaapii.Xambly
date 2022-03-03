@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -87,7 +86,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void RemoveDomNodesDirectly()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
@@ -99,8 +97,7 @@ namespace Yaapii.Xambly.Directive.Tests
             new RemoveDirective().Exec(
                 dom,
                 new DomCursor(new ManyOf<XNode>(first)),
-                new DomStack(),
-                resolver
+                new DomStack()
             );
 
             Assert.Equal(
@@ -112,7 +109,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void CursorPointsToParents()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
@@ -131,8 +127,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 new RemoveDirective().Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(frstChild, scndChild)),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 );
             Assert.Equal(
                 new ManyOf<XNode>(first, second),

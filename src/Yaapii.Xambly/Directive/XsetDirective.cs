@@ -59,9 +59,8 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Node for the changes</param>
         /// <param name="cursor">Elements to change the text for</param>
         /// <param name="stack"></param>
-        /// <param name="context">Context that knows XML namespaces</param>
         /// <returns>New current nodes</returns>
-        public ICursor Exec(XNode dom, ICursor cursor, IStack stack, IXmlNamespaceResolver context)
+        public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var nav = dom.CreateNavigator();
             var values = new Dictionary<XElement, string>(0);

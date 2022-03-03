@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -34,7 +33,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void SetsDefaultNamespace()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var root =
                 new XElement("f",
                     new XElement("g")
@@ -49,8 +47,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomCursor(
                     new ManyOf<XNode>(root)
                 ),
-                new DomStack(),
-                resolver
+                new DomStack()
             );
 
             Assert.Equal(
@@ -140,7 +137,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void SetsPrefixedNamespace()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var root = new XElement("rooot");
             var dom = new XDocument(root);
 
@@ -150,8 +146,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomCursor(
                     new ManyOf<XNode>(root)
                 ),
-                new DomStack(),
-                resolver
+                new DomStack()
             );
 
             Assert.Equal(
@@ -259,10 +254,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsPrefixedNamespaceToAttributes()
         {
             var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("nice", "MyNiceNamespace");
             new Xambler(
-                nsResolver,
                 new Directives()
                 .Add("root")
                     .Add("parent")
@@ -280,10 +272,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsPrefixedNamespaceOnlyToNodes()
         {
             var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("nice", "MyNiceNamespace");
             new Xambler(
-                nsResolver,
                 new Directives()
                 .Add("root")
                     .Add("parent")
@@ -301,10 +290,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void AddsPrefixedNamespaceOnlyToAttributes()
         {
             var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("nice", "MyNiceNamespace");
             new Xambler(
-                nsResolver,
                 new Directives()
                 .Add("root")
                     .Add("parent")

@@ -67,7 +67,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void SetTextDirectlyIntoDomNodes()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -82,8 +81,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new DomCursor(
                                 new ManyOf<XNode>(first, second)
                                 ),
-                        new DomStack(),
-                        resolver
+                        new DomStack()
                     );
 
             Assert.Equal(
@@ -96,8 +94,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ThrowsForInvalidCharacter()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
-
             Assert.Throws<XmlException>(() =>
                 new SetDirective("\0invalid").Exec(
                     new XDocument(),
@@ -106,8 +102,7 @@ namespace Yaapii.Xambly.Directive.Tests
                             new XElement("rot")
                         )
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }

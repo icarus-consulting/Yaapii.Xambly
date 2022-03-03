@@ -20,10 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.IO;
-using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Cursor;
@@ -33,11 +30,16 @@ namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class XpathDirectiveTests
     {
-        [Theory]
-        [InlineData("/root/foo[@bar=1]/test")]
-        [InlineData("/root/bar")]
-        public void FindsNodesWithXpathExpression(string testXPath)
+        [Fact]
+        public void FindsNodesWithXpathExpression_()
         {
+            var expected =
+                "<root>" +
+                    "<foo bar=\"1\">" +
+                        "<test />" +
+                    "</foo>" +
+                    "<bar />" +
+                "</root>";
             var dom = new XDocument();
             new Xambler(
                new ManyOf<IDirective>(
@@ -54,17 +56,16 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("test")
             ).Apply(dom);
 
-            Assert.NotNull(
-                this.NavigatorFromXPath(
-                    dom.ToString(SaveOptions.DisableFormatting),
-                    testXPath
-                )
+            Assert.Equal(
+                expected,
+                dom.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void IgnoresEmptySearches()
         {
+            var expected = "<top><hey /></top>";
             var dom =
                 new XDocument(
                     new XElement("top")
@@ -76,18 +77,15 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("hey")
             ).Apply(dom);
 
-            Assert.NotNull(
-                this.NavigatorFromXPath(
-                    dom.ToString(SaveOptions.DisableFormatting),
-                    "/top/hey"
-                )
+            Assert.Equal(
+                expected,
+                dom.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void FindsNodesByXpathDirectly()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -104,8 +102,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new DomCursor(
                         new ManyOf<XNode>(first)
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
@@ -113,7 +110,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsNodesInEmptyDom()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             Assert.Empty(
@@ -123,8 +119,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new DomCursor(
                         new ManyOf<XNode>()
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
@@ -132,7 +127,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithDoubleQuotes()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             new Xambler(
@@ -149,8 +143,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new DomCursor(
                         new ManyOf<XNode>(dom)
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
@@ -158,7 +151,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithSingleQuotes()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
 
             new Xambler(
@@ -175,8 +167,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new DomCursor(
                         new ManyOf<XNode>(dom)
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
@@ -187,6 +178,7 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void FindsRootInClonedNode()
         {
+            var expected = "<high><boom-5 /></high>";
             var dom =
                 new XDocument(
                     new XElement("high")
@@ -199,18 +191,15 @@ namespace Yaapii.Xambly.Directive.Tests
                 new AddDirective("boom-5")
             ).Apply(clone);
 
-            Assert.NotNull(
-                this.NavigatorFromXPath(
-                    clone.ToString(SaveOptions.DisableFormatting),
-                    "/high/boom-5"
-                )
+            Assert.Equal(
+                expected,
+                clone.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void NavigatesFromRoot()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("child");
@@ -223,8 +212,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 .Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(first)),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
@@ -232,7 +220,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void NavigatesFromRootWithStrangerCursor()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("child");
@@ -248,20 +235,16 @@ namespace Yaapii.Xambly.Directive.Tests
                 .Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(strangerCursor)),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
 
         [Fact]
-        public void DefaultNamespaceIsRequiredInXPath()
+        public void WorksWithDefaultNamespace()
         {
             var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("def", "MyDefaultNamespaceUri");
             new Xambler(
-                nsResolver,
                 new Directives()
                 .Add("root")
                     .Add("parent")
@@ -269,7 +252,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         .Set("child value")
                 .Xpath("/root")
                 .Ns("", "MyDefaultNamespaceUri")
-                    .Xpath("/def:root/def:parent")
+                    .Xpath("/def:root/def:parent", "def")
                     .Attr("key", "value")
             ).Apply(dom);
 
@@ -280,13 +263,108 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void PrefixedNamespaceIsRequiredInXPath()
+        public void WorksWithDefaultNamespaceOfChildren()
+        {
+            var expected =
+                "<root>" +
+                    "<child xmlns=\"childDefaultNamespace\">" +
+                        "<node />" +
+                    "</child>" +
+                    "<child xmlns=\"anotherChildDefaultNamespace\" />" +
+                "</root>";
+            var dom = new XDocument();
+            new Xambler(
+                new Directives()
+                .Add("root")
+                    .Add("child")
+                        .Ns("", "childDefaultNamespace").Up()
+                    .Add("child")
+                        .Ns("", "anotherChildDefaultNamespace")
+                    .Xpath("/root/cdef:child",
+                        "",
+                        "childDefaultNamespace", "cdef"
+                    )
+                        .Add("node")
+            ).Apply(dom);
+
+            Assert.Equal(
+                expected,
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void WorksSeveralDefaultNamespacesOfChildren()
+        {
+            var expected =
+                "<root>" +
+                    "<child xmlns=\"childDefaultNamespace\">" +
+                        "<lower xmlns=\"anotherChildDefaultNamespace\">" +
+                            "<node />" +
+                        "</lower>" +
+                    "</child>" +
+                "</root>";
+            var dom = new XDocument();
+            new Xambler(
+                new Directives()
+                .Add("root")
+                    .Add("child")
+                        .Ns("", "childDefaultNamespace")
+                        .Add("lower")
+                            .Ns("", "anotherChildDefaultNamespace")
+                            .Xpath("/root/def1:child/def2:lower",
+                                "",
+                                "childDefaultNamespace", "def1",
+                                "anotherChildDefaultNamespace", "def2"
+                            )
+                            .Add("node")
+            ).Apply(dom);
+
+            Assert.Equal(
+                expected,
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void WorksWithSeveralDefaultNamespacesOfChildrenAndRootDefaultNamespace()
+        {
+            var expected =
+                "<root xmlns=\"rootDefaultNamespace\">" +
+                    "<child xmlns=\"childDefaultNamespace\">" +
+                        "<lower xmlns=\"anotherChildDefaultNamespace\">" +
+                            "<node />" +
+                        "</lower>" +
+                    "</child>" +
+                "</root>";
+            var dom = new XDocument();
+            new Xambler(
+                new Directives()
+                .Add("root")
+                    .Ns("", "rootDefaultNamespace")
+                    .Add("child")
+                        .Ns("", "childDefaultNamespace")
+                        .Add("lower")
+                            .Ns("", "anotherChildDefaultNamespace")
+                            .Xpath("/def:root/def1:child/def2:lower",
+                                "def",
+                                "childDefaultNamespace", "def1",
+                                "anotherChildDefaultNamespace", "def2"
+                            )
+                            .Add("node")
+            ).Apply(dom);
+
+            Assert.Equal(
+                expected,
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void WorksWithNamespacePrefixes()
         {
             var dom = new XDocument();
-            var nsResolver = new XmlNamespaceManager(new NameTable());
-            nsResolver.AddNamespace("nice", "MyNiceNamespace");
             new Xambler(
-                nsResolver,
                 new Directives()
                 .Add("root")
                     .Add("parent")
@@ -302,45 +380,6 @@ namespace Yaapii.Xambly.Directive.Tests
                 "<nice:root xmlns:nice=\"MyNiceNamespace\"><nice:parent key=\"value\"><nice:child>child value</nice:child></nice:parent></nice:root>",
                 dom.ToString(SaveOptions.DisableFormatting)
             );
-        }
-
-
-        private XPathNavigator NavigatorFromXPath(string xml, string xpath)
-        {
-            var nav =
-                new XPathDocument(
-                    new StringReader(xml)
-                ).CreateNavigator();
-
-            var nsm = this.NamespacesOfDom(xml);
-            return nav.SelectSingleNode(xpath, nsm);
-        }
-
-        private XmlNamespaceManager NamespacesOfDom(string xml)
-        {
-            var xDoc = new XmlDocument();
-            xDoc.LoadXml(xml);
-            return this.NamespacesOfDom(xDoc);
-        }
-
-        private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
-        {
-            XmlNamespaceManager result = new XmlNamespaceManager(xDoc.NameTable);
-            XPathNavigator xNav = xDoc.CreateNavigator();
-            while (xNav.MoveToFollowing(XPathNodeType.Element))
-            {
-                var localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
-                foreach (var localNamespace in localNamespaces)
-                {
-                    string prefix = localNamespace.Key;
-                    if (string.IsNullOrEmpty(prefix))
-                        prefix = "";
-
-                    result.AddNamespace(prefix, localNamespace.Value);
-                }
-            }
-
-            return result;
         }
     }
 }

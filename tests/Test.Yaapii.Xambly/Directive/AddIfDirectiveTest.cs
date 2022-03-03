@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Xml;
 using System.Xml.Linq;
 using Xunit;
 using Yaapii.Atoms.Enumerable;
@@ -54,7 +53,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddDomNodesDirectly()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root =
                 new XElement("root",
@@ -68,8 +66,7 @@ namespace Yaapii.Xambly.Directive.Tests
             new AddIfDirective("b").Exec(
                 dom,
                 new DomCursor(new ManyOf<XNode>(root)),
-                new DomStack(),
-                resolver
+                new DomStack()
             );
 
             Assert.Equal(

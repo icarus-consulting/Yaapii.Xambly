@@ -38,7 +38,6 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             try
             {
-                var resolver = new XmlNamespaceManager(new NameTable());
                 var doc = new XDocument();
                 var root = new XElement("xxx");
                 var first = new XElement("first");
@@ -56,8 +55,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 .Exec(
                     doc,
                     new DomCursor(new List<XNode>() { first }),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 );
                 doc.Save("XsetDirectiveTests.xml");
 

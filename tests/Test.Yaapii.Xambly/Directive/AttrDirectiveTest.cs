@@ -93,7 +93,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsAttributeDirectly()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
             var dom = new XDocument();
             var root = new XElement("xxx");
             var first = new XElement("a");
@@ -105,8 +104,7 @@ namespace Yaapii.Xambly.Directive.Tests
             new AttrDirective("x", "y").Exec(
                     dom,
                     new DomCursor(new ManyOf<XNode>(second)),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 );
 
             Assert.Equal(
@@ -119,8 +117,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ThrowsForInvalidCharacter()
         {
-            var resolver = new XmlNamespaceManager(new NameTable());
-
             Assert.Throws<XmlException>(() =>
                 new AttrDirective("valid", "\0invalid")
                     .Exec(
@@ -130,8 +126,7 @@ namespace Yaapii.Xambly.Directive.Tests
                             new XElement("rot")
                         )
                     ),
-                    new DomStack(),
-                    resolver
+                    new DomStack()
                 )
             );
         }
