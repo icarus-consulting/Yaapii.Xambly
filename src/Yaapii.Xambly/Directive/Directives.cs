@@ -527,11 +527,11 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
-        /// Go to xpath.
+        /// Moves cursor to the nodes found by XPath.
         /// </summary>
-        /// <param name="path">path to go to</param>
-        /// <exception cref="IllegalArgumentException"/>
-        /// <returns>This object</returns>
+        /// <param name="path">XPath</param>
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defNamesapceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
         public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary)
         {
             try

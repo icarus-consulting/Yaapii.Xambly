@@ -37,7 +37,7 @@ namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// XPATH directive.
-    /// Moves cursor to the nodes found by XPath
+    /// Moves cursor to the nodes found by XPath.
     /// </summary>
     public class XpathDirective : IDirective
     {
@@ -51,6 +51,13 @@ namespace Yaapii.Xambly.Directive
         private readonly string rootDefNamespacePrefix;
         private readonly IDictionary<string, string> defaultNamespaceAndPrefix;
 
+        /// <summary>
+        /// XPATH directive.
+        /// Moves cursor to the nodes found by XPath.
+        /// </summary>
+        /// <param name="path">XPath</param>
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defNamesapceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
         public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary) : this(
             path,
             rootDefNamespacePrefix,
@@ -60,10 +67,11 @@ namespace Yaapii.Xambly.Directive
 
         /// <summary>
         /// XPATH directive.
-        /// Moves cursor to the nodes found by XPath
+        /// Moves cursor to the nodes found by XPath.
         /// </summary>
         /// <param name="path">XPath</param>
-        /// <exception cref="XmlContentException">If invalid input</exception>
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defaultNamespaceAndPrefix">Defining default namespace prefixes from children nodes. Key = Namespace; Value = Prefix</param>
         public XpathDirective(string path, string rootDefNamespacePrefix, IDictionary<string, string> defaultNamespaceAndPrefix)
         {
             this.expr = new Arg.AttributeArg(path);
