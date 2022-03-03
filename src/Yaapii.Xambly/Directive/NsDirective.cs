@@ -1,6 +1,6 @@
 ﻿// MIT License
 //
-// Copyright(c) 2021 ICARUS Consulting GmbH
+// Copyright(c) 2022 ICARUS Consulting GmbH
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Func;
 using Yaapii.Atoms.Scalar;
+using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
@@ -47,9 +48,6 @@ namespace Yaapii.Xambly.Directive
     /// 
     /// Hint:
     /// After declaring a namespace the XPath will be affected.
-    /// The namespace resolver is not updated by adding namespaces.
-    /// To address nodes belonging to a namespace the namesapce resolver
-    /// injected to the Xambler object must be set up accordingly.
     /// </summary>
     public class NsDirective : IDirective
     {
@@ -57,8 +55,7 @@ namespace Yaapii.Xambly.Directive
 
         private readonly IScalar<string> prefix;
         private readonly IScalar<XNamespace> ns;
-        private readonly IEnumerable<string> purposeDict;
-        private readonly string purpose;
+        private readonly IText purpose;
         private readonly bool inheritance;
 
 
@@ -76,9 +73,6 @@ namespace Yaapii.Xambly.Directive
         /// 
         /// Hint:
         /// After declaring a namespace the XPath will be affected.
-        /// The namespace resolver is not updated by adding namespaces.
-        /// To address nodes belonging to a namespace the namesapce resolver
-        /// injected to the Xambler object must be set up accordingly.
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>
@@ -106,9 +100,6 @@ namespace Yaapii.Xambly.Directive
         /// 
         /// Hint:
         /// After declaring a namespace the XPath will be affected.
-        /// The namespace resolver is not updated by adding namespaces.
-        /// To address nodes belonging to a namespace the namesapce resolver
-        /// injected to the Xambler object must be set up accordingly.
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>
@@ -139,11 +130,26 @@ namespace Yaapii.Xambly.Directive
         )
         { }
 
-        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, IEnumerable<string> purposeDict, string purpose, bool inheritance)
+        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, IEnumerable<string> purposes, string purpose, bool inheritance) : this(
+            prefix,
+            ns,
+            new TextOf(() =>
+            {
+                new FailWhen(
+                    !purposes.Contains(purpose),
+                    $"Invalid value for purpose '{purpose}'. Valid values are: '{new Atoms.Text.Joined("', '", purposes)}'."
+                ).Go();
+                return purpose;
+            }),
+            inheritance
+        )
+        { }
+
+
+        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, IText purpose, bool inheritance)
         {
             this.prefix = prefix;
             this.ns = ns;
-            this.purposeDict = purposeDict;
             this.purpose = purpose;
             this.inheritance = inheritance;
         }
@@ -167,7 +173,6 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            this.ValidatePurpose();
             try
             {
                 if (this.prefix.Value() == string.Empty)
@@ -184,14 +189,6 @@ namespace Yaapii.Xambly.Directive
             {
                 throw new IllegalArgumentException($"Failed to understand XML content, {this}", ex);
             }
-        }
-
-        private void ValidatePurpose()
-        {
-            new FailWhen(
-                !this.purposeDict.Contains(this.purpose),
-                $"Invalid value for purpose '{this.purpose}'. Valid values are: '{new Atoms.Text.Joined("', '", this.purposeDict)}'."
-            ).Go();
         }
 
         private void ApplyDefaultNS(XNode dom, ICursor cursor, IStack stack)

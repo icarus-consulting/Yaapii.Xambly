@@ -16,7 +16,7 @@
 
 using System.Collections.Generic;
 using System.Xml.Linq;
-using Yaapii.Atoms.Collection;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
 
