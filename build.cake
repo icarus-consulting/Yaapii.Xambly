@@ -169,6 +169,14 @@ Task("UnitTests")
         {
             skipped.Add(name);
         }
+        else if(!name.StartsWith("TmxTest"))
+        {
+            Information($"Testing {name}");
+            DotNetCoreTest(
+                test.FullPath,
+                settings
+            );
+        }
     }
     if (skipped.Count > 0)
     {
