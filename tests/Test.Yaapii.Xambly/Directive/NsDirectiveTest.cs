@@ -294,14 +294,44 @@ namespace Yaapii.Xambly.Directive.Tests
                 new Directives()
                 .Add("root")
                     .Add("parent")
-                    .Attr("key", "value")
-                    .Ns("nice", "MyNiceNamespace", "attributes")
+                        .Attr("key", "value")
+                        .Ns("nice", "MyNiceNamespace", "attributes")
             ).Apply(dom);
+
+            //var x = dom.ToString();
 
             Assert.Equal(
                 "<root xmlns:nice=\"MyNiceNamespace\"><parent nice:key=\"value\" /></root>",
                 dom.ToString(SaveOptions.DisableFormatting)
             );
         }
+
+        //[Fact]
+        //public void AddsPrefixedNamespaceOnlyToAttributes_()
+        //{
+        //    var dom = new XDocument();
+        //    new Xambler(
+        //        new Directives()
+        //        .Add("Workbook")
+        //        .Ns("", "urn:schemas-microsoft-com:office:spreadsheet")
+        //        //.Push().Append(this.DocumentProperties()).Pop()
+        //        //.Push().Append(this.OfficeDocumentSettings()).Pop()
+        //        //.Push().Append(this.ExcelWorkbook()).Pop()
+        //        //.Push().Append(this.Names()).Pop()
+        //        .Add("Names")
+        //            .Add("NamedRange")
+
+        //                .Attr("Name", "MA_Name")
+        //                .Attr("RefersTo", "=Tabelle1!R2C2")
+        //                .Ns("ss", "urn:schemas-microsoft-com:office:spreadsheet", "attributes")
+        //    ).Apply(dom);
+
+        //    var x = dom.ToString();
+
+        //    Assert.Equal(
+        //        "<root xmlns:nice=\"MyNiceNamespace\"><parent nice:key=\"value\" /></root>",
+        //        dom.ToString(SaveOptions.DisableFormatting)
+        //    );
+        //}
     }
 }

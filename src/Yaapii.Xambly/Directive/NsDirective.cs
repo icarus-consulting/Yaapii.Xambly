@@ -236,11 +236,11 @@ namespace Yaapii.Xambly.Directive
                             if (candidate is XElement)
                             {
                                 var element = candidate as XElement;
-                                if (this.purpose.Equals("nodes") || this.purpose.Equals("nodesAndAttributes"))
+                                if (this.purpose.AsString().Equals("nodes") || this.purpose.AsString().Equals("nodesAndAttributes"))
                                 {
                                     this.SetNodeNamespace(element);
                                 }
-                                if (this.purpose.Equals("attributes") || this.purpose.Equals("nodesAndAttributes"))
+                                if (this.purpose.AsString().Equals("attributes") || this.purpose.AsString().Equals("nodesAndAttributes"))
                                 {
                                     this.SetAttributeNamespace(element);
                                 }
