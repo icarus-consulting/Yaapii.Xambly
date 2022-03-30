@@ -130,18 +130,16 @@ namespace Yaapii.Xambly.Directive
                 throw
                     new ImpossibleModificationException("Cannot copy a node which is not of type XContainer");
             }
-            var ctn = node as XContainer;
-            var src =
-                new Mapped<XNode, XmlNodeType>(
-                    xnode => xnode.NodeType,
-                    ctn.Nodes()
-                );
+            var childNodes = (node as XContainer).Nodes();
             var containsElement =
                 new Contains<XmlNodeType>(
-                    src,
+                    new Mapped<XNode, XmlNodeType>(
+                        xnode => xnode.NodeType,
+                        childNodes
+                    ),
                     XmlNodeType.Element
                 ).Value();
-            foreach (XNode child in ctn.Nodes())
+            foreach (XNode child in childNodes)
             {
                 switch (child.NodeType)
                 {
@@ -170,7 +168,7 @@ namespace Yaapii.Xambly.Directive
                     case XmlNodeType.DocumentType:
                         break;
                     default:
-                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child.ToString()}");
+                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child}");
                 }
             }
 
