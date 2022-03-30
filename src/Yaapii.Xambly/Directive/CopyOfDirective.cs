@@ -27,7 +27,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Enumerable;
-using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Scalar;
 using Yaapii.Xambly.Error;
 
@@ -126,16 +125,17 @@ namespace Yaapii.Xambly.Directive
                     dirs.Attr(attr.Name, attr.Value);
                 }
             }
+            if (!(node is XContainer))
+            {
+                throw
+                    new ImpossibleModificationException("Cannot copy a node which is not of type XContainer");
+            }
             var ctn = node as XContainer;
-            new FailPrecise(
-                    new FailNull(ctn),
-                    new ImpossibleModificationException("Cannot copy a node which is not of type XContainer")
-                ).Go();
-
-            var src = new Mapped<XNode, XmlNodeType>(
-                                    xnode => xnode.NodeType,
-                                    ctn.Nodes()
-                                );
+            var src =
+                new Mapped<XNode, XmlNodeType>(
+                    xnode => xnode.NodeType,
+                    ctn.Nodes()
+                );
             var containsElement =
                 new Contains<XmlNodeType>(
                     src,
@@ -179,7 +179,7 @@ namespace Yaapii.Xambly.Directive
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }
