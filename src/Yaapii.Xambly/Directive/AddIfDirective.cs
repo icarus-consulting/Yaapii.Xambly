@@ -76,8 +76,6 @@ namespace Yaapii.Xambly.Directive
                     new FailNull(ctn),
                     new ImpossibleModificationException("")
                 ).Go();
-
-                var kids = ctn.Elements();
                 XNode target = null;
 
                 foreach (var kid in ctn.Elements())
@@ -91,8 +89,6 @@ namespace Yaapii.Xambly.Directive
 
                 if (target == null)
                 {
-                    XDocument doc = new XmlDocumentOf(dom).Value();
-
                     target = new XElement(this.name.Raw());
                     ctn.Add(target);
                 }
