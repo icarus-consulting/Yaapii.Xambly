@@ -26,20 +26,37 @@ using System.Xml.Linq;
 
 namespace Yaapii.Xambly.Tests
 {
+    /// <summary>
+    /// A fake Cursor
+    /// </summary>
     internal class FkCursor : ICursor
     {
-        private readonly List<XNode> _src = new List<XNode>();
-        public FkCursor()
+        private readonly IList<XNode> src;
+
+        /// <summary>
+        /// A fake Cursor
+        /// </summary>
+        public FkCursor() : this(
+            new List<XNode>()
+        )
         { }
+
+        /// <summary>
+        /// A fake Cursor
+        /// </summary>
+        public FkCursor(IList<XNode> source)
+        {
+            this.src = source;
+        }
 
         public IEnumerator<XNode> GetEnumerator()
         {
-            return this._src.GetEnumerator();
+            return this.src.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }
