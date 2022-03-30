@@ -177,11 +177,11 @@ namespace Yaapii.Xambly.Directive
             {
                 if (this.prefix.Value() == string.Empty)
                 {
-                    this.ApplyDefaultNS(dom, cursor, stack);
+                    ApplyDefaultNS(dom, cursor, stack);
                 }
                 else
                 {
-                    this.ApplyPrefixedNS(dom, cursor, stack);
+                    ApplyPrefixedNS(dom, cursor, stack);
                 }
                 return cursor;
             }
@@ -193,7 +193,7 @@ namespace Yaapii.Xambly.Directive
 
         private void ApplyDefaultNS(XNode dom, ICursor cursor, IStack stack)
         {
-            this.SetNsToNodesSelectedByCursor(dom, cursor, stack);
+            SetNsToNodesSelectedByCursor(dom, cursor, stack);
             foreach (var node in cursor)
             {
                 new FailWhen(
@@ -226,8 +226,8 @@ namespace Yaapii.Xambly.Directive
             new Each<XNode>(node =>
                 {
                     var candidates =
-                        this.Candidates(
-                                this.StrictElement(
+                        Candidates(
+                                StrictElement(
                                     node
                                 )
                             );
@@ -238,11 +238,11 @@ namespace Yaapii.Xambly.Directive
                                 var element = candidate as XElement;
                                 if (this.purpose.AsString().Equals("nodes") || this.purpose.AsString().Equals("nodesAndAttributes"))
                                 {
-                                    this.SetNodeNamespace(element);
+                                    SetNodeNamespace(element);
                                 }
                                 if (this.purpose.AsString().Equals("attributes") || this.purpose.AsString().Equals("nodesAndAttributes"))
                                 {
-                                    this.SetAttributeNamespace(element);
+                                    SetAttributeNamespace(element);
                                 }
                             }
                         },
@@ -251,7 +251,7 @@ namespace Yaapii.Xambly.Directive
                 },
                 cursor
             ).Invoke();
-            this.SetNsToRoot(dom);
+            SetNsToRoot(dom);
         }
 
         private IEnumerable<XNode> Candidates(XElement node)
@@ -292,10 +292,10 @@ namespace Yaapii.Xambly.Directive
 
         private void SetNsToRoot(XNode dom)
         {
-            var root = this.RootNode(dom);
+            var root = RootNode(dom);
             var nsKey = XNamespace.Xmlns + this.prefix.Value();
-            this.RemoveAttributeWhenExists(root, nsKey);
-            this.AddNsAttribute(root, nsKey, this.ns.Value().NamespaceName);
+            RemoveAttributeWhenExists(root, nsKey);
+            AddNsAttribute(root, nsKey, this.ns.Value().NamespaceName);
         }
 
         private XElement RootNode(XNode dom)

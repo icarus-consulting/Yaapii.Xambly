@@ -98,7 +98,7 @@ namespace Yaapii.Xambly
         /// <param name="dirs">directives</param>
         public Directives(IEnumerable<IDirective> dirs)
         {
-            this.Append(dirs);
+            Append(dirs);
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Yaapii.Xambly
         /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// Append all directives.
@@ -266,9 +266,9 @@ namespace Yaapii.Xambly
         {
             foreach (KeyValuePair<Key, Value> entry in nodes)
             {
-                this.Add(entry.Key.ToString())
-                    .Set(entry.Value.ToString())
-                    .Up();
+                Add(entry.Key.ToString())
+                .Set(entry.Value.ToString())
+                .Up();
             }
             return this;
         }

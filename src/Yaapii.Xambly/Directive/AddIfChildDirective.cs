@@ -53,12 +53,12 @@ namespace Yaapii.Xambly
             var targets = new List<XNode>();
             foreach (var node in cursor)
             {
-                var kids = this.Children(node);
+                var kids = Children(node);
                 XNode target = null;
                 var len = kids.Count;
                 for (int i = 0; i < len; i++)
                 {
-                    if (this.Matches(kids[i]))
+                    if (Matches(kids[i]))
                     {
                         {
                             target = kids[i];
@@ -83,7 +83,7 @@ namespace Yaapii.Xambly
             var xElement = node as XElement;
             if (string.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
             {
-                foreach (XNode child in this.Children(node))
+                foreach (XNode child in Children(node))
                 {
                     var xChild = child as XElement;
                     if (string.Compare(xChild.Name.LocalName, this.child.Raw(), true) == 0 && string.Compare(xChild.Value, this.content, true) == 0)

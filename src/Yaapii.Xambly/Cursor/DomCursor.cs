@@ -57,7 +57,7 @@ namespace Yaapii.Xambly.Cursor
         /// <returns>Enumerator</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

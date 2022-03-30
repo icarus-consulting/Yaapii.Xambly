@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -51,9 +50,9 @@ namespace Yaapii.Xambly.Directive.Tests
                 ).Apply(dom);
 
             Assert.True(
-                null != this.FromXPath(
+                null != FromXPath(
                     dom.ToString(SaveOptions.DisableFormatting), "/root/foo") &&
-                null != this.FromXPath(
+                null != FromXPath(
                     dom.ToString(SaveOptions.DisableFormatting), "/root/foo/bar/boom"));
         }
 
@@ -109,13 +108,10 @@ namespace Yaapii.Xambly.Directive.Tests
                 ).Apply(dom);
             });
         }
-        #region Helper
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="xpath"></param>
-        /// <returns></returns>
         private XPathNavigator FromXPath(string xml, string xpath)
         {
             var nav =
@@ -123,7 +119,7 @@ namespace Yaapii.Xambly.Directive.Tests
                     new StringReader(xml)
                 ).CreateNavigator();
 
-            var nsm = this.NamespacesOfDom(xml);
+            var nsm = NamespacesOfDom(xml);
             return nav.SelectSingleNode(xpath, nsm);
         }
 
@@ -131,18 +127,16 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             var xDoc = new XmlDocument();
             xDoc.LoadXml(xml);
-            return this.NamespacesOfDom(xDoc);
+            return NamespacesOfDom(xDoc);
         }
 
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
         {
             XmlNamespaceManager result = new XmlNamespaceManager(xDoc.NameTable);
-
-            IDictionary<string, string> localNamespaces = null;
             XPathNavigator xNav = xDoc.CreateNavigator();
             while (xNav.MoveToFollowing(XPathNodeType.Element))
             {
-                localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
+                var localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
                 foreach (var localNamespace in localNamespaces)
                 {
                     string prefix = localNamespace.Key;
@@ -155,6 +149,5 @@ namespace Yaapii.Xambly.Directive.Tests
 
             return result;
         }
-        # endregion Helper
     }
 }

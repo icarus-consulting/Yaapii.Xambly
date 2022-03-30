@@ -48,11 +48,11 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The same number</returns>
         public Char Value()
         {
-            this.Range(this._chr, 0x00, 0x08);
-            this.Range(this._chr, 0x0B, 0x0C);
-            this.Range(this._chr, 0x0E, 0x1F);
-            this.Range(this._chr, 0x7F, 0x84);
-            this.Range(this._chr, 0x86, 0x9F);
+            Range(this._chr, 0x00, 0x08);
+            Range(this._chr, 0x0B, 0x0C);
+            Range(this._chr, 0x0E, 0x1F);
+            Range(this._chr, 0x7F, 0x84);
+            Range(this._chr, 0x86, 0x9F);
             return this._chr;
         }
 

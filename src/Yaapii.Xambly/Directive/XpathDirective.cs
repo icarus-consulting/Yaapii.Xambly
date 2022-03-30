@@ -99,7 +99,7 @@ namespace Yaapii.Xambly.Directive
             string query = this.expr.Raw();
 
             IEnumerable<XNode> current = cursor;
-            if (this.AbsoluteXPath(query))
+            if (AbsoluteXPath(query))
             {
                 current =
                     new ManyOf<XNode>(
@@ -109,7 +109,7 @@ namespace Yaapii.Xambly.Directive
 
             return
                 new DomCursor(
-                    this.Traditional(query, dom, current)
+                    Traditional(query, dom, current)
                 );
 
         }
@@ -125,7 +125,7 @@ namespace Yaapii.Xambly.Directive
         private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current)
         {
             var targets = new HashSet<XNode>();
-            foreach (XNode node in this.Roots(dom, current))
+            foreach (XNode node in Roots(dom, current))
             {
                 IEnumerable<XElement> list;
                 try

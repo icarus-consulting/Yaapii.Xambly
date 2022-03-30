@@ -48,7 +48,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="obj">object to check</param>
         public override bool Equals(object obj)
         {
-            return this.GetHashCode() == obj.GetHashCode();
+            return GetHashCode() == obj.GetHashCode();
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Yaapii.Xambly.Directive
                     new Formatted(
                         "{0} current nodes [{1}] while strictly {2} expected",
                         lengthOfCursor,
-                        this.Names(cursor),
+                        Names(cursor),
                         this.number
                     ).AsString());
             }

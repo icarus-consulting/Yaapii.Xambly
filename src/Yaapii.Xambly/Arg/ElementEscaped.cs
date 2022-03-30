@@ -57,7 +57,7 @@ namespace Yaapii.Xambly.Arg
         /// <returns>The text</returns>
         public string AsString()
         {
-            this.Validate();
+            Validate();
             return
                 new StringBuilder(this.src.AsString().Length + 2 + this.src.AsString().Length)
                     .Append('"')
@@ -73,7 +73,7 @@ namespace Yaapii.Xambly.Arg
         /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {
-            return other.AsString().Equals(this.AsString());
+            return other.AsString().Equals(AsString());
         }
 
 

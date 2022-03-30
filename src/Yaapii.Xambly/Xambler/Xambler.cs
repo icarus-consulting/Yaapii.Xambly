@@ -145,7 +145,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                return this.Apply(dom);
+                return Apply(dom);
             }
             catch (Exception ex)
             {
@@ -202,7 +202,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                return this.Dom();
+                return Dom();
             }
             catch (Exception ex)
             {
@@ -232,7 +232,7 @@ namespace Yaapii.Xambly
         {
             try
             {
-                return this.Xml(withHeader);
+                return Xml(withHeader);
             }
             catch (Exception ex)
             {
@@ -257,7 +257,7 @@ namespace Yaapii.Xambly
             using (var stringWriter = new StringWriter())
             using (var xmlTextWriter = XmlWriter.Create(stringWriter, settings))
             {
-                this.Dom().WriteTo(xmlTextWriter);
+                Dom().WriteTo(xmlTextWriter);
                 xmlTextWriter.Flush();
                 return stringWriter.GetStringBuilder().ToString();
             }
@@ -297,7 +297,7 @@ namespace Yaapii.Xambly
         {
             var result = new XDocument();
 
-            this.Apply(result);
+            Apply(result);
 
             return result;
         }
