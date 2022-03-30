@@ -24,10 +24,10 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// The default namespace (in the root node) can be given a prefix to use it in an XPath.
         /// Default namespaces defined in child nodes can be prefixed by defining a dictionary.
         /// </summary>
-        public ResolverFromDocument(XNode dom, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary) : this(
+        public ResolverFromDocument(XNode dom, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary) : this(
             dom,
             rootDefNamespacePrefix,
-            new MapOf(defNamesapceAndPrefixDictionary)
+            new MapOf(defnamespaceAndPrefixDictionary)
         )
         { }
 
@@ -36,7 +36,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// The default namespace (in the root node) can be given a prefix to use it in an XPath.
         /// Default namespaces defined in child nodes can be prefixed by defining a dictionary.
         /// </summary>
-        public ResolverFromDocument(XNode dom, string rootDefNamespacePrefix, IDictionary<string, string> defNamesapceAndPrefixDictionary) : this(
+        public ResolverFromDocument(XNode dom, string rootDefNamespacePrefix, IDictionary<string, string> defnamespaceAndPrefixDictionary) : this(
             ScalarOf.New<IXmlNamespaceResolver>(() =>
             {
                 var manager =
@@ -70,7 +70,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
                     },
                     rootNsAttributes
                 ).Invoke();
-                if (defNamesapceAndPrefixDictionary.Count > 0)
+                if (defnamespaceAndPrefixDictionary.Count > 0)
                 {
                     var childrenDefaultNsAttributes =
                         Filtered.New(attr =>
@@ -84,10 +84,10 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
                                 attr.Name.Namespace != XNamespace.None,
                                 $"Prefixed namespace declaration ony supported in root node but found in children: {attr}"
                             ).Go();
-                            if (defNamesapceAndPrefixDictionary.ContainsKey(attr.Value))
+                            if (defnamespaceAndPrefixDictionary.ContainsKey(attr.Value))
                             {
                                 manager.AddNamespace(
-                                    defNamesapceAndPrefixDictionary[attr.Value],
+                                    defnamespaceAndPrefixDictionary[attr.Value],
                                     attr.Value
                                 );
                             }

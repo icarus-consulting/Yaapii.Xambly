@@ -531,8 +531,8 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <param name="path">XPath</param>
         /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
-        /// <param name="defNamesapceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
-        public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary)
+        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
+        public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary)
         {
             try
             {
@@ -540,7 +540,7 @@ namespace Yaapii.Xambly
                     new XpathDirective(
                         path.ToString(),
                         rootDefNamespacePrefix,
-                        defNamesapceAndPrefixDictionary
+                        defnamespaceAndPrefixDictionary
                     )
                 );
             }
@@ -620,8 +620,8 @@ namespace Yaapii.Xambly
 
         /// <summary>
         /// Sets namespace of all current nodes selected by the cursor.
-        /// All child nodes are moved to the namespace (default).
-        /// All attributes are moved to the namespace (default).
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
         /// The namespace declaration will be done in the root node.
         /// 
         /// If the prefix is empty a default namespace will be created.
@@ -630,9 +630,6 @@ namespace Yaapii.Xambly
         /// 
         /// Hint:
         /// After declaring a namespace the XPath will be affected.
-        /// The namespace resolver is not updated by adding namespaces.
-        /// To address nodes belonging to a namespace the namesapce resolver
-        /// injected to the Xambler object must be set up accordingly.
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>

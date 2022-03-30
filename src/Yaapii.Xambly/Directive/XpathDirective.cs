@@ -57,11 +57,11 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="path">XPath</param>
         /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
-        /// <param name="defNamesapceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
-        public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defNamesapceAndPrefixDictionary) : this(
+        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
+        public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary) : this(
             path,
             rootDefNamespacePrefix,
-            new MapOf(defNamesapceAndPrefixDictionary)
+            new MapOf(defnamespaceAndPrefixDictionary)
         )
         { }
 

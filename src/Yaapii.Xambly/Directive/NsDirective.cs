@@ -38,8 +38,8 @@ namespace Yaapii.Xambly.Directive
     /// Namespace directive.
     /// 
     /// Sets namespace of all current nodes selected by the cursor.
-    /// All child nodes are moved to the namespace (default).
-    /// All attributes are moved to the namespace (default).
+    /// Namespace is applied to all child nodes (default).
+    /// Namespace is applied to all attributes (default).
     /// The namespace declaration will be done in the root node.
     /// 
     /// If the prefix is empty a default namespace will be created.
@@ -63,8 +63,8 @@ namespace Yaapii.Xambly.Directive
         /// Namespace directive.
         /// 
         /// Sets namespace of all current nodes selected by the cursor.
-        /// All child nodes are moved to the namespace (default).
-        /// All attributes are moved to the namespace (default).
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
         /// The namespace declaration will be done in the root node.
         /// 
         /// If the prefix is empty a default namespace will be created.
@@ -90,8 +90,8 @@ namespace Yaapii.Xambly.Directive
         /// Namespace directive.
         /// 
         /// Sets namespace of all current nodes selected by the cursor.
-        /// All child nodes are moved to the namespace (default).
-        /// All attributes are moved to the namespace (default).
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
         /// The namespace declaration will be done in the root node.
         /// 
         /// If the prefix is empty a default namespace will be created.
