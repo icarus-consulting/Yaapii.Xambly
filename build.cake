@@ -169,7 +169,7 @@ Task("UnitTests")
         {
             skipped.Add(name);
         }
-        else if(!name.StartsWith("TmxTest"))
+        else
         {
             Information($"Testing {name}");
             DotNetCoreTest(
