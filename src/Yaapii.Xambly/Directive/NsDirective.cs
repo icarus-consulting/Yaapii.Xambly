@@ -51,8 +51,6 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public class NsDirective : IDirective
     {
-        private const string DEFAULT_PURPOSE = "nodesAndAttributes";
-
         private readonly IScalar<string> prefix;
         private readonly IScalar<XNamespace> ns;
         private readonly IText purpose;
@@ -78,7 +76,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="ns">Namespace</param>
         /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
         /// <param name="inheritance">Is applied to the children</param>
-        public NsDirective(string prefix, string ns, string purpose = DEFAULT_PURPOSE, bool inheritance = true) : this(
+        public NsDirective(string prefix, string ns, string purpose, bool inheritance = true) : this(
             new Arg.AttributeArg(prefix),
             new Arg.AttributeArg(ns),
             purpose,
@@ -105,7 +103,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="ns">Namespace</param>
         /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
         /// <param name="inheritance">Is applied to the children</param>
-        public NsDirective(IArg prefix, IArg ns, string purpose = DEFAULT_PURPOSE, bool inheritance = true) : this(
+        public NsDirective(IArg prefix, IArg ns, string purpose, bool inheritance = true) : this(
             new ScalarOf<string>(() => prefix.Raw()),
             new ScalarOf<XNamespace>(() =>
             {
@@ -187,7 +185,7 @@ namespace Yaapii.Xambly.Directive
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException($"Failed to understand XML content, {this}", ex);
+                throw new IllegalArgumentException($"Can't set xmlns", ex);
             }
         }
 
@@ -196,13 +194,7 @@ namespace Yaapii.Xambly.Directive
             SetNsToNodesSelectedByCursor(dom, cursor, stack);
             foreach (var node in cursor)
             {
-                new FailWhen(
-                    !(node is XElement)
-                ).Go();
-
-                var selElement = (node as XElement);
-                var elements = selElement.DescendantNodesAndSelf();
-                foreach (var element in elements)
+                foreach (var element in StrictElement(node).DescendantNodesAndSelf())
                 {
                     if (element is XElement)
                     {
@@ -227,10 +219,10 @@ namespace Yaapii.Xambly.Directive
                 {
                     var candidates =
                         Candidates(
-                                StrictElement(
-                                    node
-                                )
-                            );
+                            StrictElement(
+                                node
+                            )
+                        );
                     new Each<XNode>(candidate =>
                         {
                             if (candidate is XElement)
@@ -269,7 +261,8 @@ namespace Yaapii.Xambly.Directive
         private XElement StrictElement(XNode node)
         {
             new FailWhen(
-                !(node is XElement)
+                !(node is XElement),
+                "Need element of type 'XElement' to set namespace."
             ).Go();
 
             return node as XElement;
