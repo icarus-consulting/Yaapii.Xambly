@@ -35,7 +35,6 @@ namespace Yaapii.Xambly.Directive.Tests
         public void RemoveCurrentNode()
         {
 
-            var dom = new XDocument();
             Assert.Equal(
                 "<root />",
                 new Xambler(
@@ -45,7 +44,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new RemoveDirective()
                     )
                 ).Apply(
-                    dom
+                    new XDocument()
                 ).ToString(SaveOptions.DisableFormatting)
             );
         }
@@ -89,9 +88,8 @@ namespace Yaapii.Xambly.Directive.Tests
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
-            var second = new XElement("b");
             root.Add(first);
-            root.Add(second);
+            root.Add(new XElement("b"));
             dom.Add(root);
 
             new RemoveDirective().Exec(
