@@ -95,25 +95,6 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void AddsDefaultNamespaceToSelectedNode()
-        {
-            var dom = new XDocument();
-            new Xambler(
-                new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                .Xpath("/root/parent")
-                .Ns("", "MyDefaultNamespaceUri")
-            ).Apply(dom);
-
-            Assert.Equal(
-                "<root><parent xmlns=\"MyDefaultNamespaceUri\"><child /></parent></root>",
-                dom.ToString(SaveOptions.DisableFormatting)
-            );
-        }
-
-        [Fact]
         public void AddsDefaultNamespaceToSeveralNodes()
         {
             var dom = new XDocument();
@@ -211,7 +192,7 @@ namespace Yaapii.Xambly.Directive.Tests
         }
 
         [Fact]
-        public void ChildrenUnchanged()
+        public void OptionallyDoesNotChangeChildren()
         {
             var dom = new XDocument();
             new Xambler(
@@ -299,40 +280,10 @@ namespace Yaapii.Xambly.Directive.Tests
                         .Ns("nice", "MyNiceNamespace", "attributes")
             ).Apply(dom);
 
-            //var x = dom.ToString();
-
             Assert.Equal(
                 "<root xmlns:nice=\"MyNiceNamespace\"><parent nice:key=\"value\" /></root>",
                 dom.ToString(SaveOptions.DisableFormatting)
             );
         }
-
-        //[Fact]
-        //public void AddsPrefixedNamespaceOnlyToAttributes_()
-        //{
-        //    var dom = new XDocument();
-        //    new Xambler(
-        //        new Directives()
-        //        .Add("Workbook")
-        //        .Ns("", "urn:schemas-microsoft-com:office:spreadsheet")
-        //        //.Push().Append(DocumentProperties()).Pop()
-        //        //.Push().Append(OfficeDocumentSettings()).Pop()
-        //        //.Push().Append(ExcelWorkbook()).Pop()
-        //        //.Push().Append(Names()).Pop()
-        //        .Add("Names")
-        //            .Add("NamedRange")
-
-        //                .Attr("Name", "MA_Name")
-        //                .Attr("RefersTo", "=Tabelle1!R2C2")
-        //                .Ns("ss", "urn:schemas-microsoft-com:office:spreadsheet", "attributes")
-        //    ).Apply(dom);
-
-        //    var x = dom.ToString();
-
-        //    Assert.Equal(
-        //        "<root xmlns:nice=\"MyNiceNamespace\"><parent nice:key=\"value\" /></root>",
-        //        dom.ToString(SaveOptions.DisableFormatting)
-        //    );
-        //}
     }
 }
