@@ -41,7 +41,8 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new NsDirective(
                 "",
-                "somens"
+                "somens",
+                "nodesAndAttributes"
             ).Exec(
                 dom,
                 new DomCursor(
@@ -140,7 +141,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var root = new XElement("rooot");
             var dom = new XDocument(root);
 
-            new NsDirective("my", "MyNiceNamespace")
+            new NsDirective("my", "MyNiceNamespace", "nodesAndAttributes")
             .Exec(
                 dom,
                 new DomCursor(
