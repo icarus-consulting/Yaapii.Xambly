@@ -28,7 +28,6 @@ using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Func;
 using Yaapii.Atoms.Map;
-using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
 using Yaapii.Xambly.XmlNamespaceResolver;
@@ -47,7 +46,7 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
 
-        private readonly IArg expr;
+        private readonly string expr;
         private readonly string rootDefNamespacePrefix;
         private readonly IDictionary<string, string> defaultNamespaceAndPrefix;
 
@@ -74,7 +73,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="defaultNamespaceAndPrefix">Defining default namespace prefixes from children nodes. Key = Namespace; Value = Prefix</param>
         public XpathDirective(string path, string rootDefNamespacePrefix, IDictionary<string, string> defaultNamespaceAndPrefix)
         {
-            this.expr = new Arg.AttributeArg(path);
+            this.expr = path;
             this.rootDefNamespacePrefix = rootDefNamespacePrefix;
             this.defaultNamespaceAndPrefix = defaultNamespaceAndPrefix;
         }
@@ -84,7 +83,8 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         public override string ToString()
         {
-            return new Formatted("XPATH {0}", this.expr).AsString();
+            return
+                $"XPATH {this.expr}";
         }
 
         /// <summary>
@@ -96,10 +96,8 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            string query = this.expr.Raw();
-
             IEnumerable<XNode> current = cursor;
-            if (AbsoluteXPath(query))
+            if (IsAbsoluteXPath())
             {
                 current =
                     new ManyOf<XNode>(
@@ -109,7 +107,7 @@ namespace Yaapii.Xambly.Directive
 
             return
                 new DomCursor(
-                    Traditional(query, dom, current)
+                    Traditional(dom, current)
                 );
 
         }
@@ -117,12 +115,11 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// Fetch them in traditional way.
         /// </summary>
-        /// <param name="query">XPath query</param>
         /// <param name="dom">Document</param>
         /// <param name="current">Nodes we're currently at</param>
         /// <returns>Found nodes</returns>
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
-        private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current)
+        private IEnumerable<XNode> Traditional(XNode dom, IEnumerable<XNode> current)
         {
             var targets = new HashSet<XNode>();
             foreach (XNode node in Roots(dom, current))
@@ -132,7 +129,7 @@ namespace Yaapii.Xambly.Directive
                 {
                     list =
                         node.XPathSelectElements(
-                            query,
+                            this.expr,
                             new ResolverFromDocument(
                                 dom,
                                 this.rootDefNamespacePrefix,
@@ -142,8 +139,11 @@ namespace Yaapii.Xambly.Directive
                 }
                 catch (Exception ex)
                 {
-                    throw new ImpossibleModificationException(
-                        new Formatted("invalid XPath expr '{0}' ({1})", query, ex.Message).AsString(), ex);
+                    throw
+                        new ImpossibleModificationException(
+                            $"Invalid XPath expr '{this.expr}' ({ex.Message})",
+                            ex
+                        );
                 }
 
                 new Each<XElement>(
@@ -155,9 +155,12 @@ namespace Yaapii.Xambly.Directive
             return targets;
         }
 
-        private bool AbsoluteXPath(string query)
+        private bool IsAbsoluteXPath()
         {
-            return new Regex(ABSOLUTE_XPATH_REGEX).IsMatch(query);
+            return
+                new Regex(
+                    ABSOLUTE_XPATH_REGEX
+                ).IsMatch(this.expr);
         }
 
         ///// <summary>
