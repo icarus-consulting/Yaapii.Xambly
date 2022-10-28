@@ -54,7 +54,7 @@
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
     <PackageReference Include="Yaapii.Atoms" Version="3.0.0" Condition="'$(Configuration)' != 'ReleaseSources'" />
-    <PackageReference Include="Yaapii.Atoms.Sources" Version="2.6.0" Condition="'$(Configuration)' == 'ReleaseSources'">
+    <PackageReference Include="Yaapii.Atoms.Sources" Version="3.0.0" Condition="'$(Configuration)' == 'ReleaseSources'">
       <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>  
     </PackageReference>
   </ItemGroup>
