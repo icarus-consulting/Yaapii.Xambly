@@ -15,7 +15,7 @@ var configuration           = "Release";
 // this is relative to the project root folder
 var buildArtifacts          = Directory("./artifacts");
 var deployment              = Directory("./artifacts/deployment");
-var version                 = "1.0.0";
+var version                 = "1.2.1";
 
 ///////////////////////////////////////////////////////////////////////////////
 // MODULES
@@ -282,14 +282,13 @@ Task("NuGet")
 .Does(() =>
 {
     Information(Figlet("NuGet"));
+    Information($"Building NuGet Package for Version {version}");
     
     var settings = new DotNetCorePackSettings()
     {
         Configuration = configuration,
         OutputDirectory = buildArtifacts,
-        NoRestore = true,
-        NoBuild = true,
-        VersionSuffix = ""
+        NoRestore = true
     };
     settings.ArgumentCustomization = args => args.Append("--include-symbols").Append("-p:SymbolPackageFormat=snupkg");
     settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
@@ -307,23 +306,17 @@ Task("NuGet")
     foreach (var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
-        if(!excludedModules.Contains(name))
-        {
-            DotNetCorePack(
-                module.ToString(),
-                settings
-            );
 
-            settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources").Append("-p:IncludeBuildOutput=false");
-            DotNetCorePack(
-                module.ToString(),
-                settingsSources
-            );
-        }
-        else
-        {
-            Warning($"Skipping NuGet package for {name}");
-        }
+        DotNetCorePack(
+            module.ToString(),
+            settings
+        );
+
+        settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources").Append("-p:IncludeBuildOutput=false");
+        DotNetCorePack(
+            module.ToString(),
+            settingsSources
+        );       
     }
 });
 
