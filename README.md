@@ -50,17 +50,22 @@ Full list of supported directives in the current version:
 
   * `ADD`: adds new node to all current nodes
   * `ADDIF`: adds new node, if it's absent
-  * `SET`: sets text value of current node
-  * `XSET`: sets text value, calculating it with XPath
+  * `ADDIFATTRIBUTE`: adds new node, if a child element with specified attribute does not exist
+  * `ADDIFCHILD`: adds new node, if a child element with specified content as text does not exist
+  * `ATTR`: adds a attribute to the current node, with name and value
   * `CDATA`: same as `SET`, but makes `CDATA`
+  * `INSERTAFTER`: adds new node after the current node
+  * `INSERTBEFORE`: adds new node before the current node
+  * `NS`: sets namespace of all current nodes
+  * `PI`: adds processing instruction
+  * `POP`: retrieves cursor from stack
+  * `PUSH`: saves cursor in stack
+  * `REMOVE`: removes all current nodes
+  * `SET`: sets text value of current node
+  * `STRICT`: throws an exception if cursor is missing nodes
   * `UP`: moves cursor one node up
   * `XPATH`: moves cursor to the nodes found by XPath
-  * `REMOVE`: removes all current nodes
-  * `STRICT`: throws an exception if cursor is missing nodes
-  * `PI`: adds processing instruction
-  * `PUSH`: saves cursor in stack
-  * `POP`: retrieves cursor from stack
-  * `NS`: sets namespace of all current nodes
+  * `XSET`: sets text value, calculating it with XPath
 
 "Cursor" or "current nodes" is where we're currently located
 in the XML document. When Xambly script starts, the cursor is
