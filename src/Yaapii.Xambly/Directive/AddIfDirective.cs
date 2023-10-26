@@ -54,7 +54,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted("ADDIF {0}", name.Raw()).AsString();
+            return new Formatted("ADDIF {0}", this.name.Raw()).AsString();
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Yaapii.Xambly.Directive
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XNode>();
-            var label = name.Raw().ToLower();
+            var label = this.name.Raw().ToLower();
             foreach (var node in cursor)
             {
                 var ctn = node as XContainer;
@@ -76,8 +76,6 @@ namespace Yaapii.Xambly.Directive
                     new FailNull(ctn),
                     new ImpossibleModificationException("")
                 ).Go();
-
-                var kids = ctn.Elements();
                 XNode target = null;
 
                 foreach (var kid in ctn.Elements())
@@ -91,8 +89,6 @@ namespace Yaapii.Xambly.Directive
 
                 if (target == null)
                 {
-                    XDocument doc = new XmlDocumentOf(dom).Value();
-
                     target = new XElement(this.name.Raw());
                     ctn.Add(target);
                 }

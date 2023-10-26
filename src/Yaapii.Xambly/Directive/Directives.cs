@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 using Yaapii.Atoms.Func;
-using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Error;
@@ -99,7 +98,7 @@ namespace Yaapii.Xambly
         /// <param name="dirs">directives</param>
         public Directives(IEnumerable<IDirective> dirs)
         {
-            this.Append(dirs);
+            Append(dirs);
         }
 
         /// <summary>
@@ -267,9 +266,9 @@ namespace Yaapii.Xambly
         {
             foreach (KeyValuePair<Key, Value> entry in nodes)
             {
-                this.Add(entry.Key.ToString())
-                    .Set(entry.Value.ToString())
-                    .Up();
+                Add(entry.Key.ToString())
+                .Set(entry.Value.ToString())
+                .Up();
             }
             return this;
         }
@@ -528,25 +527,33 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
-        /// Go to xpath.
+        /// Moves cursor to the nodes found by XPath.
         /// </summary>
-        /// <param name="path">path to go to</param>
-        /// <exception cref="IllegalArgumentException"/>
-        /// <returns>This object</returns>
-        public Directives Xpath(Object path)
+        /// <param name="path">XPath</param>
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
+        public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary)
         {
             try
             {
-                this.all.Add(new XpathDirective(path.ToString()));
+                this.all.Add(
+                    new XpathDirective(
+                        path.ToString(),
+                        rootDefNamespacePrefix,
+                        defnamespaceAndPrefixDictionary
+                    )
+                );
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, XPATH({0})",
-                        path).AsString(),
-                    ex
-                );
+                throw
+                    new IllegalArgumentException(
+                        new Formatted(
+                            "failed to understand XML content, XPATH({0})",
+                            path
+                        ).AsString(),
+                        ex
+                    );
             }
             return this;
         }
@@ -608,6 +615,32 @@ namespace Yaapii.Xambly
                     ex
                 );
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets namespace of all current nodes selected by the cursor.
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
+        /// The namespace declaration will be done in the root node.
+        /// 
+        /// If the prefix is empty a default namespace will be created.
+        /// which is declared only in the current nodes.
+        /// Attributes cannot be added to a default namespace.
+        /// 
+        /// Hint:
+        /// After declaring a namespace the XPath will be affected.
+        /// </summary>
+        /// <param name="prefix">If empty a default namespace will be created</param>
+        /// <param name="ns">Namespace</param>
+        /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
+        /// <param name="inheritance">Is applied to the children</param>
+        public Directives Ns(string prefix, string ns, string purpose = "nodesAndAttributes", bool inheritance = true)
+        {
+            this.all.Add(
+                new NsDirective(prefix, ns, purpose, inheritance)
+            );
+
             return this;
         }
     }

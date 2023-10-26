@@ -33,7 +33,6 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddNodesToCurrentNode()
         {
-
             Assert.Equal(
                 "<root><foo /><bar /></root>",
                 new Xambler(

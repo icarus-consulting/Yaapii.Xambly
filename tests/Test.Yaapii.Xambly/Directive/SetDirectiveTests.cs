@@ -35,7 +35,7 @@ namespace Yaapii.Xambly.Directive.Tests
         public void SetTextContentOfNode()
         {
             Assert.True(
-                new Xambler(new Atoms.Enumerable.ManyOf<IDirective>(
+                new Xambler(new ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new SetDirective("foobar")
@@ -53,7 +53,7 @@ namespace Yaapii.Xambly.Directive.Tests
         {
             Assert.Equal(
                 $"<root><item>{result}</item></root>",
-                new Xambler(new Atoms.Enumerable.ManyOf<IDirective>(
+                new Xambler(new ManyOf<IDirective>(
                         new AddDirective("root"),
                         new AddDirective("item"),
                         new SetDirective(chr)
@@ -79,12 +79,15 @@ namespace Yaapii.Xambly.Directive.Tests
                     .Exec(
                         dom,
                         new DomCursor(
-                                new Yaapii.Atoms.Enumerable.ManyOf<XNode>(first, second)
+                                new ManyOf<XNode>(first, second)
                                 ),
                         new DomStack()
                     );
 
-            Assert.True(dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a>alpha</a><b>alpha</b></xxx>", "Set content for nodes failed");
+            Assert.Equal(
+                "<xxx><a>alpha</a><b>alpha</b></xxx>",
+                dom.ToString(SaveOptions.DisableFormatting)
+            );
 
         }
 
@@ -92,14 +95,14 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsForInvalidCharacter()
         {
             Assert.Throws<XmlException>(() =>
-                new SetDirective("\0invalid")
-                    .Exec(
+                new SetDirective("\0invalid").Exec(
                     new XDocument(),
                     new DomCursor(
                         new ManyOf<XNode>(
                             new XElement("rot")
                         )
-                    ), new DomStack()
+                    ),
+                    new DomStack()
                 )
             );
         }

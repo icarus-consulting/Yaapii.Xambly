@@ -98,10 +98,11 @@ You can create a collection of directives either from text or
 via supplementary methods, one per each directive. In both cases,
 you need to use class `Directives`:
 
-```java
-import org.Xambly.Directives;
+```csharp
 new Directives("XPATH '//car'; REMOVE;");
-new Directives().xpath("//car").remove();
+new Directives()
+.Xpath("//car")
+.Remove();
 ```
 
 The second option is preferable, because it is faster - there is
@@ -249,7 +250,13 @@ you're not sure where your
 
 ```assembly
 XPATH '/garage/car';                // move cursor to "<car/>" node(s)
-NS "http://www.w3.org/TR/html4/";   // set namespace there
+NS "http://www.w3.org/TR/html4/";   // set namespace there and to its children
+```
+
+```csharp
+new Directives()
+.Xpath("/garage/car")
+.Ns("http://www.w3.org/TR/html4/", "a");
 ```
 
 If original document was like this:
@@ -272,6 +279,15 @@ After applying that two directives it will look like this:
 
 The namspace prefix may no necessarily be `a:`, but it doesn't
 really matter.
+
+The namespace will be applied to all nodes selected by the XPath and its childs. Attributes are affected too.
+The namespace declaration will be done in the root node.
+
+**Default Namespace**
+
+Can be created by leaving the prefix empty.
+A default namespace will be declared in all nodes selected by the XPath not in the root node.
+(Attributes cannot be added to a default namespace)
 
 `NS` doesn't move the cursor anywhere.
 

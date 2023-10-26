@@ -27,16 +27,16 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Func;
-using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Map;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
+using Yaapii.Xambly.XmlNamespaceResolver;
 
 namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// XPATH directive.
-    /// Moves cursor to the nodes found by XPath
+    /// Moves cursor to the nodes found by XPath.
     /// </summary>
     public class XpathDirective : IDirective
     {
@@ -46,34 +46,45 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
 
-        /// <summary>
-        /// XPath factory.
-        /// </summary>
-        private readonly IArg _expr;
-
-        // <summary>
-        // Pattern to match root-only XPath queries.
-        // </summary>
-        //private static readonly Regex ROOT_ONLY = new Regex(@"/([^\/\(\[\{:]+)");
+        private readonly string expr;
+        private readonly string rootDefNamespacePrefix;
+        private readonly IDictionary<string, string> defaultNamespaceAndPrefix;
 
         /// <summary>
         /// XPATH directive.
-        /// Moves cursor to the nodes found by XPath
+        /// Moves cursor to the nodes found by XPath.
         /// </summary>
         /// <param name="path">XPath</param>
-        /// <exception cref="XmlContentException">If invalid input</exception>
-        public XpathDirective(string path)
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
+        public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary) : this(
+            path,
+            rootDefNamespacePrefix,
+            new MapOf(defnamespaceAndPrefixDictionary)
+        )
+        { }
+
+        /// <summary>
+        /// XPATH directive.
+        /// Moves cursor to the nodes found by XPath.
+        /// </summary>
+        /// <param name="path">XPath</param>
+        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
+        /// <param name="defaultNamespaceAndPrefix">Defining default namespace prefixes from children nodes. Key = Namespace; Value = Prefix</param>
+        public XpathDirective(string path, string rootDefNamespacePrefix, IDictionary<string, string> defaultNamespaceAndPrefix)
         {
-            this._expr = new Arg.AttributeArg(path);
+            this.expr = path;
+            this.rootDefNamespacePrefix = rootDefNamespacePrefix;
+            this.defaultNamespaceAndPrefix = defaultNamespaceAndPrefix;
         }
 
         /// <summary>
         /// String representation.
         /// </summary>
-        /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted("XPATH {0}", this._expr).AsString();
+            return
+                $"XPATH {this.expr}";
         }
 
         /// <summary>
@@ -85,38 +96,30 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            IEnumerable<XNode> targets;
-            string query = this._expr.Raw();
-
-            if (AbsoluteXPath(query))
+            IEnumerable<XNode> current = cursor;
+            if (IsAbsoluteXPath())
             {
-                targets =
-                    this.Traditional(
-                        query,
-                        dom,
-                        new ManyOf<XNode>(
-                            new XmlDocumentOf(dom).Value().Document
-                        )
+                current =
+                    new ManyOf<XNode>(
+                        new XmlDocumentOf(dom).Value().Document
                     );
             }
-            else
-            {
-                targets = this.Traditional(query, dom, cursor);
-            }
 
-            return new DomCursor(targets);
+            return
+                new DomCursor(
+                    Traditional(dom, current)
+                );
 
         }
 
         /// <summary>
         /// Fetch them in traditional way.
         /// </summary>
-        /// <param name="query">XPath query</param>
         /// <param name="dom">Document</param>
         /// <param name="current">Nodes we're currently at</param>
         /// <returns>Found nodes</returns>
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
-        private IEnumerable<XNode> Traditional(string query, XNode dom, IEnumerable<XNode> current)
+        private IEnumerable<XNode> Traditional(XNode dom, IEnumerable<XNode> current)
         {
             var targets = new HashSet<XNode>();
             foreach (XNode node in Roots(dom, current))
@@ -124,12 +127,23 @@ namespace Yaapii.Xambly.Directive
                 IEnumerable<XElement> list;
                 try
                 {
-                    list = node.XPathSelectElements(query);
+                    list =
+                        node.XPathSelectElements(
+                            this.expr,
+                            new ResolverFromDocument(
+                                dom,
+                                this.rootDefNamespacePrefix,
+                                this.defaultNamespaceAndPrefix
+                            )
+                        );
                 }
                 catch (Exception ex)
                 {
-                    throw new ImpossibleModificationException(
-                        new Formatted("invalid XPath expr '{0}' ({1})", query, ex.Message).AsString(), ex);
+                    throw
+                        new ImpossibleModificationException(
+                            $"Invalid XPath expr '{this.expr}' ({ex.Message})",
+                            ex
+                        );
                 }
 
                 new Each<XElement>(
@@ -141,9 +155,12 @@ namespace Yaapii.Xambly.Directive
             return targets;
         }
 
-        private bool AbsoluteXPath(string query)
+        private bool IsAbsoluteXPath()
         {
-            return new Regex(ABSOLUTE_XPATH_REGEX).IsMatch(query);
+            return
+                new Regex(
+                    ABSOLUTE_XPATH_REGEX
+                ).IsMatch(this.expr);
         }
 
         ///// <summary>
@@ -180,19 +197,18 @@ namespace Yaapii.Xambly.Directive
         {
             IEnumerable<XNode> roots = nodes;
 
-            // Return document root if there are no nodes.
             if (new LengthOf(nodes).Value() == 0)
             {
-                roots = new ManyOf<XNode>(
-                    new XmlDocumentOf(
-                        dom
-                    ).Value().Document);
+                roots =
+                    new ManyOf<XNode>(
+                        new XmlDocumentOf(
+                            dom
+                        ).Value().Document
+                    );
             }
-
-            // DocumentElement may be null. Then remove it from the list.
             roots =
-                new Filtered<XNode>(
-                    (node) => node != null,
+                new Filtered<XNode>((node) =>
+                    node != null,
                     roots
                 );
 

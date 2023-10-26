@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -84,12 +83,13 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("foo"),
-                                new AddDirective("bar"),
-                                new XpathDirective("/foo/bar/boom"),
-                                new StrictDirective(1)
-                            )).Apply(dom);
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                            new AddDirective("foo"),
+                            new AddDirective("bar"),
+                            new XpathDirective("/foo/bar/boom"),
+                            new StrictDirective(1)
+                        )
+                ).Apply(dom);
             });
         }
 
@@ -101,19 +101,17 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws(new ImpossibleModificationException("").GetType(), () =>
             {
                 new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                                new AddDirective("root"),
-                                new StrictDirective(2)
-                            )).Apply(dom);
+                    new Atoms.Enumerable.ManyOf<IDirective>(
+                            new AddDirective("root"),
+                            new StrictDirective(2)
+                        )
+                ).Apply(dom);
             });
         }
-        #region Helper
+
         /// <summary>
         /// A navigator from an Xml and XPath
         /// </summary>
-        /// <param name="xml"></param>
-        /// <param name="xpath"></param>
-        /// <returns></returns>
         private XPathNavigator FromXPath(string xml, string xpath)
         {
             var nav =
@@ -135,12 +133,10 @@ namespace Yaapii.Xambly.Directive.Tests
         private XmlNamespaceManager NamespacesOfDom(XmlDocument xDoc)
         {
             XmlNamespaceManager result = new XmlNamespaceManager(xDoc.NameTable);
-
-            IDictionary<string, string> localNamespaces = null;
             XPathNavigator xNav = xDoc.CreateNavigator();
             while (xNav.MoveToFollowing(XPathNodeType.Element))
             {
-                localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
+                var localNamespaces = xNav.GetNamespacesInScope(XmlNamespaceScope.Local);
                 foreach (var localNamespace in localNamespaces)
                 {
                     string prefix = localNamespace.Key;
@@ -153,6 +149,5 @@ namespace Yaapii.Xambly.Directive.Tests
 
             return result;
         }
-        # endregion Helper
     }
 }
