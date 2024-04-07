@@ -55,7 +55,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
             {
                 new Xambler(
-                    new ManyOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                         new AddDirective("root"),
                         new RemoveDirective()
                     )
@@ -72,7 +72,7 @@ namespace Yaapii.Xambly.Directive.Tests
             Assert.Throws<ImpossibleModificationException>(() =>
             {
                 new Xambler(
-                    new ManyOf<IDirective>(
+                    new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
                         new RemoveDirective()
                     )
                 ).Apply(
@@ -85,12 +85,23 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void RemoveDomNodesDirectly()
         {
+            //var dom = new XmlDocument();
+            //var root = dom.CreateElement("root");
+            //var first = dom.CreateElement("a");
+            //root.AppendChild(first);
+            //var second = dom.CreateElement("b");
+            //root.AppendChild(second);
+
+            //dom.AppendChild(root);
+
             var dom = new XDocument();
             var root = new XElement("root");
             var first = new XElement("a");
+            var second = new XElement("b");
             root.Add(first);
-            root.Add(new XElement("b"));
+            root.Add(second);
             dom.Add(root);
+
 
             new RemoveDirective().Exec(
                 dom,
@@ -98,9 +109,8 @@ namespace Yaapii.Xambly.Directive.Tests
                 new DomStack()
             );
 
-            Assert.Equal(
-                "<root><b /></root>",
-                dom.ToString(SaveOptions.DisableFormatting)
+            Assert.True(
+                dom.ToString(SaveOptions.DisableFormatting) == "<root><b /></root>", "Remove directive failed"
             );
         }
 

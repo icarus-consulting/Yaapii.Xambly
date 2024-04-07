@@ -20,6 +20,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -72,6 +73,7 @@ namespace Yaapii.Xambly
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XNode>();
+            var label = this.name.Raw().ToLower();
             foreach (var node in cursor)
             {
                 var kids = Children(node);
@@ -79,7 +81,7 @@ namespace Yaapii.Xambly
                 var len = kids.Count;
                 for (int i = 0; i < len; i++)
                 {
-                    if (Matches(kids[i]))
+                    if (this.Matches(kids[i]))
                     {
                         {
                             target = kids[i];
@@ -90,6 +92,16 @@ namespace Yaapii.Xambly
 
                 if (target == null)
                 {
+                    XDocument doc = null;
+                    if (dom.Document == null)
+                    {
+                        doc = new XDocument(dom);
+                    }
+                    else
+                    {
+                        doc = dom.Document;
+                    }
+
                     target = new XElement(this.name.Raw());
                     (node as XElement).Add(target);
                 }
@@ -102,7 +114,7 @@ namespace Yaapii.Xambly
         {
             bool matches = false;
             var xElement = node as XElement;
-            if (string.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
+            if (String.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
             {
                 foreach (var attr in xElement.Attributes())
                 {

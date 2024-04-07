@@ -31,6 +31,7 @@ namespace Yaapii.Xambly.Tests
         public void GetsDocFromNode()
         {
             var doc = new XDocument();
+            //var node = doc.CreateElement("test");
             var child = new XElement("child");
             var node = new XElement("test", child);
             doc.Add(node);
