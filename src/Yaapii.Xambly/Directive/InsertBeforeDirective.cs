@@ -75,13 +75,18 @@ namespace Yaapii.Xambly.Directive
                      new FailNull(container),
                      new ArgumentException($"Can't insert element before node which is not of type 'XContainer'")
                 ).Go();
+
                 new FailPrecise(
                     new FailWhen(node.Document.FirstNode == node),
                     new ArgumentException($"Can't insert element before root node")
                 ).Go();
-                var ns = this.Namespace(node);
+
+                var ns = Namespace(node);
+
                 XElement element;
+
                 element = ns != null ? new XElement(ns + label) : new XElement(label);
+
                 container.AddBeforeSelf(element);
                 targets.Add(element);
             }
@@ -92,6 +97,8 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// Checks for namespace in node
         /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         private XNamespace Namespace(XNode node)
         {
             XNamespace ns = null;

@@ -50,7 +50,7 @@ namespace Yaapii.Xambly
         /// <returns></returns>
         public XDocument Value()
         {
-            XDocument doc = this.dom.Document;
+            XDocument doc = dom.Document;
             //if (this.dom.NodeType == System.Xml.XmlNodeType.Document)
             //{
             //    doc = dom.Document;

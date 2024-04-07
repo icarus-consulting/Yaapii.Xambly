@@ -43,12 +43,13 @@ namespace Yaapii.Xambly.Directive
         /// <param name="val">Text value to set</param>
         public SetDirective(string val)
         {
-            this.text = new NotIllegalText(val);
+            text = new NotIllegalText(val);
         }
 
         /// <summary>
         /// String representation.
         /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
             return new Formatted("SET {0}", this.text.AsString()).AsString();
@@ -66,10 +67,10 @@ namespace Yaapii.Xambly.Directive
             foreach (var node in cursor)
             {
                 new FailWhen(
-                    !(node is XElement)
-                ).Go();
+                        !(node is XElement)
+                    ).Go();
 
-                (node as XElement).Value = this.text.AsString();
+                (node as XElement).Value = text.AsString();
             }
 
             return cursor;

@@ -103,14 +103,14 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new AttrDirective("x", "y").Exec(
                     dom,
-                    new DomCursor(new ManyOf<XNode>(second)),
+                    new DomCursor(new Yaapii.Atoms.Enumerable.ManyOf<XNode>(second)),
                     new DomStack()
                 );
 
-            Assert.Equal(
-                "<xxx><a /><b x=\"y\" /></xxx>",
-                dom.ToString(SaveOptions.DisableFormatting)
-            );
+            Assert.True(
+                dom.ToString(SaveOptions.DisableFormatting) == "<xxx><a /><b x=\"y\" /></xxx>",
+                "Directly add attribute failed"
+                );
 
         }
 
@@ -125,8 +125,7 @@ namespace Yaapii.Xambly.Directive.Tests
                         new ManyOf<XNode>(
                             new XElement("rot")
                         )
-                    ),
-                    new DomStack()
+                    ), new DomStack()
                 )
             );
         }

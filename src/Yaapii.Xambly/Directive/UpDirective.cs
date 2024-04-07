@@ -45,6 +45,7 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// String representation.
         /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
             return "UP";
@@ -66,13 +67,8 @@ namespace Yaapii.Xambly.Directive
                 new FailPrecise(
                     new FailNull(parent),
                     new ImpossibleModificationException(
-                        new Formatted(
-                            "There is no parent node of '{0}' ({1}), can't go UP",
-                            node.ToString(SaveOptions.DisableFormatting),
-                            node.NodeType
-                        ).AsString()
-                    )
-                ).Go();
+                            new Formatted("there is no parent node of '{0}' ({1}), can't go UP", node.ToString(SaveOptions.DisableFormatting), node.NodeType).AsString()
+                        )).Go();
 
                 parents.Add(parent);
             }

@@ -58,7 +58,7 @@ namespace Yaapii.Xambly.Stack
         /// <exception cref="ImpossibleModificationException">If fails</exception>"
         public void Push(ICursor cursor)
         {
-            lock (this._cursors)
+            lock (_cursors)
             {
                 this._cursors.Push(cursor);
             }

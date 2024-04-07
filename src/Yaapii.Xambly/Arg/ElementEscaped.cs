@@ -37,9 +37,7 @@ namespace Yaapii.Xambly.Arg
         /// Escape all unprintable characters.
         /// </summary>
         /// <param name="src">Raw text</param>
-        public ElementEscaped(string src) : this(
-            new TextOf(src)
-        )
+        public ElementEscaped(string src) : this(new TextOf(src))
         { }
 
         /// <summary>
@@ -73,7 +71,7 @@ namespace Yaapii.Xambly.Arg
         /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {
-            return other.AsString().Equals(AsString());
+            return other.AsString().Equals(this.AsString());
         }
 
 

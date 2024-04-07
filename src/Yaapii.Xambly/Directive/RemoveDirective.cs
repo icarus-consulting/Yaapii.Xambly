@@ -45,6 +45,7 @@ namespace Yaapii.Xambly.Directive
         /// <summary>
         /// String representation.
         /// </summary>
+        /// <returns>The string</returns>
         public override string ToString()
         {
             return "REMOVE";
@@ -60,7 +61,6 @@ namespace Yaapii.Xambly.Directive
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var parents = new HashSet<XNode>();
-
             foreach (var node in cursor)
             {
                 XNode parent = node.Parent;
@@ -70,12 +70,14 @@ namespace Yaapii.Xambly.Directive
                     ),
                     new IllegalArgumentException("you can't delete root document element from XML")
                 ).Go();
+
                 new FailPrecise(
                     new FailWhen(
                         parent.NodeType == XmlNodeType.Document
                     ),
                     new IllegalArgumentException("you can't delete root document element from XML")
                 ).Go();
+
                 node.Remove();
                 parents.Add(parent);
             }

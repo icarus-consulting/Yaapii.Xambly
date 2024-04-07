@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Text;
-using Yaapii.Xambly.Arg;
 using Yaapii.Xambly.Cursor;
 
 namespace Yaapii.Xambly.Directive
@@ -45,7 +44,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="node">Name of node to add</param>
         public InsertAfterDirective(string node)
         {
-            this.name = new AttributeArg(node);
+            this.name = new Arg.AttributeArg(node);
         }
 
         /// <summary>
@@ -76,13 +75,18 @@ namespace Yaapii.Xambly.Directive
                      new FailNull(container),
                      new ArgumentException($"Can't insert element after node which is not of type 'XContainer'")
                 ).Go();
+
                 new FailPrecise(
                     new FailWhen(node.Document.FirstNode == node),
                     new ArgumentException($"Can't insert element after root node")
                 ).Go();
-                var ns = this.Namespace(node);
+
+                var ns = Namespace(node);
+
                 XElement element;
+
                 element = ns != null ? new XElement(ns + label) : new XElement(label);
+
                 container.AddAfterSelf(element);
                 targets.Add(element);
             }

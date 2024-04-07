@@ -34,23 +34,26 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class XsetDirective : IDirective
     {
-        private readonly IArg expr;
-
         /// <summary>
-        /// Sets by xpath.
+        /// Sets the Textvalue in specified Nodes
+        /// </summary>
+        private readonly IArg _expr;
+        /// <summary>
+        /// ctor
         /// </summary>
         /// <param name="val">Text value to set</param>
         public XsetDirective(string val)
         {
-            this.expr = new AttributeArg(val);
+            _expr = new AttributeArg(val);
         }
 
         /// <summary>
         /// This directive as a string
         /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return new Formatted("XSET {0}", this.expr).AsString();
+            return new Formatted("XSET {0}", this._expr).AsString();
         }
 
         /// <summary>
@@ -59,27 +62,22 @@ namespace Yaapii.Xambly.Directive
         /// <param name="dom">Node for the changes</param>
         /// <param name="cursor">Elements to change the text for</param>
         /// <param name="stack"></param>
-        /// <returns>New current nodes</returns>
+        /// <returns></returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            var nav = dom.CreateNavigator();
-            var values = new Dictionary<XElement, string>(0);
+            XPathNavigator nav = dom.CreateNavigator();
+            Dictionary<XElement, string> values = new Dictionary<XElement, string>(0);
 
             foreach (XNode node in cursor)
             {
                 var elmnt = node as XElement;
-                values.Add(
-                    elmnt,
-                    nav.Evaluate(
-                        this.expr.Raw()
-                    ).ToString()
-                );
-            }
-            foreach (KeyValuePair<XElement, string> pair in values)
-            {
-                pair.Key.Value = pair.Value;
+                values.Add(elmnt, nav.Evaluate(_expr.Raw()).ToString());
             }
 
+            foreach (KeyValuePair<XElement, string> pair in values)
+            {
+                (pair.Key).Value = pair.Value;
+            }
             return cursor;
         }
 

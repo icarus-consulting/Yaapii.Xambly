@@ -54,12 +54,11 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return
-                new Formatted(
-                    "PI {0} {1}",
-                    this.target.Raw(),
-                    this.data.Raw()
-                ).AsString();
+            return new Formatted(
+                "PI {0} {1}",
+                this.target.Raw(),
+                this.data.Raw()
+            ).AsString();
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace Yaapii.Xambly.Directive
         {
             var doc = new XmlDocumentOf(dom).Value();
             var pi = new XProcessingInstruction(this.target.Raw(), this.data.Raw());
-
+            // if cursor list is empty
             if (new LengthOf(cursor).Value() == 0)
             {
                 doc.Root.AddBeforeSelf(pi);

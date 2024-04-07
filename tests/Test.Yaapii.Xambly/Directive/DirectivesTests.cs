@@ -47,6 +47,7 @@ namespace Yaapii.Xambly.Directive.Tests
             string xml =
                 new Xambler(
                     new Directives()
+                        //.pi("xml-stylesheet", "none")
                         .Add("page")
                         .Attr("the-name", "with \u20ac")
                         .Add("child-node").Set(" the text\n").Up()
@@ -211,17 +212,17 @@ namespace Yaapii.Xambly.Directive.Tests
         public void RejectsAddingToDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                {
-                    var xml = new XDocument();
-                    var xambler =
-                        new Xambler(
-                            new Directives()
-                                .Add("root")
-                                .Add("child")
-                                .Xpath("/")
-                                .Attr("some", "attribute")
-                        ).Apply(xml);
-                }
+            {
+                var xml = new XDocument();
+                var xambler =
+                    new Xambler(
+                        new Directives()
+                            .Add("root")
+                            .Add("child")
+                            .Xpath("/")
+                            .Attr("some", "attribute")
+                    ).Apply(xml);
+            }
             );
         }
 

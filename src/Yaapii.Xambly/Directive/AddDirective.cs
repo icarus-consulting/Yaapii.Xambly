@@ -35,7 +35,7 @@ namespace Yaapii.Xambly.Directive
     /// </summary>
     public sealed class AddDirective : IDirective
     {
-        private readonly IArg name;
+        private readonly IArg _name;
 
         /// <summary>
         /// ADD directive.
@@ -44,7 +44,7 @@ namespace Yaapii.Xambly.Directive
         /// <param name="node">Name of node to add</param>
         public AddDirective(string node)
         {
-            this.name = new Arg.AttributeArg(node);
+            this._name = new Arg.AttributeArg(node);
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted("ADD {0}", this.name).AsString();
+            return new Formatted("ADD {0}", this._name).AsString();
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Yaapii.Xambly.Directive
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
             var targets = new List<XElement>();
-            string label = this.name.Raw();
+            string label = this._name.Raw();
 
             foreach (var node in cursor)
             {

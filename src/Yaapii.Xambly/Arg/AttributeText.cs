@@ -71,7 +71,7 @@ namespace Yaapii.Xambly.Arg
         /// <returns>Comparision result</returns>
         public bool Equals(IText other)
         {
-            return other.AsString().Equals(AsString());
+            return other.AsString().Equals(this.AsString());
         }
 
 
