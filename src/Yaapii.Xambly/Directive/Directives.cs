@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Func;
 using Yaapii.Atoms.Text;
@@ -78,27 +79,45 @@ namespace Yaapii.Xambly
 
         // List of directives.
         private readonly ICollection<IDirective> all = new ThreadsafeCollection<IDirective>();
+        private readonly IXmlNamespaceResolver context;
 
-        /// <summary>
-        /// ctor.
-        /// </summary>
-        public Directives() : this(new List<IDirective>())
+        public Directives() : this(
+            new List<IDirective>()
+        )
         { }
 
-        /// <summary>
-        /// ctor.
-        /// </summary>
+        public Directives(IXmlNamespaceResolver context) : this(
+            new List<IDirective>(),
+            context
+        )
+        { }
+
         public Directives(params IDirective[] dirs) : this(
-            new List<IDirective>(dirs))
+            new List<IDirective>(dirs),
+            new XmlNamespaceManager(new NameTable())
+        )
         { }
 
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="dirs">directives</param>
-        public Directives(IEnumerable<IDirective> dirs)
+        public Directives(IXmlNamespaceResolver context, params IDirective[] dirs) : this(
+            new List<IDirective>(dirs),
+            context
+        )
+        { }
+
+        public Directives(IEnumerable<IDirective> dirs) : this(
+            dirs,
+            new XmlNamespaceManager(new NameTable())
+        )
+        { }
+
+        public Directives(IEnumerable<IDirective> dirs, IXmlNamespaceResolver context)
         {
-            Append(dirs);
+            this.all =
+                new ThreadsafeCollection<IDirective>(
+                    new object(),
+                    dirs
+                );
+            this.context = context;
         }
 
         /// <summary>
@@ -530,17 +549,14 @@ namespace Yaapii.Xambly
         /// Moves cursor to the nodes found by XPath.
         /// </summary>
         /// <param name="path">XPath</param>
-        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
-        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
-        public Directives Xpath(object path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary)
+        public Directives Xpath(object path)
         {
             try
             {
                 this.all.Add(
                     new XpathDirective(
                         path.ToString(),
-                        rootDefNamespacePrefix,
-                        defnamespaceAndPrefixDictionary
+                        this.context
                     )
                 );
             }
