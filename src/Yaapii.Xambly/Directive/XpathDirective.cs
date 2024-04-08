@@ -23,14 +23,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Func;
-using Yaapii.Atoms.Map;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Error;
-using Yaapii.Xambly.XmlNamespaceResolver;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -47,20 +46,16 @@ namespace Yaapii.Xambly.Directive
         private const string ABSOLUTE_XPATH_REGEX = @"^((?:\/(?!\/)).*)$";
 
         private readonly string expr;
-        private readonly string rootDefNamespacePrefix;
-        private readonly IDictionary<string, string> defaultNamespaceAndPrefix;
+        private readonly IXmlNamespaceResolver context;
 
         /// <summary>
         /// XPATH directive.
         /// Moves cursor to the nodes found by XPath.
         /// </summary>
         /// <param name="path">XPath</param>
-        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
-        /// <param name="defnamespaceAndPrefixDictionary">Optional tupel defining default namespace prefixes from children nodes. Always write multiples of two: Namespace and prefix</param>
-        public XpathDirective(string path, string rootDefNamespacePrefix = "", params string[] defnamespaceAndPrefixDictionary) : this(
+        public XpathDirective(string path) : this(
             path,
-            rootDefNamespacePrefix,
-            new MapOf(defnamespaceAndPrefixDictionary)
+            new XmlNamespaceManager(new NameTable())
         )
         { }
 
@@ -69,13 +64,11 @@ namespace Yaapii.Xambly.Directive
         /// Moves cursor to the nodes found by XPath.
         /// </summary>
         /// <param name="path">XPath</param>
-        /// <param name="rootDefNamespacePrefix">Default namespace prefix for use in XPath or empty string</param>
-        /// <param name="defaultNamespaceAndPrefix">Defining default namespace prefixes from children nodes. Key = Namespace; Value = Prefix</param>
-        public XpathDirective(string path, string rootDefNamespacePrefix, IDictionary<string, string> defaultNamespaceAndPrefix)
+        /// <param name="context"></param>
+        public XpathDirective(string path, IXmlNamespaceResolver context)
         {
             this.expr = path;
-            this.rootDefNamespacePrefix = rootDefNamespacePrefix;
-            this.defaultNamespaceAndPrefix = defaultNamespaceAndPrefix;
+            this.context = context;
         }
 
         /// <summary>
@@ -130,11 +123,7 @@ namespace Yaapii.Xambly.Directive
                     list =
                         node.XPathSelectElements(
                             this.expr,
-                            new ResolverFromDocument(
-                                dom,
-                                this.rootDefNamespacePrefix,
-                                this.defaultNamespaceAndPrefix
-                            )
+                            this.context
                         );
                 }
                 catch (Exception ex)
