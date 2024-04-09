@@ -4,7 +4,7 @@ using Yaapii.Atoms.Map;
 
 namespace Yaapii.Xambly.XmlNamespaceResolver.Test
 {
-    public sealed class ResolverFromDocumentTests
+    public sealed class XmlResolverFromDocumentTests
     {
         [Fact]
         public void HasDefaultPrefixForDefaultNamespaces()
@@ -14,7 +14,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "def1", "uri",
                     "def2", "ohterUri"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='uri'>" +
                             "<node xmlns='ohterUri'/>" +
@@ -31,7 +31,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                 new MapOf(
                     "myPrefix", "uri"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='uri'>" +
                             "<node />" +
@@ -50,7 +50,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "prefix", "childUri",
                     "nspx", "nodeUri"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root>" +
                             "<child xmlns='childUri'>" +
@@ -73,7 +73,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                 new MapOf(
                     "pre", "withPrefix"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns:pre='withPrefix'>" +
                             "<child>" +
@@ -94,7 +94,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "pre", "withPrefix",
                     "x", "anotherWithPrefix"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='default' xmlns:pre='withPrefix' >" +
                             "<child xmlns:x='anotherWithPrefix'>" +
@@ -115,7 +115,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "pre", "withPrefix",
                     "x", "anotherWithPrefix"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
                             "<child xmlns:x='anotherWithPrefix'>" +
@@ -138,7 +138,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "pre", "withPrefix",
                     "x", "anotherWithPrefix"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
                             "<child xmlns:x='anotherWithPrefix'>" +
@@ -161,7 +161,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
                     "canNotOverwrite", "withPrefix",
                     "pre", "withPrefix"
                 ),
-                new ResolverFromDocument(
+                new XmlResolverFromDocument(
                     XDocument.Parse(
                         "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
                             "<child>" +

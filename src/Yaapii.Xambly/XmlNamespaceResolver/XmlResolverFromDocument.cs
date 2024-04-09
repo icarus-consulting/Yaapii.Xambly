@@ -14,7 +14,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
     /// To enable XPath queries with default namespaces, a prefix for the default namespace can be set by defining tuples of the namespace uri and a prefix.
     /// It is allowed to define additional tuples of namespace uris and prefixes that can be used later in XPath queries.
     /// </summary>
-    public sealed class ResolverFromDocument : IXmlNamespaceResolver
+    public sealed class XmlResolverFromDocument : IXmlNamespaceResolver
     {
         private readonly IScalar<IXmlNamespaceResolver> resolver;
 
@@ -23,7 +23,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// To enable XPath queries with default namespaces, a prefix for the default namespace can be set by defining tuples of the namespace uri and a prefix.
         /// It is allowed to define additional tuples of namespace uris and prefixes that can be used later in XPath queries.
         /// </summary>
-        public ResolverFromDocument(XDocument xml) : this(
+        public XmlResolverFromDocument(XDocument xml) : this(
             ScalarOf.New(xml),
             MapOf.New<string, string>()
         )
@@ -34,7 +34,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// To enable XPath queries with default namespaces, a prefix for the default namespace can be set by defining tuples of the namespace uri and a prefix.
         /// It is allowed to define additional tuples of namespace uris and prefixes that can be used later in XPath queries.
         /// </summary>
-        public ResolverFromDocument(XDocument xml, params string[] namespaceUris) : this(
+        public XmlResolverFromDocument(XDocument xml, params string[] namespaceUris) : this(
             ScalarOf.New(xml),
             new MapOf(namespaceUris)
         )
@@ -45,7 +45,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// To enable XPath queries with default namespaces, a prefix for the default namespace can be set by defining tuples of the namespace uri and a prefix.
         /// It is allowed to define additional tuples of namespace uris and prefixes that can be used later in XPath queries.
         /// </summary>
-        public ResolverFromDocument(XDocument xml, IDictionary<string, string> namespaceUris) : this(
+        public XmlResolverFromDocument(XDocument xml, IDictionary<string, string> namespaceUris) : this(
             ScalarOf.New(xml),
             namespaceUris
         )
@@ -56,7 +56,7 @@ namespace Yaapii.Xambly.XmlNamespaceResolver
         /// To enable XPath queries with default namespaces, a prefix for the default namespace can be set by defining tuples of the namespace uri and a prefix.
         /// It is allowed to define additional tuples of namespace uris and prefixes that can be used later in XPath queries.
         /// </summary>
-        public ResolverFromDocument(IScalar<XDocument> xml, IDictionary<string, string> namespaceUris)
+        public XmlResolverFromDocument(IScalar<XDocument> xml, IDictionary<string, string> namespaceUris)
         {
             this.resolver =
                 new ScalarOf<IXmlNamespaceResolver>(() =>

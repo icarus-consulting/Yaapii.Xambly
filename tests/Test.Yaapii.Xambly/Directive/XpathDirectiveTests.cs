@@ -250,7 +250,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 );
 
             new Xambler(
-                new XpathDirective("/def1:root/def1:parent", new ResolverFromDocument(xml)),
+                new XpathDirective("/def1:root/def1:parent", new XmlResolverFromDocument(xml)),
                 new AttrDirective("key", "changed")
             ).Apply(xml);
 
@@ -269,7 +269,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 );
 
             new Xambler(
-                new XpathDirective("/root/nx:parent", new ResolverFromDocument(xml)),
+                new XpathDirective("/root/nx:parent", new XmlResolverFromDocument(xml)),
                 new SetDirective("Hello, World!")
             ).Apply(xml);
 
@@ -288,7 +288,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 );
 
             new Xambler(
-                new XpathDirective("/def1:root/def1:parent", new ResolverFromDocument(xml)),
+                new XpathDirective("/def1:root/def1:parent", new XmlResolverFromDocument(xml)),
                 new AttrDirective("key", "changed")
             ).Apply(xml);
 
@@ -320,7 +320,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 "</root>";
             new Xambler(
                 new XpathDirective("/root/defOne:child/defTwo:lower",
-                    new ResolverFromDocument(xml,
+                    new XmlResolverFromDocument(xml,
                         "childDefaultNamespace", "defOne",
                         "anotherChildDefaultNamespace", "defTwo"
                     )
@@ -355,7 +355,7 @@ namespace Yaapii.Xambly.Directive.Tests
                 "</root>";
             new Xambler(
                 new XpathDirective("/def:root/defOne:child/defTwo:lower",
-                    new ResolverFromDocument(xml,
+                    new XmlResolverFromDocument(xml,
                         "rootDefaultNamespace", "def",
                         "childDefaultNamespace", "defOne",
                         "anotherChildDefaultNamespace", "defTwo"
