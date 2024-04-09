@@ -41,8 +41,7 @@ namespace Yaapii.Xambly.Directive.Tests
 
             new NsDirective(
                 "",
-                "somens",
-                "nodesAndAttributes"
+                "somens"
             ).Exec(
                 dom,
                 new DomCursor(
@@ -60,19 +59,18 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsDefaultNamespaceToRoot()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                        .Set("child value")
                 .Xpath("/root")
                 .Ns("", "MyDefaultNamespaceUri")
             ).Apply(dom);
 
             Assert.Equal(
-                "<root xmlns=\"MyDefaultNamespaceUri\"><parent><child>child value</child></parent></root>",
+                "<root xmlns=\"MyDefaultNamespaceUri\"><parent /></root>",
                 dom.ToString(SaveOptions.DisableFormatting)
             );
         }
@@ -80,10 +78,13 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ReplacesDefaultNamespace()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root />"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
+                .Xpath("/root")
                 .Ns("", "OldValue")
                 .Ns("", "MyDefaultNamespaceUri")
             ).Apply(dom);
@@ -97,15 +98,12 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsDefaultNamespaceToSeveralNodes()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent><child /></parent><anotherParent><anotherChild /></anotherParent></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                .Xpath("/root")
-                    .Add("anotherParent")
-                        .Add("anotherChild")
                 .Xpath("/root/*")
                 .Ns("", "MyDefaultNamespaceUri")
             ).Apply(dom);
@@ -122,7 +120,7 @@ namespace Yaapii.Xambly.Directive.Tests
             var root = new XElement("rooot");
             var dom = new XDocument(root);
 
-            new NsDirective("my", "MyNiceNamespace", "nodesAndAttributes")
+            new NsDirective("my", "MyNiceNamespace")
             .Exec(
                 dom,
                 new DomCursor(
@@ -140,12 +138,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void StroresPrefixedNamespaceInRoot()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><child /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("child")
-                    .Ns("my", "MyNiceNamespace")
+                .Xpath("/root/child")
+                .Ns("my", "MyNiceNamespace")
             ).Apply(dom);
 
             Assert.Equal(
@@ -157,13 +157,15 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ReplacesPrefixedNamespace()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><child /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("child")
-                    .Ns("my", "MyOldUglyNamespace")
-                    .Ns("my", "MyNewNiceNamespace")
+                .Xpath("/root/child")
+                .Ns("my", "MyOldUglyNamespace")
+                .Ns("my", "MyNewNiceNamespace")
             ).Apply(dom);
 
             Assert.Equal(
@@ -175,12 +177,12 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void ChildrenInheritsNamespace()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent key='value' /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                    .Attr("key", "value")
                 .Xpath("/root")
                 .Ns("nice", "MyNiceNamespace")
             ).Apply(dom);
@@ -194,14 +196,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void OptionallyDoesNotChangeChildren()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent key='value' /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                    .Attr("key", "value")
                 .Xpath("/root")
-                .Ns("nice", "MyNiceNamespace", "nodesAndAttributes", false)
+                .Ns("nice", "MyNiceNamespace", forNode: true, forAttributes: true, inheritance: false)
             ).Apply(dom);
 
             Assert.Equal(
@@ -213,15 +215,12 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsPrefixedNamespaceToRootChildren()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent><child /></parent><anotherParent><anotherChild /></anotherParent></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                .Xpath("/root")
-                    .Add("anotherParent")
-                        .Add("anotherChild")
                 .Xpath("/root/*")
                 .Ns("nice", "MyNiceNamespace")
             ).Apply(dom);
@@ -235,13 +234,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsPrefixedNamespaceToAttributes()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent key='value' /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                    .Attr("key", "value")
-                    .Ns("nice", "MyNiceNamespace")
+                .Xpath("/root/parent")
+                .Ns("nice", "MyNiceNamespace")
             ).Apply(dom);
 
             Assert.Equal(
@@ -253,13 +253,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsPrefixedNamespaceOnlyToNodes()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent key='value' /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                    .Attr("key", "value")
-                    .Ns("nice", "MyNiceNamespace", "nodes")
+                .Xpath("/root/parent")
+                .Ns("nice", "MyNiceNamespace", forNode: true, forAttributes: false)
             ).Apply(dom);
 
             Assert.Equal(
@@ -271,13 +272,14 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void AddsPrefixedNamespaceOnlyToAttributes()
         {
-            var dom = new XDocument();
+            var dom =
+                XDocument.Parse(
+                    "<root><parent key='value' /></root>"
+                );
             new Xambler(
                 new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Attr("key", "value")
-                        .Ns("nice", "MyNiceNamespace", "attributes")
+                .Xpath("/root/parent")
+                .Ns("nice", "MyNiceNamespace", forNode: false, forAttributes: true)
             ).Apply(dom);
 
             Assert.Equal(
