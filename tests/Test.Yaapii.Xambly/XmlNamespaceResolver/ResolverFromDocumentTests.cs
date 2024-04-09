@@ -7,16 +7,17 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
     public sealed class ResolverFromDocumentTests
     {
         [Fact]
-        public void KnowsDefaultNamespaces()
+        public void HasDefaultPrefixForDefaultNamespaces()
         {
             Assert.Equal(
                 new MapOf(
-                    "", "default"
+                    "def1", "uri",
+                    "def2", "ohterUri"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns=\"default\">" +
-                            "<node />" +
+                        "<root xmlns='uri'>" +
+                            "<node xmlns='ohterUri'/>" +
                         "</root>"
                     )
                 ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
@@ -27,17 +28,16 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
         public void KnowsPrefixedDefalutNamespaces()
         {
             Assert.Equal(
-                MapOf.New(
-                    "", "default",
-                    "def", "default"
+                new MapOf(
+                    "myPrefix", "uri"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns=\"default\">" +
+                        "<root xmlns='uri'>" +
                             "<node />" +
                         "</root>"
                     ),
-                    "def"
+                    "uri", "myPrefix"
                 ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
             );
         }
@@ -47,20 +47,19 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
         {
             Assert.Equal(
                 MapOf.New(
-                    "def1", "childDefault",
-                    "def2", "nodeDefault"
+                    "prefix", "childUri",
+                    "nspx", "nodeUri"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
                         "<root>" +
-                            "<child xmlns=\"childDefault\">" +
-                                "<node xmlns=\"nodeDefault\" />" +
+                            "<child xmlns='childUri'>" +
+                                "<node xmlns='nodeUri' />" +
                             "</child>" +
                         "</root>"
                     ),
-                    "irrelevant",
-                    "childDefault", "def1",
-                    "nodeDefault", "def2"
+                    "childUri", "prefix",
+                    "nodeUri", "nspx"
                 ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
             );
         }
@@ -70,24 +69,13 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
         [Fact]
         public void KnowsPrefixedNamespace()
         {
-            var expected =
-                new MapOf(
-                    "pre", "withPrefix"
-                );
-            var xml =
-                "<root xmlns:pre=\"withPrefix\">" +
-                    "<child>" +
-                        "<node />" +
-                    "</child>" +
-                "</root>";
-
             Assert.Equal(
                 new MapOf(
                     "pre", "withPrefix"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns:pre=\"withPrefix\">" +
+                        "<root xmlns:pre='withPrefix'>" +
                             "<child>" +
                                 "<node />" +
                             "</child>" +
@@ -100,29 +88,16 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
         [Fact]
         public void KnowsDefalutAndPrefixedNamespace()
         {
-            var expected =
-                MapOf.New(
-                    "", "default",
-                    "pre", "withPrefix",
-                    "x", "anotherWithPrefix"
-                );
-            var xml =
-                "<root xmlns=\"default\" xmlns:pre=\"withPrefix\" xmlns:x=\"anotherWithPrefix\">" +
-                    "<child>" +
-                        "<node />" +
-                    "</child>" +
-                "</root>";
-
             Assert.Equal(
                 MapOf.New(
-                    "", "default",
+                    "def1", "default",
                     "pre", "withPrefix",
                     "x", "anotherWithPrefix"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns=\"default\" xmlns:pre=\"withPrefix\" xmlns:x=\"anotherWithPrefix\">" +
-                            "<child>" +
+                        "<root xmlns='default' xmlns:pre='withPrefix' >" +
+                            "<child xmlns:x='anotherWithPrefix'>" +
                                 "<node />" +
                             "</child>" +
                         "</root>"
@@ -136,62 +111,66 @@ namespace Yaapii.Xambly.XmlNamespaceResolver.Test
         {
             Assert.Equal(
                 MapOf.New(
-                    "", "default",
-                    "def", "default",
-                    "pre", "withPrefix"
+                    "myDefault", "defaultUri",
+                    "pre", "withPrefix",
+                    "x", "anotherWithPrefix"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns=\"default\" xmlns:pre=\"withPrefix\">" +
-                            "<child>" +
+                        "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
+                            "<child xmlns:x='anotherWithPrefix'>" +
                                 "<node />" +
                             "</child>" +
                         "</root>"
                     ),
-                    "def"
+                    "defaultUri", "myDefault"
                 ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
             );
         }
 
         [Fact]
-        public void KnowsPrefixedDefaultAndChildrenDefaultAndPrefixedNamespace()
+        public void KnowsAllInjectedNamespaces()
         {
-            var expected =
-                MapOf.New(
-                    "", "default",
-                    "def", "default",
-                    "pre", "withPrefix",
-                    "x", "anotherWithPrefix",
-                    "def1", "childDefault",
-                    "def2", "nodeDefault"
-                );
-            var xml =
-                "<root xmlns=\"default\" xmlns:pre=\"withPrefix\" xmlns:x=\"anotherWithPrefix\">" +
-                    "<child xmlns=\"childDefault\">" +
-                        "<node xmlns=\"nodeDefault\" />" +
-                    "</child>" +
-                "</root>";
-
             Assert.Equal(
                 MapOf.New(
-                    "", "default",
-                    "def", "default",
+                    "myDefault", "defaultUri",
+                    "notUsedPrefix", "notUsed",
                     "pre", "withPrefix",
-                    "x", "anotherWithPrefix",
-                    "def1", "childDefault",
-                    "def2", "nodeDefault"
+                    "x", "anotherWithPrefix"
                 ),
                 new ResolverFromDocument(
                     XDocument.Parse(
-                        "<root xmlns=\"default\" xmlns:pre=\"withPrefix\" xmlns:x=\"anotherWithPrefix\">" +
-                            "<child xmlns=\"childDefault\">" +
-                                "<node xmlns=\"nodeDefault\" />" +
+                        "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
+                            "<child xmlns:x='anotherWithPrefix'>" +
+                                "<node />" +
                             "</child>" +
                         "</root>"
                     ),
-                    "def",
-                    "childDefault", "def1",
-                    "nodeDefault", "def2"
+                    "defaultUri", "myDefault",
+                    "notUsed", "notUsedPrefix"
+                ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
+            );
+        }
+
+        [Fact]
+        public void DoesNotOverwritesPrefixedNamespaces()
+        {
+            Assert.Equal(
+                MapOf.New(
+                    "myDefault", "defaultUri",
+                    "canNotOverwrite", "withPrefix",
+                    "pre", "withPrefix"
+                ),
+                new ResolverFromDocument(
+                    XDocument.Parse(
+                        "<root xmlns='defaultUri' xmlns:pre='withPrefix'>" +
+                            "<child>" +
+                                "<node />" +
+                            "</child>" +
+                        "</root>"
+                    ),
+                    "defaultUri", "myDefault",
+                    "withPrefix", "canNotOverwrite"
                 ).GetNamespacesInScope(System.Xml.XmlNamespaceScope.ExcludeXml)
             );
         }
