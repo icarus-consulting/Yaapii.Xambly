@@ -48,23 +48,22 @@ namespace Yaapii.Xambly.Directive
         private readonly string expr;
         private readonly IXmlNamespaceResolver context;
 
+
         /// <summary>
         /// XPATH directive.
         /// Moves cursor to the nodes found by XPath.
         /// </summary>
-        /// <param name="path">XPath</param>
         public XpathDirective(string path) : this(
             path,
             new XmlNamespaceManager(new NameTable())
         )
         { }
 
+
         /// <summary>
         /// XPATH directive.
         /// Moves cursor to the nodes found by XPath.
         /// </summary>
-        /// <param name="path">XPath</param>
-        /// <param name="context"></param>
         public XpathDirective(string path, IXmlNamespaceResolver context)
         {
             this.expr = path;
