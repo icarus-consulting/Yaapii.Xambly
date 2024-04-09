@@ -649,12 +649,13 @@ namespace Yaapii.Xambly
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>
-        /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
         /// <param name="inheritance">Is applied to the children</param>
-        public Directives Ns(string prefix, string ns, string purpose = "nodesAndAttributes", bool inheritance = true)
+        public Directives Ns(string prefix, string ns, bool forNode = true, bool forAttributes = true, bool inheritance = true)
         {
             this.all.Add(
-                new NsDirective(prefix, ns, purpose, inheritance)
+                new NsDirective(prefix, ns, forNode, forAttributes, inheritance)
             );
 
             return this;

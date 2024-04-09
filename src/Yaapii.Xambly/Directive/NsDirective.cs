@@ -29,7 +29,6 @@ using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
 using Yaapii.Atoms.Func;
 using Yaapii.Atoms.Scalar;
-using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
@@ -53,7 +52,8 @@ namespace Yaapii.Xambly.Directive
     {
         private readonly IScalar<string> prefix;
         private readonly IScalar<XNamespace> ns;
-        private readonly IText purpose;
+        private readonly bool forNode;
+        private readonly bool forAttributes;
         private readonly bool inheritance;
 
 
@@ -74,12 +74,14 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>
-        /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
         /// <param name="inheritance">Is applied to the children</param>
-        public NsDirective(string prefix, string ns, string purpose, bool inheritance = true) : this(
+        public NsDirective(string prefix, string ns, bool forNode = true, bool forAttributes = true, bool inheritance = true) : this(
             new Arg.AttributeArg(prefix),
             new Arg.AttributeArg(ns),
-            purpose,
+            forNode,
+            forAttributes,
             inheritance
         )
         { }
@@ -101,54 +103,28 @@ namespace Yaapii.Xambly.Directive
         /// </summary>
         /// <param name="prefix">If empty a default namespace will be created</param>
         /// <param name="ns">Namespace</param>
-        /// <param name="purpose">Set the namespace to: 'nodes', 'attributes', 'nodesAndAttributes'</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
         /// <param name="inheritance">Is applied to the children</param>
-        public NsDirective(IArg prefix, IArg ns, string purpose, bool inheritance = true) : this(
+        public NsDirective(IArg prefix, IArg ns, bool forNode = true, bool forAttributes = true, bool inheritance = true) : this(
             new ScalarOf<string>(() => prefix.Raw()),
             new ScalarOf<XNamespace>(() =>
             {
                 XNamespace namesp = ns.Raw();
                 return namesp;
             }),
-            purpose,
+            forNode,
+            forAttributes,
             inheritance
         )
         { }
 
-        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, string purpose, bool inheritance) : this(
-            prefix,
-            ns,
-            new ManyOf(
-                "nodes",
-                "attributes",
-                "nodesAndAttributes"
-            ),
-            purpose,
-            inheritance
-        )
-        { }
-
-        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, IEnumerable<string> purposes, string purpose, bool inheritance) : this(
-            prefix,
-            ns,
-            new TextOf(() =>
-            {
-                new FailWhen(
-                    !purposes.Contains(purpose),
-                    $"Invalid value for purpose '{purpose}'. Valid values are: '{new Atoms.Text.Joined("', '", purposes)}'."
-                ).Go();
-                return purpose;
-            }),
-            inheritance
-        )
-        { }
-
-
-        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, IText purpose, bool inheritance)
+        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, bool forNode, bool forAttributes, bool inheritance)
         {
             this.prefix = prefix;
             this.ns = ns;
-            this.purpose = purpose;
+            this.forNode = forNode;
+            this.forAttributes = forAttributes;
             this.inheritance = inheritance;
         }
 
@@ -215,7 +191,7 @@ namespace Yaapii.Xambly.Directive
 
         private void ApplyPrefixedNS(XNode dom, ICursor cursor, IStack stack)
         {
-            new Each<XNode>(node =>
+            Each.New(node =>
                 {
                     var candidates =
                         Candidates(
@@ -223,16 +199,16 @@ namespace Yaapii.Xambly.Directive
                                 node
                             )
                         );
-                    new Each<XNode>(candidate =>
+                    Each.New<XNode>(candidate =>
                         {
                             if (candidate is XElement)
                             {
                                 var element = candidate as XElement;
-                                if (this.purpose.AsString().Equals("nodes") || this.purpose.AsString().Equals("nodesAndAttributes"))
+                                if (this.forNode)
                                 {
                                     SetNodeNamespace(element);
                                 }
-                                if (this.purpose.AsString().Equals("attributes") || this.purpose.AsString().Equals("nodesAndAttributes"))
+                                if (this.forAttributes)
                                 {
                                     SetAttributeNamespace(element);
                                 }
