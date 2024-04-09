@@ -25,13 +25,14 @@ using Xunit;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Xambly.Cursor;
 using Yaapii.Xambly.Stack;
+using Yaapii.Xambly.XmlNamespaceResolver;
 
 namespace Yaapii.Xambly.Directive.Tests
 {
     public sealed class XpathDirectiveTests
     {
         [Fact]
-        public void FindsNodesWithXpathExpression_()
+        public void FindsNodesWithXpathExpression()
         {
             var expected =
                 "<root>" +
@@ -243,59 +244,72 @@ namespace Yaapii.Xambly.Directive.Tests
         [Fact]
         public void WorksWithDefaultNamespace()
         {
-            var dom = new XDocument();
+            var xml =
+                XDocument.Parse(
+                    "<root xmlns='MyDefaultNamespaceUri'><parent key='original' /></root>"
+                );
+
             new Xambler(
-                new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                        .Set("child value")
-                .Xpath("/root")
-                .Ns("", "MyDefaultNamespaceUri")
-                    .Xpath("/def:root/def:parent", "def")
-                    .Attr("key", "value")
-            ).Apply(dom);
+                new XpathDirective("/def1:root/def1:parent", new ResolverFromDocument(xml)),
+                new AttrDirective("key", "changed")
+            ).Apply(xml);
 
             Assert.Equal(
-                "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"value\"><child>child value</child></parent></root>",
-                dom.ToString(SaveOptions.DisableFormatting)
+                "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"changed\" /></root>",
+                xml.ToString(SaveOptions.DisableFormatting)
+            );
+        }
+
+        [Fact]
+        public void WorksWithNamedNamespace()
+        {
+            var xml =
+                XDocument.Parse(
+                    "<root xmlns:nx='myNiceNamesapce'><nx:parent>Hello</nx:parent></root>"
+                );
+
+            new Xambler(
+                new XpathDirective("/root/nx:parent", new ResolverFromDocument(xml)),
+                new SetDirective("Hello, World!")
+            ).Apply(xml);
+
+            Assert.Equal(
+                "<root xmlns:nx=\"myNiceNamesapce\"><nx:parent>Hello, World!</nx:parent></root>",
+                xml.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void WorksWithDefaultNamespaceOfChildren()
         {
-            var expected =
-                "<root>" +
-                    "<child xmlns=\"childDefaultNamespace\">" +
-                        "<node />" +
-                    "</child>" +
-                    "<child xmlns=\"anotherChildDefaultNamespace\" />" +
-                "</root>";
-            var dom = new XDocument();
+            var xml =
+                XDocument.Parse(
+                    "<root xmlns='MyDefaultNamespaceUri'><parent key='original' /></root>"
+                );
+
             new Xambler(
-                new Directives()
-                .Add("root")
-                    .Add("child")
-                        .Ns("", "childDefaultNamespace").Up()
-                    .Add("child")
-                        .Ns("", "anotherChildDefaultNamespace")
-                    .Xpath("/root/cdef:child",
-                        "",
-                        "childDefaultNamespace", "cdef"
-                    )
-                        .Add("node")
-            ).Apply(dom);
+                new XpathDirective("/def1:root/def1:parent", new ResolverFromDocument(xml)),
+                new AttrDirective("key", "changed")
+            ).Apply(xml);
 
             Assert.Equal(
-                expected,
-                dom.ToString(SaveOptions.DisableFormatting)
+                "<root xmlns=\"MyDefaultNamespaceUri\"><parent key=\"changed\" /></root>",
+                xml.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void WorksSeveralDefaultNamespacesOfChildren()
         {
+            var xml =
+                XDocument.Parse(
+                    "<root>" +
+                        "<child xmlns='childDefaultNamespace'>" +
+                            "<lower xmlns='anotherChildDefaultNamespace' />" +
+                        "</child>" +
+                    "</root>"
+                );
+
             var expected =
                 "<root>" +
                     "<child xmlns=\"childDefaultNamespace\">" +
@@ -304,31 +318,33 @@ namespace Yaapii.Xambly.Directive.Tests
                         "</lower>" +
                     "</child>" +
                 "</root>";
-            var dom = new XDocument();
             new Xambler(
-                new Directives()
-                .Add("root")
-                    .Add("child")
-                        .Ns("", "childDefaultNamespace")
-                        .Add("lower")
-                            .Ns("", "anotherChildDefaultNamespace")
-                            .Xpath("/root/def1:child/def2:lower",
-                                "",
-                                "childDefaultNamespace", "def1",
-                                "anotherChildDefaultNamespace", "def2"
-                            )
-                            .Add("node")
-            ).Apply(dom);
+                new XpathDirective("/root/defOne:child/defTwo:lower",
+                    new ResolverFromDocument(xml,
+                        "childDefaultNamespace", "defOne",
+                        "anotherChildDefaultNamespace", "defTwo"
+                    )
+                ),
+                new AddDirective("node")
+            ).Apply(xml);
 
             Assert.Equal(
                 expected,
-                dom.ToString(SaveOptions.DisableFormatting)
+                xml.ToString(SaveOptions.DisableFormatting)
             );
         }
 
         [Fact]
         public void WorksWithSeveralDefaultNamespacesOfChildrenAndRootDefaultNamespace()
         {
+            var xml =
+                XDocument.Parse(
+                    "<root xmlns='rootDefaultNamespace'>" +
+                        "<child xmlns='childDefaultNamespace'>" +
+                            "<lower xmlns='anotherChildDefaultNamespace' />" +
+                        "</child>" +
+                    "</root>"
+                );
             var expected =
                 "<root xmlns=\"rootDefaultNamespace\">" +
                     "<child xmlns=\"childDefaultNamespace\">" +
@@ -337,48 +353,20 @@ namespace Yaapii.Xambly.Directive.Tests
                         "</lower>" +
                     "</child>" +
                 "</root>";
-            var dom = new XDocument();
             new Xambler(
-                new Directives()
-                .Add("root")
-                    .Ns("", "rootDefaultNamespace")
-                    .Add("child")
-                        .Ns("", "childDefaultNamespace")
-                        .Add("lower")
-                            .Ns("", "anotherChildDefaultNamespace")
-                            .Xpath("/def:root/def1:child/def2:lower",
-                                "def",
-                                "childDefaultNamespace", "def1",
-                                "anotherChildDefaultNamespace", "def2"
-                            )
-                            .Add("node")
-            ).Apply(dom);
+                new XpathDirective("/def:root/defOne:child/defTwo:lower",
+                    new ResolverFromDocument(xml,
+                        "rootDefaultNamespace", "def",
+                        "childDefaultNamespace", "defOne",
+                        "anotherChildDefaultNamespace", "defTwo"
+                    )
+                ),
+                new AddDirective("node")
+            ).Apply(xml);
 
             Assert.Equal(
                 expected,
-                dom.ToString(SaveOptions.DisableFormatting)
-            );
-        }
-
-        [Fact]
-        public void WorksWithNamespacePrefixes()
-        {
-            var dom = new XDocument();
-            new Xambler(
-                new Directives()
-                .Add("root")
-                    .Add("parent")
-                        .Add("child")
-                        .Set("child value")
-                .Xpath("/root")
-                .Ns("nice", "MyNiceNamespace")
-                    .Xpath("/nice:root/nice:parent")
-                    .Attr("key", "value")
-            ).Apply(dom);
-
-            Assert.Equal(
-                "<nice:root xmlns:nice=\"MyNiceNamespace\"><nice:parent key=\"value\"><nice:child>child value</nice:child></nice:parent></nice:root>",
-                dom.ToString(SaveOptions.DisableFormatting)
+                xml.ToString(SaveOptions.DisableFormatting)
             );
         }
     }
