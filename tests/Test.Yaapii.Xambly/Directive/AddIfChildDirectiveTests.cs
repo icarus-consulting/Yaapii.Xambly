@@ -53,5 +53,33 @@ namespace Yaapii.Xambly
                 ).Apply(new XDocument()).ToString()
             );
         }
+
+        [Fact]
+        public void IsCaseSensitive()
+        {
+            Assert.Equal(
+                "<root>\r\n  <item>\r\n    <id>some-id</id>\r\n    <child />\r\n  </item>\r\n  <item>\r\n    <id>SOME-ID</id>\r\n    <child />\r\n  </item>\r\n</root>",
+                new Xambler(
+                    new ManyOf<IDirective>(
+                        new PushDirective(),
+                        new AddDirective("root"),
+                        new PushDirective(),
+                        new AddDirective("item"),
+                        new AddDirective("id"),
+                        new SetDirective("some-id"),
+                        new PopDirective(),
+                        new AddIfChildDirective("item", "id", "some-id"),
+                        new AddDirective("child"),
+                        new UpDirective(),
+                        new UpDirective(),
+                        new AddIfChildDirective("item", "id", "SOME-ID", false),
+                        new AddIfDirective("id"),
+                        new SetDirective("SOME-ID"),
+                        new UpDirective(),
+                        new AddDirective("child")
+                    )
+                ).Apply(new XDocument()).ToString()
+            );
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Yaapii.Xambly
         private readonly IArg name;
         private readonly IArg child;
         private readonly string content;
+        private readonly bool ignoreCase;
 
         /// <summary>
         /// ADDIF directive.
@@ -26,11 +27,27 @@ namespace Yaapii.Xambly
         /// <param name="node">Name of node to add</param>
         /// <param name="child">Name of child to match</param>
         /// <param name="content">content to match</param>
-        public AddIfChildDirective(string node, string child, string content)
+        public AddIfChildDirective(string node, string child, string content) : this(
+            node,
+            child,
+            content,
+            true
+        ){ }
+
+        /// <summary>
+        /// ADDIF directive.
+        /// Adds a node, if child element with specified content as text does not exist.
+        /// </summary>
+        /// <param name="node">Name of node to add</param>
+        /// <param name="child">Name of child to match</param>
+        /// <param name="content">content to match</param>
+        /// <param name="ignoreCase">ignore case then comparing node name, element name, and child content</param>
+        public AddIfChildDirective(string node, string child, string content, bool ignoreCase)
         {
             this.name = new AttributeArg(node);
             this.child = new AttributeArg(child);
             this.content = content;
+            this.ignoreCase = ignoreCase;
         }
 
         /// <summary>
@@ -93,12 +110,12 @@ namespace Yaapii.Xambly
         {
             bool matches = false;
             var xElement = node as XElement;
-            if (String.Compare(xElement.Name.LocalName, this.name.Raw(), true) == 0)
+            if (String.Compare(xElement.Name.LocalName, this.name.Raw(), this.ignoreCase) == 0)
             {
                 foreach (XNode child in Children(node))
                 {
                     var xChild = child as XElement;
-                    if (String.Compare(xChild.Name.LocalName, this.child.Raw(), true) == 0 && String.Compare(xChild.Value, this.content, true) == 0)
+                    if (String.Compare(xChild.Name.LocalName, this.child.Raw(), this.ignoreCase) == 0 && String.Compare(xChild.Value, this.content, this.ignoreCase) == 0)
                     {
                         matches = true;
                         break;
