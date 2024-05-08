@@ -303,12 +303,13 @@ namespace Yaapii.Xambly
         /// <param name="name">Name of the node to add</param>
         /// <param name="childName">Name of the child element to match</param>
         /// <param name="textContent">Text inside the child to match</param>
+        /// <param name="ignoreCase">Ignore case when comparing node name, element name, and child content</param>
         /// <returns>This object</returns>
-        public Directives AddIfChildContent(Object name, string childName, string textContent)
+        public Directives AddIfChildContent(Object name, string childName, string textContent, bool ignoreCase = true)
         {
             try
             {
-                this.all.Add(new AddIfChildDirective(name.ToString(), childName, textContent));
+                this.all.Add(new AddIfChildDirective(name.ToString(), childName, textContent, ignoreCase));
             }
             catch (XmlContentException ex)
             {
