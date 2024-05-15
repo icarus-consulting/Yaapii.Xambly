@@ -6,11 +6,11 @@ image: Visual Studio 2022
 configuration: Release
 environment:
   GITHUB_TOKEN:
-    secure: //RzPD6sJwALrAUPet5ffD2C82ETjhYb1XR30sWRHtqNK5E9Q9xN96GNP9OfWCwX
+    secure: HHg9YTykqpuNJUKm2KvjMDtsC0rpZQFq28jPrVcu7IBkf9Q163NGkREb5Zpk3c8K
+  NUGET_TOKEN:
+    secure: urOJDWnCLnHjMUTnM5JDTD/dPODp5oweC51ZO3ER7w2Hj2EyBiAysGgrr6na/c3k
   CODECOV_TOKEN:
     secure: KE2A2I2gpzWzC8fqWQDW/4lOcCJH54j2A6MATbxRaoQUwTwp7bF0/2EupHxq01eV
-  NUGET_TOKEN:
-    secure: OE/m5FgzlPwKm1+GYsvHkWqLvOGE6jnVJabPWy/O8XH3re/eSDilUc8cewoO2ZlI
   APPVEYOR_TOKEN:
     secure: wVt1RgJAnhNTyIjtK9yFkQbEEM+fBk1TLUzo0j3pe2U=
 nuget:
