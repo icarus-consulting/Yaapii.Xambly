@@ -21,40 +21,111 @@
 // SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
+using Yaapii.Atoms;
+using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Error;
-using Yaapii.Atoms.Text;
+using Yaapii.Atoms.Func;
+using Yaapii.Atoms.Scalar;
 using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {
     /// <summary>
     /// Namespace directive.
-    /// Sets namespace of all current nodes
+    /// 
+    /// Sets namespace of all current nodes selected by the cursor.
+    /// Namespace is applied to all child nodes (default).
+    /// Namespace is applied to all attributes (default).
+    /// The namespace declaration will be done in the root node.
+    /// 
+    /// If the prefix is empty a default namespace will be created.
+    /// which is declared only in the current nodes.
+    /// Attributes cannot be added to a default namespace.
+    /// 
+    /// Hint:
+    /// After declaring a namespace the XPath will be affected.
     /// </summary>
     public class NsDirective : IDirective
     {
-        private readonly IArg nsp;
-        private readonly IArg prefix;
+        private readonly IScalar<string> prefix;
+        private readonly IScalar<XNamespace> ns;
+        private readonly bool forNode;
+        private readonly bool forAttributes;
+        private readonly bool inheritance;
 
-        public NsDirective(string prefix, string nsp) : this(new Arg.AttributeArg(prefix), new Arg.AttributeArg(nsp))
-        { }
 
-        public NsDirective(string nsp) : this(new Arg.AttributeArg(""), new Arg.AttributeArg(nsp))
-        { }
-
-        public NsDirective(IArg nsp) : this(new Arg.AttributeArg(""), nsp)
+        /// <summary>
+        /// Namespace directive.
+        /// 
+        /// Sets namespace of all current nodes selected by the cursor.
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
+        /// The namespace declaration will be done in the root node.
+        /// 
+        /// If the prefix is empty a default namespace will be created.
+        /// which is declared only in the current nodes.
+        /// Attributes cannot be added to a default namespace.
+        /// 
+        /// Hint:
+        /// After declaring a namespace the XPath will be affected.
+        /// </summary>
+        /// <param name="prefix">If empty a default namespace will be created</param>
+        /// <param name="ns">Namespace</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
+        /// <param name="inheritance">Is applied to the children</param>
+        public NsDirective(string prefix, string ns, bool forNode = true, bool forAttributes = true, bool inheritance = true) : this(
+            new Arg.AttributeArg(prefix),
+            new Arg.AttributeArg(ns),
+            forNode,
+            forAttributes,
+            inheritance
+        )
         { }
 
         /// <summary>
         /// Namespace directive.
-        /// Sets namespace of all current nodes
+        /// 
+        /// Sets namespace of all current nodes selected by the cursor.
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
+        /// The namespace declaration will be done in the root node.
+        /// 
+        /// If the prefix is empty a default namespace will be created.
+        /// which is declared only in the current nodes.
+        /// Attributes cannot be added to a default namespace.
+        /// 
+        /// Hint:
+        /// After declaring a namespace the XPath will be affected.
         /// </summary>
-        /// <param name="nsp"></param>
-        public NsDirective(IArg prefix, IArg nsp)
+        /// <param name="prefix">If empty a default namespace will be created</param>
+        /// <param name="ns">Namespace</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
+        /// <param name="inheritance">Is applied to the children</param>
+        public NsDirective(IArg prefix, IArg ns, bool forNode = true, bool forAttributes = true, bool inheritance = true) : this(
+            new ScalarOf<string>(() => prefix.Raw()),
+            new ScalarOf<XNamespace>(() =>
+            {
+                XNamespace namesp = ns.Raw();
+                return namesp;
+            }),
+            forNode,
+            forAttributes,
+            inheritance
+        )
+        { }
+
+        private NsDirective(IScalar<string> prefix, IScalar<XNamespace> ns, bool forNode, bool forAttributes, bool inheritance)
         {
             this.prefix = prefix;
-            this.nsp = nsp;
+            this.ns = ns;
+            this.forNode = forNode;
+            this.forAttributes = forAttributes;
+            this.inheritance = inheritance;
         }
 
         /// <summary>
@@ -63,10 +134,8 @@ namespace Yaapii.Xambly.Directive
         /// <returns>The string</returns>
         public override string ToString()
         {
-            return new Formatted(
-                            "NS {0}",
-                            this.nsp
-                        ).AsString();
+            return
+                $"NS {this.prefix.Value()}={this.ns.Value().NamespaceName}";
         }
 
         /// <summary>
@@ -78,44 +147,163 @@ namespace Yaapii.Xambly.Directive
         /// <returns>New current nodes</returns>
         public ICursor Exec(XNode dom, ICursor cursor, IStack stack)
         {
-            throw new ImpossibleModificationException("Modifying namespaces is not supported at the moment.");
             try
             {
-                XElement element = null;
-                if (dom is XDocument)
+                if (this.prefix.Value() == string.Empty)
                 {
-                    element = (dom as XDocument).Root;
+                    ApplyDefaultNS(dom, cursor, stack);
                 }
                 else
                 {
-                    element = dom as XElement;
+                    ApplyPrefixedNS(dom, cursor, stack);
                 }
-
-                new FailPrecise(
-                    new FailNull(element),
-                    new ArgumentException($"Node is not of type 'XElement'")
-                ).Go();
-
-                XNamespace xnsp = this.nsp.Raw();
-
-                ApplyNamespace(element, xnsp);
-
                 return cursor;
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException("can't set xmlns", ex);
+                throw new IllegalArgumentException($"Can't set xmlns", ex);
             }
         }
 
-        private void ApplyNamespace(XElement xelem, XNamespace xmlns)
+        private void ApplyDefaultNS(XNode dom, ICursor cursor, IStack stack)
         {
-            if (xelem.Name.NamespaceName == string.Empty)
-                xelem.Name = xmlns + xelem.Name.LocalName;
-            foreach (var e in xelem.Elements())
-                ApplyNamespace(e, xmlns);
-
+            SetNsToNodesSelectedByCursor(dom, cursor, stack);
+            foreach (var node in cursor)
+            {
+                foreach (var element in StrictElement(node).DescendantNodesAndSelf())
+                {
+                    if (element is XElement)
+                    {
+                        var el = element as XElement;
+                        el.Name = this.ns.Value().GetName(el.Name.LocalName);
+                    }
+                }
+            }
         }
 
+        private void SetNsToNodesSelectedByCursor(XNode dom, ICursor cursor, IStack stack)
+        {
+            new AttrDirective(
+                "xmlns",
+                this.ns.Value().NamespaceName
+            ).Exec(dom, cursor, stack);
+        }
+
+        private void ApplyPrefixedNS(XNode dom, ICursor cursor, IStack stack)
+        {
+            Each.New(node =>
+                {
+                    var candidates =
+                        Candidates(
+                            StrictElement(
+                                node
+                            )
+                        );
+                    Each.New<XNode>(candidate =>
+                        {
+                            if (candidate is XElement)
+                            {
+                                var element = candidate as XElement;
+                                if (this.forNode)
+                                {
+                                    SetNodeNamespace(element);
+                                }
+                                if (this.forAttributes)
+                                {
+                                    SetAttributeNamespace(element);
+                                }
+                            }
+                        },
+                        candidates
+                    ).Invoke();
+                },
+                cursor
+            ).Invoke();
+            SetNsToRoot(dom);
+        }
+
+        private IEnumerable<XNode> Candidates(XElement node)
+        {
+            IEnumerable<XNode> candidates = new ManyOf<XElement>(node);
+
+            if (this.inheritance)
+            {
+                candidates = node.DescendantNodesAndSelf();
+            }
+
+            return candidates;
+        }
+
+        private XElement StrictElement(XNode node)
+        {
+            new FailWhen(
+                !(node is XElement),
+                "Need element of type 'XElement' to set namespace."
+            ).Go();
+
+            return node as XElement;
+        }
+
+        private void SetNodeNamespace(XElement element)
+        {
+            element.Name = this.ns.Value().GetName(element.Name.LocalName);
+        }
+
+        private void SetAttributeNamespace(XElement el)
+        {
+            var attributes = el.Attributes().ToList();
+            el.Attributes().Remove();
+            foreach (XAttribute at in attributes)
+            {
+                el.Add(new XAttribute(this.ns.Value().GetName(at.Name.LocalName), at.Value));
+            }
+        }
+
+        private void SetNsToRoot(XNode dom)
+        {
+            var root = RootNode(dom);
+            var nsKey = XNamespace.Xmlns + this.prefix.Value();
+            RemoveAttributeWhenExists(root, nsKey);
+            AddNsAttribute(root, nsKey, this.ns.Value().NamespaceName);
+        }
+
+        private XElement RootNode(XNode dom)
+        {
+            XElement root;
+
+            if (dom is XDocument)
+            {
+                root = (dom as XDocument).Root;
+            }
+            else
+            {
+                root = dom as XElement;
+            }
+            new FailPrecise(
+                new FailNull(root),
+                new ArgumentException($"Node is not of type 'XElement'")
+            ).Go();
+
+            return root;
+        }
+
+        private void RemoveAttributeWhenExists(XElement root, XName name)
+        {
+            var existing = root.Attribute(name);
+            if (existing != null)
+            {
+                existing.Remove();
+            }
+        }
+
+        private void AddNsAttribute(XElement root, XName nsKey, string namespaceName)
+        {
+            root.Add(
+                new XAttribute(
+                    nsKey,
+                    namespaceName
+                )
+            );
+        }
     }
 }

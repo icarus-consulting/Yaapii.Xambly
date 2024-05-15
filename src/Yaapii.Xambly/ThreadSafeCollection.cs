@@ -248,7 +248,7 @@ namespace System.Collections.Generic
         /// </summary>
         /// <param name="item">item to search</param>
         /// <returns>the index</returns>
-        int InternalIndexOf(T item)
+        private int InternalIndexOf(T item)
         {
             int count = items.Count;
 
@@ -476,7 +476,7 @@ namespace System.Collections.Generic
         /// Test the value type
         /// </summary>
         /// <param name="value">the value to verify</param>
-        static void VerifyValueType(object value)
+        private static void VerifyValueType(object value)
         {
             if (value == null)
             {

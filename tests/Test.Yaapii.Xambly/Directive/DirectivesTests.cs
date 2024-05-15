@@ -212,17 +212,17 @@ namespace Yaapii.Xambly.Directive.Tests
         public void RejectsAddingToDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                {
-                    var xml = new XDocument();
-                    var xambler =
-                        new Xambler(
-                            new Directives()
-                                .Add("root")
-                                .Add("child")
-                                .Xpath("/")
-                                .Attr("some", "attribute")
-                        ).Apply(xml);
-                }
+            {
+                var xml = new XDocument();
+                var xambler =
+                    new Xambler(
+                        new Directives()
+                            .Add("root")
+                            .Add("child")
+                            .Xpath("/")
+                            .Attr("some", "attribute")
+                    ).Apply(xml);
+            }
             );
         }
 
