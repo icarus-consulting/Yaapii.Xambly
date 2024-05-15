@@ -2,7 +2,7 @@
 #     CI Build Configuration for master branch pre-release   #
 #------------------------------------------------------------#
 version: "{build}"
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 environment:
   GITHUB_TOKEN:
@@ -10,7 +10,7 @@ environment:
   CODECOV_TOKEN:
     secure: KE2A2I2gpzWzC8fqWQDW/4lOcCJH54j2A6MATbxRaoQUwTwp7bF0/2EupHxq01eV
   NUGET_TOKEN:
-    secure: i1Aml1iC2Cq8qJTm/uAMK3aa/ZNlaVV+LISMuH8ebYlmZwFo3A4rRo9sok71XgPc
+    secure: OE/m5FgzlPwKm1+GYsvHkWqLvOGE6jnVJabPWy/O8XH3re/eSDilUc8cewoO2ZlI
   APPVEYOR_TOKEN:
     secure: wVt1RgJAnhNTyIjtK9yFkQbEEM+fBk1TLUzo0j3pe2U=
 nuget:
