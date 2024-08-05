@@ -1,4 +1,3 @@
-#tool nuget:?package=GitReleaseManager&version=0.11
 #tool nuget:?package=OpenCover&version=4.7.922
 #tool nuget:?package=Codecov&version=1.12.3
 #addin nuget:?package=Cake.Figlet&version=1.3.1
@@ -352,41 +351,6 @@ Task("Credentials")
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// GitHub Release
-///////////////////////////////////////////////////////////////////////////////
-Task("GitHubRelease")
-.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
-.IsDependentOn("Version")
-.IsDependentOn("NuGet")
-.IsDependentOn("Credentials")
-.Does(() => 
-{
-    Information(Figlet("GitHub Release"));
-    
-    GitReleaseManagerCreate(
-        gitHubToken,
-        owner,
-        repository, 
-        new GitReleaseManagerCreateSettings {
-            Milestone         = version,
-            Name              = version,
-            Prerelease        = false,
-            TargetCommitish   = "main"
-        }
-    );
-    var nugets = string.Join(",", GetFiles("./artifacts/*.*nupkg").Select(f => f.FullPath) );
-    Information($"Release files:{Environment.NewLine}  " + nugets.Replace(",", $"{Environment.NewLine}  "));
-    GitReleaseManagerAddAssets(
-        gitHubToken,
-        owner,
-        repository,
-        version,
-        nugets
-    );
-    GitReleaseManagerPublish(gitHubToken, owner, repository, version);
-});
-
-///////////////////////////////////////////////////////////////////////////////
 // NuGet Feed
 ///////////////////////////////////////////////////////////////////////////////
 Task("NuGetFeed")
@@ -448,7 +412,6 @@ Task("Default")
 .IsDependentOn("UploadCoverage")
 .IsDependentOn("AssertPackages")
 .IsDependentOn("NuGet")
-.IsDependentOn("GitHubRelease")
 .IsDependentOn("NuGetFeed");
 
 RunTarget(target);
