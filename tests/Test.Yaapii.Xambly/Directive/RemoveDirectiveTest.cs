@@ -53,16 +53,16 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsExceptionOnRemoveRootNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                {
-                    new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                            new AddDirective("root"),
-                            new RemoveDirective()
-                        )
-                    ).Apply(
-                        new XDocument()
-                    );
-                }
+            {
+                new Xambler(
+                    new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
+                        new AddDirective("root"),
+                        new RemoveDirective()
+                    )
+                ).Apply(
+                    new XDocument()
+                );
+            }
             );
         }
 
@@ -70,15 +70,15 @@ namespace Yaapii.Xambly.Directive.Tests
         public void ThrowsExceptionOnRemoveDocumentNode()
         {
             Assert.Throws<ImpossibleModificationException>(() =>
-                {
-                    new Xambler(
-                        new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
-                            new RemoveDirective()
-                        )
-                    ).Apply(
-                        new XDocument()
-                    );
-                }
+            {
+                new Xambler(
+                    new Yaapii.Atoms.Enumerable.ManyOf<IDirective>(
+                        new RemoveDirective()
+                    )
+                ).Apply(
+                    new XDocument()
+                );
+            }
             );
         }
 
