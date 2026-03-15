@@ -168,6 +168,14 @@ Task("UnitTests")
         {
             skipped.Add(name);
         }
+        else
+        {
+            Information($"Testing {name}");
+            DotNetCoreTest(
+                test.FullPath,
+                settings
+            );
+        }
     }
     if (skipped.Count > 0)
     {

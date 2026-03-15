@@ -28,6 +28,7 @@ using System.Xml.Linq;
 using Yaapii.Atoms;
 using Yaapii.Atoms.Enumerable;
 using Yaapii.Atoms.Scalar;
+using Yaapii.Xambly.Error;
 
 namespace Yaapii.Xambly.Directive
 {
@@ -55,7 +56,6 @@ namespace Yaapii.Xambly.Directive
     public sealed class CopyOfDirective : IEnumerable<IDirective>
     {
         private readonly IScalar<XNode> node;
-
 
         ///<summary>
         /// Creates a collection of directives, which can create a copy
@@ -111,14 +111,11 @@ namespace Yaapii.Xambly.Directive
             this.node = node;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         public IEnumerator<IDirective> GetEnumerator()
         {
             var dirs = new Directives();
             var node = this.node.Value();
+
             if (node.NodeType == XmlNodeType.Element)
             {
                 var elmnt = node as XElement;
@@ -128,20 +125,21 @@ namespace Yaapii.Xambly.Directive
                     dirs.Attr(attr.Name, attr.Value);
                 }
             }
-
-            var ctn = node as XContainer;
-            //@TODO: Add failing for null
-
+            if (!(node is XContainer))
+            {
+                throw
+                    new ImpossibleModificationException("Cannot copy a node which is not of type XContainer");
+            }
+            var childNodes = (node as XContainer).Nodes();
             var containsElement =
                 new Contains<XmlNodeType>(
                     new Mapped<XNode, XmlNodeType>(
                         xnode => xnode.NodeType,
-                        ctn.Nodes()
+                        childNodes
                     ),
                     XmlNodeType.Element
                 ).Value();
-
-            foreach (XNode child in ctn.Nodes())
+            foreach (XNode child in childNodes)
             {
                 switch (child.NodeType)
                 {
@@ -170,7 +168,7 @@ namespace Yaapii.Xambly.Directive
                     case XmlNodeType.DocumentType:
                         break;
                     default:
-                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child.ToString()}");
+                        throw new ArgumentException($"unsupported type {child.NodeType} of node {child}");
                 }
             }
 
@@ -179,7 +177,7 @@ namespace Yaapii.Xambly.Directive
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

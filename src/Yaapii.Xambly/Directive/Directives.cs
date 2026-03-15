@@ -24,9 +24,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using Yaapii.Atoms.Func;
-using Yaapii.Atoms.Scalar;
 using Yaapii.Atoms.Text;
 using Yaapii.Xambly.Directive;
 using Yaapii.Xambly.Error;
@@ -79,27 +79,45 @@ namespace Yaapii.Xambly
 
         // List of directives.
         private readonly ICollection<IDirective> all = new ThreadsafeCollection<IDirective>();
+        private readonly IXmlNamespaceResolver context;
 
-        /// <summary>
-        /// ctor.
-        /// </summary>
-        public Directives() : this(new List<IDirective>())
+        public Directives() : this(
+            new List<IDirective>()
+        )
         { }
 
-        /// <summary>
-        /// ctor.
-        /// </summary>
+        public Directives(IXmlNamespaceResolver context) : this(
+            new List<IDirective>(),
+            context
+        )
+        { }
+
         public Directives(params IDirective[] dirs) : this(
-            new List<IDirective>(dirs))
+            new List<IDirective>(dirs),
+            new XmlNamespaceManager(new NameTable())
+        )
         { }
 
-        /// <summary>
-        /// ctor
-        /// </summary>
-        /// <param name="dirs">directives</param>
-        public Directives(IEnumerable<IDirective> dirs)
+        public Directives(IXmlNamespaceResolver context, params IDirective[] dirs) : this(
+            new List<IDirective>(dirs),
+            context
+        )
+        { }
+
+        public Directives(IEnumerable<IDirective> dirs) : this(
+            dirs,
+            new XmlNamespaceManager(new NameTable())
+        )
+        { }
+
+        public Directives(IEnumerable<IDirective> dirs, IXmlNamespaceResolver context)
         {
-            this.Append(dirs);
+            this.all =
+                new ThreadsafeCollection<IDirective>(
+                    new object(),
+                    dirs
+                );
+            this.context = context;
         }
 
         /// <summary>
@@ -267,9 +285,9 @@ namespace Yaapii.Xambly
         {
             foreach (KeyValuePair<Key, Value> entry in nodes)
             {
-                this.Add(entry.Key.ToString())
-                    .Set(entry.Value.ToString())
-                    .Up();
+                Add(entry.Key.ToString())
+                .Set(entry.Value.ToString())
+                .Up();
             }
             return this;
         }
@@ -529,25 +547,30 @@ namespace Yaapii.Xambly
         }
 
         /// <summary>
-        /// Go to xpath.
+        /// Moves cursor to the nodes found by XPath.
         /// </summary>
-        /// <param name="path">path to go to</param>
-        /// <exception cref="IllegalArgumentException"/>
-        /// <returns>This object</returns>
-        public Directives Xpath(Object path)
+        /// <param name="path">XPath</param>
+        public Directives Xpath(object path)
         {
             try
             {
-                this.all.Add(new XpathDirective(path.ToString()));
+                this.all.Add(
+                    new XpathDirective(
+                        path.ToString(),
+                        this.context
+                    )
+                );
             }
             catch (XmlContentException ex)
             {
-                throw new IllegalArgumentException(
-                    new Formatted(
-                        "failed to understand XML content, XPATH({0})",
-                        path).AsString(),
-                    ex
-                );
+                throw
+                    new IllegalArgumentException(
+                        new Formatted(
+                            "failed to understand XML content, XPATH({0})",
+                            path
+                        ).AsString(),
+                        ex
+                    );
             }
             return this;
         }
@@ -609,6 +632,33 @@ namespace Yaapii.Xambly
                     ex
                 );
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Sets namespace of all current nodes selected by the cursor.
+        /// Namespace is applied to all child nodes (default).
+        /// Namespace is applied to all attributes (default).
+        /// The namespace declaration will be done in the root node.
+        /// 
+        /// If the prefix is empty a default namespace will be created.
+        /// which is declared only in the current nodes.
+        /// Attributes cannot be added to a default namespace.
+        /// 
+        /// Hint:
+        /// After declaring a namespace the XPath will be affected.
+        /// </summary>
+        /// <param name="prefix">If empty a default namespace will be created</param>
+        /// <param name="ns">Namespace</param>
+        /// <param name="forNode">Apply namespace to node</param>
+        /// <param name="forAttributes">Apply namespace to attributes</param>
+        /// <param name="inheritance">Is applied to the children</param>
+        public Directives Ns(string prefix, string ns, bool forNode = true, bool forAttributes = true, bool inheritance = true)
+        {
+            this.all.Add(
+                new NsDirective(prefix, ns, forNode, forAttributes, inheritance)
+            );
+
             return this;
         }
     }
