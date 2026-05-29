@@ -53,9 +53,21 @@
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
-    <PackageReference Include="Yaapii.Atoms" Version="4.1.4" Condition="'$(Configuration)' != 'ReleaseSources'" />
-    <PackageReference Include="Yaapii.Atoms.Sources" Version="4.1.4" Condition="'$(Configuration)' == 'ReleaseSources'">
-      <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>  
-    </PackageReference>
   </ItemGroup>
+
+  <Choose>
+    <When Condition="Exists('..\..\..\..\Monorepo.sln')">
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\Yaapii.Atoms\src\Yaapii.Atoms\Yaapii.Atoms.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Yaapii.Atoms" Version="4.1.4" Condition="'$(Configuration)' != 'ReleaseSources'" />
+        <PackageReference Include="Yaapii.Atoms.Sources" Version="4.1.4" Condition="'$(Configuration)' == 'ReleaseSources'">
+          <PrivateAssets>analyzers;build;runtime;compile;native;buildtransitive</PrivateAssets>
+        </PackageReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 </Project>
