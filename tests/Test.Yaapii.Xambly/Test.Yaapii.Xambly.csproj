@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+    <UseProjectReferences>False</UseProjectReferences>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Xambler\LowerXamblerTests.cs" />
@@ -17,7 +18,7 @@
     <ProjectReference Include="..\..\src\Yaapii.Xambly\Yaapii.Xambly.csproj" />
   </ItemGroup>
   <Choose>
-    <When Condition="'$(Configuration)'=='Release'">
+    <When Condition="'$(UseProjectReferences)'=='True'">
       <ItemGroup>
         <ProjectReference Include="..\..\..\Yaapii.Xml\src\Yaapii.Xml\Yaapii.Xml.csproj" />
       </ItemGroup>
