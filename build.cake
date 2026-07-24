@@ -1,7 +1,6 @@
 #tool nuget:?package=OpenCover&version=4.7.922
 #tool nuget:?package=Codecov&version=1.12.3
 #addin nuget:?package=Cake.Figlet&version=1.3.1
-#addin nuget:?package=Cake.Codecov&version=0.9.1
 #addin nuget:?package=Cake.Incubator&version=5.1.0
 
 var target                  = Argument("target", "Default");
@@ -50,6 +49,79 @@ var nugetReleaseToken       = "";
 var appVeyorFeedToken       = "";
 var codeCovToken            = "";
 
+void RunCommand(string fileName, string arguments)
+{
+    var startInfo = new System.Diagnostics.ProcessStartInfo();
+    startInfo.FileName = fileName;
+    startInfo.Arguments = arguments;
+    startInfo.WorkingDirectory = MakeAbsolute(Directory("./")).FullPath;
+    startInfo.UseShellExecute = false;
+    startInfo.RedirectStandardOutput = true;
+    startInfo.RedirectStandardError = true;
+    startInfo.CreateNoWindow = true;
+
+    using (var process = new System.Diagnostics.Process())
+    {
+        process.StartInfo = startInfo;
+        process.Start();
+        var stdout = process.StandardOutput.ReadToEnd();
+        var stderr = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        if (!string.IsNullOrWhiteSpace(stdout))
+        {
+            Information(stdout.TrimEnd());
+        }
+
+        if (!string.IsNullOrWhiteSpace(stderr))
+        {
+            Information(stderr.TrimEnd());
+        }
+
+        if (process.ExitCode != 0)
+        {
+            throw new Exception($"{fileName} {arguments} failed with exit code {process.ExitCode}");
+        }
+    }
+}
+
+string FirstTool(string pattern)
+{
+    return GetFiles(pattern).First().FullPath;
+}
+
+string DotNetExecutable()
+{
+    var configured = EnvironmentVariable("DOTNET_EXE");
+    if (!string.IsNullOrWhiteSpace(configured))
+    {
+        return configured;
+    }
+
+    var programFiles = EnvironmentVariable("ProgramFiles");
+    if (!string.IsNullOrWhiteSpace(programFiles))
+    {
+        var candidate = System.IO.Path.Combine(programFiles, "dotnet", "dotnet.exe");
+        if (System.IO.File.Exists(candidate))
+        {
+            return candidate;
+        }
+    }
+
+    return "dotnet";
+}
+
+void RunOpenCover(string dotNetExecutable, string testProject, string configuration, string outputFile)
+{
+    var scriptPath = MakeAbsolute(File("./run-opencover.ps1")).FullPath;
+    var openCover = FirstTool("./tools/**/OpenCover.Console.exe");
+    var workingDirectory = MakeAbsolute(Directory("./")).FullPath;
+    RunCommand(
+        "powershell",
+        $"-NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\" -OpenCoverExe \"{openCover}\" -DotNetExe \"{dotNetExecutable}\" -TestProject \"{testProject}\" -Configuration \"{configuration}\" -OutputFile \"{outputFile}\" -WorkingDirectory \"{workingDirectory}\""
+    );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Version
 ///////////////////////////////////////////////////////////////////////////////
@@ -95,8 +167,8 @@ Task("Restore")
 .Does(() =>
 {
     Information(Figlet("Restore"));
-    
-    NuGetRestore($"./{repository}.sln");
+
+    RunCommand("dotnet", $"restore \"./{repository}.sln\"");
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -110,25 +182,15 @@ Task("Build")
 {
     Information(Figlet("Build"));
 
-    var settings = 
-        new DotNetCoreBuildSettings()
-        {
-            Configuration = configuration,
-            NoRestore = true,
-            MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version)
-        };
-        var skipped = new List<string>();
+    var skipped = new List<string>();
     foreach(var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
         if(!excludedModules.Contains(name))
         {
             Information($"Building {name}");
-            
-            DotNetCoreBuild(
-                module.FullPath,
-                settings
-            );
+
+            RunCommand("dotnet", $"build \"{module.FullPath}\" --configuration {configuration} --no-restore -p:VersionPrefix={version}");
         }
         else
         {
@@ -187,31 +249,8 @@ Task("GenerateCoverage")
 .Does(() => 
 {
     Information(Figlet("Generate Coverage"));
-    
-    try
-    {
-        OpenCover(
-            tool => 
-            {
-                tool.DotNetCoreTest(
-                    "./tests/Test.Yaapii.Xambly/",
-                    new DotNetCoreTestSettings
-                    {
-                        Configuration = configuration
-                    }
-                );
-            },
-            new FilePath($"{buildArtifacts.Path}/coverage.xml"),
-            new OpenCoverSettings()
-            {
-                OldStyle = true
-            }.WithFilter("+[Yaapii.Xambly]*")
-        );
-    }
-    catch(Exception ex)
-    {
-        Information("Error: " + ex.ToString());
-    }
+
+    RunOpenCover(DotNetExecutable(), "./tests/Test.Yaapii.Xambly/Test.Yaapii.Xambly.csproj", configuration, $"{buildArtifacts.Path}/coverage.xml");
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -224,8 +263,9 @@ Task("UploadCoverage")
 .Does(() =>
 {
     Information(Figlet("Upload Coverage"));
-    
-    Codecov($"{buildArtifacts.Path}/coverage.xml", codeCovToken);
+
+    var codecov = FirstTool("./tools/**/codecov.exe");
+    RunCommand(codecov, $"-f \"{buildArtifacts.Path}/coverage.xml\" -t \"{codeCovToken}\"");
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -245,7 +285,7 @@ Task("AssertPackages")
             var packageVersion = new Dictionary<string, string>();
             foreach (var package in project.PackageReferences)
             {
-                packageVersion.Add(package.Name, package.Version);
+                packageVersion[package.Name] = package.Version;
             }
 
             foreach (var package in packageVersion)
@@ -282,40 +322,14 @@ Task("NuGet")
 {
     Information(Figlet("NuGet"));
     Information($"Building NuGet Package for Version {version}");
-    
-    var settings = new DotNetCorePackSettings()
-    {
-        Configuration = configuration,
-        OutputDirectory = buildArtifacts,
-        NoRestore = true
-    };
-    settings.ArgumentCustomization = args => args.Append("--include-symbols").Append("-p:SymbolPackageFormat=snupkg");
-    settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
-
-    var settingsSources = new DotNetCorePackSettings()
-    {
-        Configuration = "ReleaseSources",
-        OutputDirectory = buildArtifacts,
-        NoRestore = false,
-        NoBuild = false,
-        VersionSuffix = ""
-    };
-    settingsSources.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
 
     foreach (var module in GetSubDirectories(modules))
     {
         var name = module.GetDirectoryName();
 
-        DotNetCorePack(
-            module.ToString(),
-            settings
-        );
+        RunCommand("dotnet", $"pack \"{module.FullPath}\" --configuration {configuration} --output \"{buildArtifacts.Path}\" --include-symbols --no-restore -p:VersionPrefix={version} -p:SymbolPackageFormat=snupkg");
 
-        settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources").Append("-p:IncludeBuildOutput=false");
-        DotNetCorePack(
-            module.ToString(),
-            settingsSources
-        );       
+        RunCommand("dotnet", $"pack \"{module.FullPath}\" --configuration ReleaseSources --output \"{buildArtifacts.Path}\" -p:VersionPrefix={version} -p:PackageId={name}.Sources -p:IncludeBuildOutput=false");
     }
 });
 
@@ -366,35 +380,17 @@ Task("NuGetFeed")
     {
         if (package.GetFilename().ToString().Contains(".Sources"))
         {
-            NuGetPush(
-                package,
-                new NuGetPushSettings {
-                    Source = appVeyorNuGetFeed,
-                    ApiKey = appVeyorFeedToken
-                }
-            );
+            RunCommand("dotnet", $"nuget push \"{package.FullPath}\" --source \"{appVeyorNuGetFeed}\" --api-key \"{appVeyorFeedToken}\" --skip-duplicate");
         }
         else
         {
-            NuGetPush(
-                package,
-                new NuGetPushSettings {
-                    Source = nuGetSource,
-                    ApiKey = nugetReleaseToken
-                }
-            );
+            RunCommand("dotnet", $"nuget push \"{package.FullPath}\" --source \"{nuGetSource}\" --api-key \"{nugetReleaseToken}\" --skip-duplicate");
         }
     }
     var symbols = GetFiles($"{buildArtifacts.Path}/*.snupkg");
     foreach(var symbol in symbols)
     {
-        NuGetPush(
-            symbol,
-            new NuGetPushSettings {
-                Source = nuGetSource,
-                ApiKey = nugetReleaseToken
-            }
-        );
+        RunCommand("dotnet", $"nuget push \"{symbol.FullPath}\" --source \"{nuGetSource}\" --api-key \"{nugetReleaseToken}\" --skip-duplicate");
     }
 });
 
