@@ -1,3 +1,5 @@
+#addin "Cake.Figlet"
+
 var target                  = Argument("target", "Default");
 var configuration           = "Release";
 
