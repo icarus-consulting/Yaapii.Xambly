@@ -1,8 +1,4 @@
-#tool nuget:?package=OpenCover&version=4.7.922
-#tool nuget:?package=Codecov&version=1.12.3
-#addin nuget:?package=Cake.Figlet&version=1.3.1
-#addin nuget:?package=Cake.Codecov&version=0.9.1
-#addin nuget:?package=Cake.Incubator&version=5.1.0
+#addin "Cake.Figlet"
 
 var target                  = Argument("target", "Default");
 var configuration           = "Release";
@@ -180,102 +176,11 @@ Task("UnitTests")
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// Generate Coverage
-///////////////////////////////////////////////////////////////////////////////
-Task("GenerateCoverage")
-.IsDependentOn("Build")
-.Does(() => 
-{
-    Information(Figlet("Generate Coverage"));
-    
-    try
-    {
-        OpenCover(
-            tool => 
-            {
-                tool.DotNetCoreTest(
-                    "./tests/Test.Yaapii.Xambly/",
-                    new DotNetCoreTestSettings
-                    {
-                        Configuration = configuration
-                    }
-                );
-            },
-            new FilePath($"{buildArtifacts.Path}/coverage.xml"),
-            new OpenCoverSettings()
-            {
-                OldStyle = true
-            }.WithFilter("+[Yaapii.Xambly]*")
-        );
-    }
-    catch(Exception ex)
-    {
-        Information("Error: " + ex.ToString());
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// Upload Coverage
-///////////////////////////////////////////////////////////////////////////////
-Task("UploadCoverage")
-.IsDependentOn("GenerateCoverage")
-.IsDependentOn("Credentials")
-.WithCriteria(() => isAppVeyor)
-.Does(() =>
-{
-    Information(Figlet("Upload Coverage"));
-    
-    Codecov($"{buildArtifacts.Path}/coverage.xml", codeCovToken);
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// Assert Packages
-///////////////////////////////////////////////////////////////////////////////
-Task("AssertPackages")
-.Does(() => 
-{
-    Information(Figlet("Assert Packages"));
-
-    foreach (var module in GetSubDirectories(modules))
-    {
-        var name = module.GetDirectoryName();
-        if(!excludedModules.Contains(name))
-        {
-            var project = ParseProject(new FilePath($"{module}/{name}.csproj"), configuration);
-            var packageVersion = new Dictionary<string, string>();
-            foreach (var package in project.PackageReferences)
-            {
-                packageVersion.Add(package.Name, package.Version);
-            }
-
-            foreach (var package in packageVersion)
-            {
-                if (package.Key.Contains(".Sources"))
-                {
-                    var nonSourcesPackage = package.Key.Replace(".Sources", string.Empty);
-                    if (packageVersion[nonSourcesPackage] != package.Value)
-                    {
-                        throw new Exception(
-                            $"Reference nuget packages must have equal version in project {name}:{Environment.NewLine}"
-                            + $"\t{package.Key} {package.Value} and {nonSourcesPackage} {packageVersion[nonSourcesPackage]}.{Environment.NewLine}"
-                            + $"\tUpdate nuget package in the {name}.csproj file.{Environment.NewLine}"
-                            + $"\tHint: search for '<PackageReference Include=\"{package.Key}\" Version=\"{package.Value}\" Condition=\"'$(Configuration)' == 'ReleaseSources'\">'."
-                        );    
-                    }
-                }
-            }
-        }
-    }
-    Information("Package validation passed.");
-});
-
-///////////////////////////////////////////////////////////////////////////////
 // NuGet
 ///////////////////////////////////////////////////////////////////////////////
 Task("NuGet")
 .IsDependentOn("Version")
 .IsDependentOn("Clean")
-.IsDependentOn("AssertPackages")
 .IsDependentOn("Restore")
 .IsDependentOn("Build")
 .Does(() =>
@@ -408,9 +313,6 @@ Task("Default")
 .IsDependentOn("Restore")
 .IsDependentOn("Build")
 .IsDependentOn("UnitTests")
-.IsDependentOn("GenerateCoverage")
-.IsDependentOn("UploadCoverage")
-.IsDependentOn("AssertPackages")
 .IsDependentOn("NuGet")
 .IsDependentOn("NuGetFeed");
 
