@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
-    <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
+    <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.7.0" />
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.7.1.1" />
   </ItemGroup>
   <Choose>
@@ -53,7 +53,7 @@
     <Otherwise>
       <ItemGroup>
         <PackageReference Include="Yaapii.Atoms" Version="4.1.4" />
-        <PackageReference Include="Yaapii.Atoms" Version="4.1.4" />
+        <PackageReference Include="Yaapii.Atoms" Version="21.4.2" />
       </ItemGroup>
     </Otherwise>
   </Choose>
