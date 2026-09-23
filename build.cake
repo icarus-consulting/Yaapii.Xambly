@@ -10,7 +10,6 @@ var configuration           = "Release";
 // this is relative to the project root folder
 var buildArtifacts          = Directory("./artifacts");
 var deployment              = Directory("./artifacts/deployment");
-var version                 = "1.2.1";
 
 ///////////////////////////////////////////////////////////////////////////////
 // MODULES
@@ -36,18 +35,6 @@ var isWindows               = IsRunningOnWindows();
 var owner                   = "icarus-consulting";
 var repository              = "Yaapii.Xambly";
 
-///////////////////////////////////////////////////////////////////////////////
-// Version
-///////////////////////////////////////////////////////////////////////////////
-Task("Version")
-.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
-.Does(() => 
-{
-    Information(Figlet("Version"));
-    
-    version = BuildSystem.AppVeyor.Environment.Repository.Tag.Name;
-    Information($"Set version to '{version}'");
-});
 
 ///////////////////////////////////////////////////////////////////////////////
 // Clean
@@ -89,7 +76,6 @@ Task("Restore")
 // Build
 ///////////////////////////////////////////////////////////////////////////////
 Task("Build")
-.IsDependentOn("Version")
 .IsDependentOn("Clean")
 .IsDependentOn("Restore")
 .Does(() =>
@@ -100,8 +86,7 @@ Task("Build")
         new DotNetCoreBuildSettings()
         {
             Configuration = configuration,
-            NoRestore = true,
-            MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version)
+            NoRestore = true
         };
         var skipped = new List<string>();
     foreach(var module in GetSubDirectories(modules))
@@ -169,8 +154,6 @@ Task("UnitTests")
 // Default
 ///////////////////////////////////////////////////////////////////////////////
 Task("Default")
-.IsDependentOn("Credentials")
-.IsDependentOn("Version")
 .IsDependentOn("Clean")
 .IsDependentOn("Restore")
 .IsDependentOn("Build")
