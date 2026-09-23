@@ -10,7 +10,6 @@ var configuration           = "Release";
 // this is relative to the project root folder
 var buildArtifacts          = Directory("./artifacts");
 var deployment              = Directory("./artifacts/deployment");
-var version                 = "1.2.1";
 
 ///////////////////////////////////////////////////////////////////////////////
 // MODULES
@@ -36,28 +35,6 @@ var isWindows               = IsRunningOnWindows();
 var owner                   = "icarus-consulting";
 var repository              = "Yaapii.Xambly";
 
-// For NuGetFeed
-var nuGetSource             = "https://api.nuget.org/v3/index.json";
-var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
-
-// API key tokens for deployment
-var gitHubToken             = "";
-var nugetReleaseToken       = "";
-var appVeyorFeedToken       = "";
-var codeCovToken            = "";
-
-///////////////////////////////////////////////////////////////////////////////
-// Version
-///////////////////////////////////////////////////////////////////////////////
-Task("Version")
-.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
-.Does(() => 
-{
-    Information(Figlet("Version"));
-    
-    version = BuildSystem.AppVeyor.Environment.Repository.Tag.Name;
-    Information($"Set version to '{version}'");
-});
 
 ///////////////////////////////////////////////////////////////////////////////
 // Clean
@@ -99,7 +76,6 @@ Task("Restore")
 // Build
 ///////////////////////////////////////////////////////////////////////////////
 Task("Build")
-.IsDependentOn("Version")
 .IsDependentOn("Clean")
 .IsDependentOn("Restore")
 .Does(() =>
@@ -110,8 +86,7 @@ Task("Build")
         new DotNetCoreBuildSettings()
         {
             Configuration = configuration,
-            NoRestore = true,
-            MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version)
+            NoRestore = true
         };
         var skipped = new List<string>();
     foreach(var module in GetSubDirectories(modules))
@@ -176,144 +151,12 @@ Task("UnitTests")
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// NuGet
-///////////////////////////////////////////////////////////////////////////////
-Task("NuGet")
-.IsDependentOn("Version")
-.IsDependentOn("Clean")
-.IsDependentOn("Restore")
-.IsDependentOn("Build")
-.Does(() =>
-{
-    Information(Figlet("NuGet"));
-    Information($"Building NuGet Package for Version {version}");
-    
-    var settings = new DotNetCorePackSettings()
-    {
-        Configuration = configuration,
-        OutputDirectory = buildArtifacts,
-        NoRestore = true
-    };
-    settings.ArgumentCustomization = args => args.Append("--include-symbols").Append("-p:SymbolPackageFormat=snupkg");
-    settings.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
-
-    var settingsSources = new DotNetCorePackSettings()
-    {
-        Configuration = "ReleaseSources",
-        OutputDirectory = buildArtifacts,
-        NoRestore = false,
-        NoBuild = false,
-        VersionSuffix = ""
-    };
-    settingsSources.MSBuildSettings = new DotNetCoreMSBuildSettings().SetVersionPrefix(version);
-
-    foreach (var module in GetSubDirectories(modules))
-    {
-        var name = module.GetDirectoryName();
-
-        DotNetCorePack(
-            module.ToString(),
-            settings
-        );
-
-        settingsSources.ArgumentCustomization = args => args.Append($"-p:PackageId={name}.Sources").Append("-p:IncludeBuildOutput=false");
-        DotNetCorePack(
-            module.ToString(),
-            settingsSources
-        );       
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// Credentials
-///////////////////////////////////////////////////////////////////////////////
-Task("Credentials")
-.WithCriteria(() => isAppVeyor)
-.Does(() =>
-{
-    Information(Figlet("Credentials"));
-    
-    gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
-    if (string.IsNullOrEmpty(gitHubToken))
-    {
-        throw new Exception("Environment variable 'GITHUB_TOKEN' is not set");
-    }
-    nugetReleaseToken = EnvironmentVariable("NUGET_TOKEN");
-    if (string.IsNullOrEmpty(nugetReleaseToken))
-    {
-        throw new Exception("Environment variable 'NUGET_TOKEN' is not set");
-    }
-    appVeyorFeedToken = EnvironmentVariable("APPVEYOR_TOKEN");
-    if (string.IsNullOrEmpty(appVeyorFeedToken))
-    {
-        throw new Exception("Environment variable 'APPVEYOR_TOKEN' is not set");
-    }
-    codeCovToken = EnvironmentVariable("CODECOV_TOKEN");
-    if (string.IsNullOrEmpty(codeCovToken))
-    {
-        throw new Exception("Environment variable 'CODECOV_TOKEN' is not set");
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// NuGet Feed
-///////////////////////////////////////////////////////////////////////////////
-Task("NuGetFeed")
-.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
-.IsDependentOn("NuGet")
-.IsDependentOn("Credentials")
-.Does(() => 
-{
-    Information(Figlet("NuGet Feed"));
-    
-    var nugets = GetFiles($"{buildArtifacts.Path}/*.nupkg");
-    foreach(var package in nugets)
-    {
-        if (package.GetFilename().ToString().Contains(".Sources"))
-        {
-            NuGetPush(
-                package,
-                new NuGetPushSettings {
-                    Source = appVeyorNuGetFeed,
-                    ApiKey = appVeyorFeedToken
-                }
-            );
-        }
-        else
-        {
-            NuGetPush(
-                package,
-                new NuGetPushSettings {
-                    Source = nuGetSource,
-                    ApiKey = nugetReleaseToken
-                }
-            );
-        }
-    }
-    var symbols = GetFiles($"{buildArtifacts.Path}/*.snupkg");
-    foreach(var symbol in symbols)
-    {
-        NuGetPush(
-            symbol,
-            new NuGetPushSettings {
-                Source = nuGetSource,
-                ApiKey = nugetReleaseToken
-            }
-        );
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////
 // Default
 ///////////////////////////////////////////////////////////////////////////////
 Task("Default")
-.IsDependentOn("Credentials")
-.IsDependentOn("Version")
 .IsDependentOn("Clean")
 .IsDependentOn("Restore")
 .IsDependentOn("Build")
-.IsDependentOn("UnitTests")
-.IsDependentOn("NuGet")
-.IsDependentOn("NuGetFeed");
+.IsDependentOn("UnitTests");
 
 RunTarget(target);
