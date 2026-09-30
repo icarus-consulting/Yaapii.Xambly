@@ -52,8 +52,8 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Yaapii.Atoms" Version="4.1.4" />
-        <PackageReference Include="Yaapii.Atoms" Version="21.4.2" />
+        <PackageReference Include="Yaapii.Atoms" Version="21.5.3" />
+        <PackageReference Include="Yaapii.Atoms" Version="21.5.3" />
       </ItemGroup>
     </Otherwise>
   </Choose>
